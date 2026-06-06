@@ -35,7 +35,10 @@ jobs:
           GH_TOKEN: ${{ secrets.DASHBOARD_TOKEN }}
         run: python3 tools/collecte.py
 
-      - name: Historiser (commit si modifie)
+      - name: Historiser (commit si modifie, best-effort)
+        # Non bloquant : si le ruleset d'org refuse le push du bot, les tendances
+        # ne sont pas persistees ce run mais le deploiement Pages reussit quand meme.
+        continue-on-error: true
         run: |
           git config user.name "dashboard-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -44,7 +47,7 @@ jobs:
             echo "Pas de nouvel instantane a committer."
           else
             git commit -m "chore: instantane tableau de bord"
-            git push
+            git push || echo "Push historique refuse (ruleset ?) : tendances non persistees ce run."
           fi
 
       - name: Prepare l'artefact Pages
