@@ -167,7 +167,7 @@ function renderTable(data) {
 
 function detailPanneau(t) {
   const q = t.quality, b = t.bus_factor, r = t.review;
-  const busf = (b.factor != null) ? b.factor : "n/d";
+  const bal = (b.balance != null) ? b.balance : null;
   const contribs = t.contributors.map(c => `
     <tr>
       <td class="login">${esc(c.login)}</td>
@@ -185,8 +185,8 @@ function detailPanneau(t) {
       <div class="kpi"><b>${okBadge(q.spotless_ok)}</b><small>Spotless</small></div>
       <div class="kpi"><b>${okBadge(q.archunit_ok)}</b><small>ArchUnit (MVVM)</small></div>
       <div class="kpi"><b>${r.merged_total}</b><small>PR mergées (${r.self_merges} sans revue)</small></div>
-      <div class="kpi"><b title="Bus factor : nombre minimal de membres dont le départ ferait perdre plus de 50% des commits. Plus il est élevé, plus le travail est partagé (sain).">${busf}</b>
-        <small>bus factor (${b.active_members}/${b.members} actifs)</small></div>
+      <div class="kpi"><b title="Équilibre du travail (entropie normalisée des commits) : 100% = parfaitement réparti entre les membres, bas = concentré sur quelques-uns. Bus factor (Wikipédia) : ${b.factor}.">${bal != null ? `<span class="busbar"><span style="width:${bal}%"></span></span> ${bal} %` : "n/d"}</b>
+        <small>équilibre du travail (${b.active_members}/${b.members} actifs)</small></div>
     </div>
     <table class="contribs">
       <thead><tr>

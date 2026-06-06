@@ -24,6 +24,7 @@ USAGE :
 import argparse
 import hashlib
 import json
+import math
 import os
 import re
 import subprocess
@@ -161,6 +162,27 @@ def facteur_bus(valeurs):
         if cumul > total / 2:
             return i
     return len(vals)
+
+
+def indice_equilibre(commits, membres):
+    """Equilibre du travail (entropie de Shannon normalisee, Pielou) en %.
+
+    100 % = commits parfaitement repartis entre tous les membres ; bas = concentre.
+    Normalise par la TAILLE de l'equipe (membres + eventuels committers externes),
+    donc un passager clandestin (0 commit) FAIT BAISSER l'indice. None si pas encore
+    de commit ou equipe d'une seule personne. Plus c'est eleve, mieux c'est.
+    """
+    population = set(membres) | {l for l, n in commits.items() if n > 0}
+    n = len(population)
+    total = sum(commits.values())
+    if n <= 1 or total == 0:
+        return None
+    h = 0.0
+    for login in population:
+        p = commits.get(login, 0) / total
+        if p > 0:
+            h -= p * math.log(p)
+    return round(100 * h / math.log(n), 1)
 
 
 # ------------------------------------------------------------------------------
@@ -369,6 +391,7 @@ def collecter_contributeurs(repo, slug, issues_data):
     top_pr = max(prs_merged.values()) if prs_merged else 0
     bus = {
         "factor": facteur_bus(commits.values()),
+        "balance": indice_equilibre(commits, membres),
         "top_share_commits": round(top / total_commits, 2),
         "top_share_prs": round(top_pr / total_merged_pr, 2),
         "active_members": sum(1 for v in commits.values() if v > 0),
@@ -581,6 +604,7 @@ def synthetiser_reference(specs, teams_reels, now):
         pmap = {c["login"]: c["prs_merged"] for c in contribs}
         sc, sp = sum(cmap.values()) or 1, sum(pmap.values()) or 1
         bus = {"factor": facteur_bus(cmap.values()),
+               "balance": indice_equilibre(cmap, [m["login"] for m in members]),
                "top_share_commits": round(max(cmap.values()) / sc, 2),
                "top_share_prs": round((max(pmap.values()) if pmap else 0) / sp, 2),
                "active_members": sum(1 for v in cmap.values() if v > 0), "members": len(members)}

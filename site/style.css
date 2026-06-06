@@ -126,3 +126,6 @@ footer { text-align: center; color: var(--gris); font-size: .8rem; padding: 1.5r
 td.badges { white-space: nowrap; }
 .badge-emoji { font-size: 1.05rem; cursor: help; margin-right: 1px; }
 .medaille { font-size: 1.05rem; margin-right: 2px; }
+
+/* la barre busbar represente desormais l\u0027equilibre (haut = bon) -> vert */
+.busbar > span { background: var(--vert); }
