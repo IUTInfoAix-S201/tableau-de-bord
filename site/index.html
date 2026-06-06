@@ -20,7 +20,7 @@
     </section>
 
     <section>
-      <h2>Classement</h2>
+      <h2>Classement des équipes</h2>
       <p class="aide">Cliquez sur l'en-tête d'une colonne pour trier, ou sur une ligne pour déplier le détail de l'équipe. La barre fine grise marque la <strong>médiane de la promo</strong>.</p>
       <table id="classement">
         <thead>
@@ -53,6 +53,7 @@
             <th data-esort="reviews_given" class="num">Revues</th>
             <th data-esort="issues_closed" class="num">Issues fermées</th>
             <th class="num">Revue</th>
+            <th>Badges</th>
           </tr>
         </thead>
         <tbody id="etudiants-corps"></tbody>
@@ -69,6 +70,17 @@
           <span class="pastille na"></span> pas encore de revue.</li>
         <li><strong>MVP</strong> ✅ = toutes les fonctionnalités MUST (dont l'écran pivot Passage) terminées.</li>
         <li><strong>Bus factor</strong> : part des commits portée par une seule personne ; élevé = travail déséquilibré.</li>
+        <li><strong>Badges</strong> (tableau par étudiant) :
+          🏗️ le plus de commits ·
+          🔍 le plus de revues ·
+          🚀 le plus de PR mergées ·
+          💬 le plus de commentaires de revue ·
+          🐝 actif partout (code + PR + revues) ·
+          🤝 relit autant qu'il est relu ·
+          🧐 vraies revues exigeantes ·
+          🦆 approbations à vide ·
+          🏄 passager clandestin.
+          Survolez un badge pour le détail.</li>
       </ul>
       <p class="avertissement">⚠️ Les voyants et indicateurs collaboratifs sont des <strong>repères heuristiques, indicatifs et non des notes</strong>. Les chiffres bruts sont toujours affichés pour que chacun puisse les interpréter.</p>
     </section>

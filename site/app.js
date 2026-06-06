@@ -200,6 +200,36 @@ const ESORTERS = {
 };
 let currentESort = "commits";
 
+// Contexte pour les badges : maxima de la promo + equipes ayant au moins un actif.
+function contexteBadges(students) {
+  const max = k => Math.max(0, ...students.map(s => s[k] || 0));
+  const actif = s => (s.commits + s.prs_merged + s.reviews_given) > 0;
+  return {
+    commits: max("commits"), reviews_given: max("reviews_given"),
+    prs_merged: max("prs_merged"), inline_comments: max("inline_comments"),
+    equipesActives: new Set(students.filter(actif).map(s => s.team)),
+  };
+}
+
+// Badges (achievements) calcules a partir des donnees existantes.
+function badgesEtudiant(s, c) {
+  const b = [];
+  // superlatifs (un seul critere, au-dessus de 0 et egal au max de la promo)
+  if (s.commits > 0 && s.commits === c.commits) b.push(["🏗️", "Bâtisseur : le plus de commits de la promo"]);
+  if (s.reviews_given > 0 && s.reviews_given === c.reviews_given) b.push(["🔍", "La loupe : le plus de revues de code"]);
+  if (s.prs_merged > 0 && s.prs_merged === c.prs_merged) b.push(["🚀", "Locomotive : le plus de PR mergées"]);
+  if (s.inline_comments > 0 && s.inline_comments === c.inline_comments) b.push(["💬", "Bavard utile : le plus de commentaires de revue"]);
+  // qualitatifs (cumulables)
+  if (s.commits > 0 && s.prs_merged > 0 && s.reviews_given > 0) b.push(["🐝", "Couteau suisse : actif sur le code, les PR et les revues"]);
+  if (s.reviews_given > 0 && s.reviews_received > 0 && Math.abs(s.reviews_given - s.reviews_received) <= 1)
+    b.push(["🤝", "Fair-play : relit autant qu'il est relu"]);
+  if (s.review_quality === "green" && s.changes_requested >= 1) b.push(["🧐", "Œil de lynx : vraies revues, demande des changements"]);
+  if (s.review_quality === "red") b.push(["🦆", "Tampon : approbations à vide"]);
+  if ((s.commits + s.prs_merged + s.reviews_given) === 0 && c.equipesActives.has(s.team))
+    b.push(["🏄", "Passager clandestin : aucune contribution alors que des coéquipiers sont actifs"]);
+  return b;
+}
+
 function renderStudents(data) {
   const corps = document.getElementById("etudiants-corps");
   if (!corps) return;
@@ -208,7 +238,11 @@ function renderStudents(data) {
     if (typeof va === "string") return va.localeCompare(vb);
     return vb - va;
   });
-  corps.innerHTML = students.map((s, i) => `
+  const ctx = contexteBadges(students);
+  corps.innerHTML = students.map((s, i) => {
+    const bs = badgesEtudiant(s, ctx)
+      .map(([e, t]) => `<span class="badge-emoji" title="${esc(t)}">${e}</span>`).join(" ");
+    return `
     <tr>
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
       <td class="login">${esc(s.login)}</td>
@@ -218,7 +252,9 @@ function renderStudents(data) {
       <td class="num">${s.reviews_given}</td>
       <td class="num">${s.issues_closed}</td>
       <td class="num"><span class="pastille ${s.review_quality}" title="${esc(voyantTip(s))}"></span></td>
-    </tr>`).join("") || '<tr><td colspan="8">Aucun étudiant détecté.</td></tr>';
+      <td class="badges">${bs || "—"}</td>
+    </tr>`;
+  }).join("") || '<tr><td colspan="9">Aucun étudiant détecté.</td></tr>';
 }
 
 function bindTri() {
