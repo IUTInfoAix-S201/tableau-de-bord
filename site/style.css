@@ -27,7 +27,7 @@ header {
   padding: 1.6rem 1.5rem 1.8rem;
 }
 header h1 { margin: 0 0 .4rem; font-size: 1.6rem; }
-.sous-titre { margin: .2rem 0; max-width: 70ch; opacity: .95; }
+.sous-titre { margin: .2rem 0; opacity: .95; }
 .meta { margin: .6rem 0 0; font-size: .85rem; opacity: .8; }
 
 main { max-width: 1080px; margin: 0 auto; padding: 1.5rem; }
