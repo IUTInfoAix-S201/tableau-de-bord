@@ -655,8 +655,13 @@ def _repartir(total, poids):
     return out
 
 
-def synthetiser_reference(specs, teams_reels, now):
-    """Construit les objets equipe de reference a partir des specs (login + above)."""
+def synthetiser_reference(specs, teams_reels, now, plafond_tv=None):
+    """Construit les objets equipe de reference a partir des specs (login + above).
+
+    `plafond_tv` : si fourni, les `tests_validated` des membres des lievres sont cales
+    JUSTE en dessous de cette valeur (le meilleur etudiant reel) -> les lievres restent
+    devant au niveau equipe mais derriere le meilleur individu reel dans le classement.
+    """
     pcts = [t["tests"]["pct"] for t in teams_reels if t["tests"]["pct"] is not None]
     passeds = [t["tests"]["passed"] for t in teams_reels if t["tests"]["passed"] is not None]
     totaux = [t["tests"]["total"] for t in teams_reels if t["tests"]["total"]]
@@ -687,8 +692,13 @@ def synthetiser_reference(specs, teams_reels, now):
         # Les revues RECUES sont ces memes revues, reparties sur les auteurs (par PR
         # mergees) -> total recu == total donne (economie de revue equilibree).
         rev_received = _repartir(sum(rev_act), prm_act) if sum(prm_act) > 0 else [0] * len(actifs)
-        # Tests valides : les tests au-dessus de la base, repartis par PR mergee.
-        tests_act = _repartir(max(0, passed - base), prm_act) if sum(prm_act) > 0 else [0] * len(actifs)
+        # Tests valides : par defaut repartis par PR mergee ; si `plafond_tv` fourni,
+        # cales juste sous le meilleur etudiant reel (les lievres restent derriere lui).
+        if plafond_tv is not None:
+            plaf = max(0, plafond_tv - 1)
+            tv_act = [max(0, plaf - _h(slug + m["login"]) % 3) for m in actifs]
+        else:
+            tv_act = _repartir(max(0, passed - base), prm_act) if sum(prm_act) > 0 else [0] * len(actifs)
         idx = {m["login"]: i for i, m in enumerate(actifs)}
 
         contribs = []
@@ -710,7 +720,7 @@ def synthetiser_reference(specs, teams_reels, now):
             contribs.append({"login": login, "commits": cm, "prs_open": _h(login + "po") % 2,
                              "prs_merged": pm, "reviews_given": rg, "reviews_received": rev_received[i],
                              "issues_assigned": pm + _h(login + "ia") % 2, "issues_closed": pm,
-                             "tests_validated": tests_act[i],
+                             "tests_validated": tv_act[i],
                              "reviews_total": rg, "inline_comments": inl, "changes_requested": chg,
                              "empty_approvals": 0, "review_quality": qual})
 
@@ -853,10 +863,13 @@ def main():
         t.pop("_merged_prs", None)
 
     # Equipes de reference optionnelles (secret REFERENCE_TEAMS) ; absentes si non defini.
+    # On cale leurs `tests_validated` juste derriere le meilleur etudiant reel.
+    top_real_tv = max((c["tests_validated"] for t in teams for c in t["contributors"]),
+                      default=0)
     ref_raw = os.environ.get("REFERENCE_TEAMS")
     if ref_raw:
         try:
-            teams += synthetiser_reference(json.loads(ref_raw), teams, now)
+            teams += synthetiser_reference(json.loads(ref_raw), teams, now, top_real_tv)
             print("equipes de reference ajoutees", file=sys.stderr)
         except Exception as e:                                # noqa: BLE001
             print(f"REFERENCE_TEAMS ignore ({e})", file=sys.stderr)

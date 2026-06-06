@@ -41,7 +41,7 @@
 
     <section>
       <h2>Classement par étudiant</h2>
-      <p class="aide">Tous les contributeurs, toutes équipes confondues. Tri par défaut : <strong>tests validés</strong> (tests verts apportés par les PR mergées de chacun), puis PR mergées, issues fermées, commits. Cliquez sur une colonne pour trier autrement.</p>
+      <p class="aide">Tous les contributeurs, toutes équipes confondues. Tri par défaut : <strong>tests validés</strong> (tests verts apportés par les PR mergées de chacun), puis PR mergées. Cliquez sur une colonne pour trier autrement.</p>
       <table id="etudiants">
         <thead>
           <tr>
@@ -49,12 +49,10 @@
             <th data-esort="login">Étudiant</th>
             <th data-esort="team">Équipe</th>
             <th data-esort="tests_validated" class="num" title="Tests verts apportés par les PR mergées de l'étudiant (delta de tests à chaque merge)">Tests validés</th>
-            <th data-esort="commits" class="num">Commits</th>
             <th data-esort="prs_open" class="num">PR en cours</th>
             <th data-esort="prs_merged" class="num">PR mergées</th>
-            <th data-esort="reviews_given" class="num">Revues</th>
-            <th data-esort="issues_closed" class="num">Issues fermées</th>
-            <th class="num">Revue</th>
+            <th data-esort="reviews_given" class="num" title="Nombre de PR relues par l'étudiant">PR revues</th>
+            <th class="num" title="Qualité des revues : 🟢 vraies revues · 🟡 légères · 🔴 approbations à vide · ⚪ aucune">Qualité revue</th>
             <th>Badges</th>
           </tr>
         </thead>

@@ -266,15 +266,13 @@ function renderStudents(data) {
       <td class="login">${esc(s.login)}</td>
       <td>${esc(s.team)}</td>
       <td class="num"><strong>${s.tests_validated}</strong></td>
-      <td class="num">${s.commits}</td>
       <td class="num">${s.prs_open}</td>
       <td class="num">${s.prs_merged}</td>
       <td class="num">${s.reviews_given}</td>
-      <td class="num">${s.issues_closed}</td>
       <td class="num"><span class="pastille ${s.review_quality}" title="${esc(voyantTip(s))}"></span></td>
       <td class="badges">${bs || "—"}</td>
     </tr>`;
-  }).join("") || '<tr><td colspan="11">Aucun étudiant détecté.</td></tr>';
+  }).join("") || '<tr><td colspan="9">Aucun étudiant détecté.</td></tr>';
 }
 
 function bindTri() {
