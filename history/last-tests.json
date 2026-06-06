@@ -3,13 +3,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 25.9,
+      "coverage_pct": 31.9,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 102,
-      "pct": 16.5,
+      "passed": 122,
+      "pct": 19.7,
       "total": 620
     }
   },
@@ -87,13 +87,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 25.9,
+      "coverage_pct": 31.8,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 102,
-      "pct": 16.5,
+      "passed": 126,
+      "pct": 20.3,
       "total": 620
     }
   },
@@ -140,6 +140,20 @@
     }
   },
   "td4-g1_heja": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "td4_g4": {
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,

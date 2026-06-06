@@ -1,5 +1,11 @@
 {
-  "gapple": {},
+  "gapple": {
+    "57": {
+      "author": "Nguyen-Thomas1",
+      "passed": 122,
+      "sha": "79e3589459e102a9cbdb1648af1aadb4ad7dcb97"
+    }
+  },
   "giteam": {
     "55": {
       "author": "MORSILLI-Timeo-25002755",
@@ -17,11 +23,18 @@
       "sha": "37ef2c19a053376dfee09612aef6da165dfa138e"
     }
   },
-  "riplasemaine": {},
+  "riplasemaine": {
+    "57": {
+      "author": "AmadeusTdev",
+      "passed": 126,
+      "sha": "15d0b8ba14142a38fd6cdee776c2998b9451c974"
+    }
+  },
   "td2-g5-awoooo": {},
   "td2-g6": {},
   "td2-vigiegroupe3": {},
   "td4-g1_heja": {},
+  "td4_g4": {},
   "team-rocket": {},
   "thebatdevs": {}
 }
