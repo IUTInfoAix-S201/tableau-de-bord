@@ -782,7 +782,7 @@ def main():
     for t in teams:
         for c in t["contributors"]:
             students.append({**c, "team": t["slug"]})
-    students.sort(key=lambda c: (-c["commits"], -c["prs_merged"], c["login"]))
+    students.sort(key=lambda c: (-c["prs_merged"], -c["issues_closed"], -c["commits"], c["login"]))
 
     data = {
         "generated_at": now.isoformat(),

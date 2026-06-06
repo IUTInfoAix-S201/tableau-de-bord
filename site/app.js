@@ -200,15 +200,23 @@ function detailPanneau(t) {
 }
 
 // --- classement par etudiant (toutes equipes confondues) ------------------
-const ESORTERS = {
-  login: s => s.login,
-  team: s => s.team,
-  commits: s => s.commits,
-  prs_merged: s => s.prs_merged,
-  reviews_given: s => s.reviews_given,
-  issues_closed: s => s.issues_closed,
-};
-let currentESort = "commits";
+// Tri par defaut : PR mergees (travail livre/relu) > issues fermees > commits.
+// Le nombre de commits seul n'est pas fiable si les PR ne sont pas squashees.
+const ESTRING = new Set(["login", "team"]);
+const ETIEBREAK = ["prs_merged", "issues_closed", "commits"];
+let currentESort = "prs_merged";
+
+function compareStudents(a, b) {
+  if (ESTRING.has(currentESort)) {
+    return String(a[currentESort]).localeCompare(String(b[currentESort]));
+  }
+  // colonne choisie (desc), puis chaine de departage PR > issues > commits, puis login
+  for (const k of [currentESort, ...ETIEBREAK.filter(k => k !== currentESort)]) {
+    const d = (b[k] || 0) - (a[k] || 0);
+    if (d) return d;
+  }
+  return a.login.localeCompare(b.login);
+}
 
 // Contexte pour les badges : maxima de la promo + equipes ayant au moins un actif.
 function contexteBadges(students) {
@@ -247,11 +255,7 @@ function badgesEtudiant(s, c) {
 function renderStudents(data) {
   const corps = document.getElementById("etudiants-corps");
   if (!corps) return;
-  const students = [...(data.students || [])].sort((a, b) => {
-    const va = ESORTERS[currentESort](a), vb = ESORTERS[currentESort](b);
-    if (typeof va === "string") return va.localeCompare(vb);
-    return vb - va;
-  });
+  const students = [...(data.students || [])].sort(compareStudents);
   const ctx = contexteBadges(students);
   corps.innerHTML = students.map((s, i) => {
     const bs = badgesEtudiant(s, ctx)
@@ -262,13 +266,14 @@ function renderStudents(data) {
       <td class="login">${esc(s.login)}</td>
       <td>${esc(s.team)}</td>
       <td class="num">${s.commits}</td>
+      <td class="num">${s.prs_open}</td>
       <td class="num">${s.prs_merged}</td>
       <td class="num">${s.reviews_given}</td>
       <td class="num">${s.issues_closed}</td>
       <td class="num"><span class="pastille ${s.review_quality}" title="${esc(voyantTip(s))}"></span></td>
       <td class="badges">${bs || "—"}</td>
     </tr>`;
-  }).join("") || '<tr><td colspan="9">Aucun étudiant détecté.</td></tr>';
+  }).join("") || '<tr><td colspan="10">Aucun étudiant détecté.</td></tr>';
 }
 
 function bindTri() {
