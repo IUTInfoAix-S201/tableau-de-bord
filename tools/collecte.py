@@ -133,7 +133,15 @@ def fold(s):
 
 
 def is_human(login):
-    return bool(login) and login not in BOTS and not login.endswith("[bot]")
+    if not login:
+        return False
+    if login in BOTS or login.endswith("[bot]"):
+        return False
+    # Le relecteur Copilot (active par le ruleset copilot_code_review) n'a pas de
+    # suffixe [bot] mais n'est pas un etudiant et ne compte pas comme revue par un pair.
+    if "copilot" in login.lower():
+        return False
+    return True
 
 
 # ------------------------------------------------------------------------------
