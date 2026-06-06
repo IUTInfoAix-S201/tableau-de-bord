@@ -513,18 +513,42 @@ def ajouter_historique(records):
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
 
-def tendance(hist, slug, tests_passed, issues_done, now):
-    """Serie (10 jours, duree du projet) + delta sur 7 jours pour une equipe."""
+def tendance(hist, slug, tests_passed, issues_done, now, baseline=None):
+    """Serie (fenetre 10 jours, duree du projet) + delta depuis le debut.
+
+    Le tableau ne mesure que depuis sa mise en service ; pour qu'une equipe ait une
+    sparkline des aujourd'hui, on PREFIXE les jours ecoules depuis PROJET_DEBUT avec
+    la valeur de base (`baseline` = nb de tests verts de la version etudiante de
+    depart). Tant qu'il n'y a pas de progres, la courbe est plate (honnete).
+    """
     pts = [h for h in hist if h["slug"] == slug]
     serie = [{"date": h["date"], "tests_passed": h["tests_passed"]} for h in pts]
-    # inclut le point du jour courant (s'il n'y est pas deja) puis fenetre 10 jours
     jour = now.date().isoformat()
-    if tests_passed is not None and (not serie or serie[-1]["date"][:10] != jour):
-        serie.append({"date": now.isoformat(), "tests_passed": tests_passed})
+    # Le point du jour reflete la valeur COURANTE (l'instantane d'historique du
+    # matin est fige par la dedup journaliere ; la sparkline, elle, suit le live).
+    if tests_passed is not None:
+        if serie and serie[-1]["date"][:10] == jour:
+            serie[-1] = {"date": now.isoformat(), "tests_passed": tests_passed}
+        else:
+            serie.append({"date": now.isoformat(), "tests_passed": tests_passed})
+
+    # Backfill des jours du projet anterieurs au premier point mesure.
+    if baseline is not None:
+        try:
+            d = datetime.fromisoformat(PROJET_DEBUT).date()
+        except ValueError:
+            d = None
+        if d is not None:
+            premiere = serie[0]["date"][:10] if serie else jour
+            prefix = []
+            while d.isoformat() < premiere and (now.date() - d).days <= 9:
+                prefix.append({"date": d.isoformat() + "T00:00:00+00:00",
+                               "tests_passed": baseline})
+                d = d + timedelta(days=1)
+            serie = prefix + serie
+
     serie = serie[-10:]
-    seuil = (now - timedelta(days=7)).isoformat()
-    avant = [h for h in pts if h["date"] <= seuil]
-    base = avant[-1]["tests_passed"] if avant else (pts[0]["tests_passed"] if pts else None)
+    base = serie[0]["tests_passed"] if serie else None
     delta = (tests_passed - base) if (base is not None and tests_passed is not None) else None
     return {"tests_series": serie, "delta_7d": delta}
 
@@ -699,7 +723,6 @@ def main():
             run = dernier_run(repo)
             tests, quality, ci_status, source = collecter_tests(repo, run)
 
-        trend = tendance(hist, slug, tests["passed"], issues_data["issues"]["done"], now)
         teams.append({
             "slug": slug,
             "name": slug,
@@ -714,13 +737,21 @@ def main():
             "quality": quality,
             "review": review,
             "bus_factor": bus,
-            "trend": trend,
+            "trend": None,
             "contributors": sorted(contributeurs,
                                    key=lambda c: (-c["commits"], c["login"])),
         })
         snapshots.append({"date": now.isoformat(), "slug": slug,
                           "tests_passed": tests["passed"],
                           "issues_done": issues_data["issues"]["done"]})
+
+    # Tendances des vraies equipes : on connait maintenant le plancher de la promo
+    # (= version etudiante de depart) pour backfiller les courbes depuis le debut.
+    passes = [t["tests"]["passed"] for t in teams if t["tests"]["passed"] is not None]
+    baseline = min(passes) if passes else None
+    for t in teams:
+        t["trend"] = tendance(hist, t["slug"], t["tests"]["passed"],
+                              t["issues"]["done"], now, baseline)
 
     # Equipes de reference optionnelles (secret REFERENCE_TEAMS) ; absentes si non defini.
     ref_raw = os.environ.get("REFERENCE_TEAMS")
