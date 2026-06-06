@@ -498,7 +498,10 @@ def synthetiser_reference(specs, teams_reels, now):
     pcts = [t["tests"]["pct"] for t in teams_reels if t["tests"]["pct"] is not None]
     passeds = [t["tests"]["passed"] for t in teams_reels if t["tests"]["passed"] is not None]
     totaux = [t["tests"]["total"] for t in teams_reels if t["tests"]["total"]]
+    covs = [t["quality"]["coverage_pct"] for t in teams_reels
+            if t["quality"]["coverage_pct"] is not None]
     best = max(pcts) if pcts else 16.5
+    best_cov = max(covs) if covs else 60.0
     tot = max(totaux) if totaux else 620
     base = min(passeds) if passeds else round(0.165 * tot)   # tests verts « de base »
     out = []
@@ -572,7 +575,7 @@ def synthetiser_reference(specs, teams_reels, now):
             "issues": {"done": issues_done, "total": 54},
             "priorities": {**bandes, "mvp_complete": mvp},
             "tests": {"passed": passed, "total": tot, "pct": pct},
-            "quality": {"coverage_pct": round(min(95.0, 80 + best / 5 + _h(slug) % 6), 1),
+            "quality": {"coverage_pct": round(min(95.0, best_cov * factor + _h(slug) % 3), 1),
                         "pmd_violations": _h(slug + "pmd") % 4, "spotless_ok": True, "archunit_ok": True},
             "review": review, "bus_factor": bus, "trend": trend,
             "contributors": sorted(contribs, key=lambda c: (-c["commits"], c["login"])),
