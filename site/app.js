@@ -160,7 +160,7 @@ function detailPanneau(t) {
   const bus = Math.round((b.top_share_commits || 0) * 100);
   const contribs = t.contributors.map(c => `
     <tr>
-      <td class="login"><a href="https://github.com/${esc(c.login)}" target="_blank" rel="noopener">${esc(c.login)}</a></td>
+      <td class="login">${esc(c.login)}</td>
       <td class="num">${c.commits}</td>
       <td class="num">${c.prs_open}/${c.prs_merged}</td>
       <td class="num">${c.reviews_given}/${c.reviews_received}</td>
@@ -211,7 +211,7 @@ function renderStudents(data) {
   corps.innerHTML = students.map((s, i) => `
     <tr>
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
-      <td class="login"><a href="https://github.com/${esc(s.login)}" target="_blank" rel="noopener">${esc(s.login)}</a></td>
+      <td class="login">${esc(s.login)}</td>
       <td>${esc(s.team)}</td>
       <td class="num">${s.commits}</td>
       <td class="num">${s.prs_merged}</td>
