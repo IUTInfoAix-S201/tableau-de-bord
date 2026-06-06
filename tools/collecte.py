@@ -566,7 +566,10 @@ def synthetiser_reference(specs, teams_reels, now):
 
         members = spec["members"]
         actifs = [m for m in members if not m.get("freerider")]
-        poids = [_h(slug + m["login"]) % 5 + 2 for m in actifs]
+        if spec.get("balanced"):
+            poids = [3] * len(actifs)            # poids egaux -> equipe tres equilibree
+        else:
+            poids = [_h(slug + m["login"]) % 5 + 2 for m in actifs]
         commits_act = _repartir(max(len(actifs), round(passed / 4)), poids)
         prm_act = _repartir(issues_done, poids)
         rev_act = _repartir(issues_done, list(reversed(poids)))   # revues != auteurs
