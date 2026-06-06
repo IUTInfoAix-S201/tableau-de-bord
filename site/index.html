@@ -41,13 +41,14 @@
 
     <section>
       <h2>Classement par étudiant</h2>
-      <p class="aide">Tous les contributeurs, toutes équipes confondues. Tri par défaut : <strong>PR mergées</strong>, puis issues fermées, puis commits (le nombre de commits seul n'est pas fiable si les PR ne sont pas squashées). Cliquez sur une colonne pour trier autrement.</p>
+      <p class="aide">Tous les contributeurs, toutes équipes confondues. Tri par défaut : <strong>tests validés</strong> (tests verts apportés par les PR mergées de chacun), puis PR mergées, issues fermées, commits. Cliquez sur une colonne pour trier autrement.</p>
       <table id="etudiants">
         <thead>
           <tr>
             <th class="rang">#</th>
             <th data-esort="login">Étudiant</th>
             <th data-esort="team">Équipe</th>
+            <th data-esort="tests_validated" class="num" title="Tests verts apportés par les PR mergées de l'étudiant (delta de tests à chaque merge)">Tests validés</th>
             <th data-esort="commits" class="num">Commits</th>
             <th data-esort="prs_open" class="num">PR en cours</th>
             <th data-esort="prs_merged" class="num">PR mergées</th>

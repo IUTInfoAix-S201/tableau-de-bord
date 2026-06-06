@@ -42,11 +42,11 @@ jobs:
         run: |
           git config user.name "dashboard-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add history/history.jsonl
+          git add history/
           if git diff --staged --quiet; then
-            echo "Pas de nouvel instantane a committer."
+            echo "Rien de nouveau a committer (historique + cache PR a jour)."
           else
-            git commit -m "chore: instantane tableau de bord"
+            git commit -m "chore: instantane + cache tests par PR"
             git push
           fi
 

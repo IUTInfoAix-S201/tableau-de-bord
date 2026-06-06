@@ -46,6 +46,9 @@ PROJET_DEBUT = "2026-06-04"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(ROOT, "site", "data.json")
 HISTORY_PATH = os.path.join(ROOT, "history", "history.jsonl")
+# Cache des comptes de tests par PR mergee (delta de tests par contributeur).
+# Immuable une fois une PR mergee -> on ne recalcule que les nouvelles.
+CACHE_PR_PATH = os.path.join(ROOT, "history", "pr-tests.json")
 
 # --- Mapping feature -> priorite (table du brief « Travail a faire ») ----------
 PRIORITE = {
@@ -268,7 +271,8 @@ query($owner:String!,$name:String!,$cursor:String){
     pullRequests(first:50, after:$cursor, states:[OPEN,MERGED,CLOSED]){
       pageInfo{hasNextPage endCursor}
       nodes{
-        number state merged
+        number state merged mergedAt
+        mergeCommit{oid}
         author{login}
         mergedBy{login}
         reviews(first:50){nodes{author{login} state bodyText comments{totalCount}}}
@@ -338,6 +342,7 @@ def collecter_contributeurs(repo, slug, issues_data):
     merged_total = 0
     merged_relues = 0
     self_merges = 0
+    merged_info = []   # PR mergees : {number, sha, author, mergedAt} pour le delta de tests
     for pr in prs:
         auteur = (pr.get("author") or {}).get("login")
         if pr["state"] == "OPEN":
@@ -347,6 +352,10 @@ def collecter_contributeurs(repo, slug, issues_data):
             merged_total += 1
             if is_human(auteur):
                 prs_merged[auteur] += 1
+                sha = (pr.get("mergeCommit") or {}).get("oid")
+                if sha:
+                    merged_info.append({"number": pr["number"], "sha": sha,
+                                        "author": auteur, "mergedAt": pr.get("mergedAt")})
             revs = [r for r in pr["reviews"]["nodes"]]
             par_pair = [r for r in revs
                         if is_human((r.get("author") or {}).get("login"))
@@ -386,6 +395,7 @@ def collecter_contributeurs(repo, slug, issues_data):
             "reviews_received": revues_recues.get(login, 0),
             "issues_assigned": issues_data["_assignes"].get(login, 0),
             "issues_closed": issues_data["_fermees_par"].get(login, 0),
+            "tests_validated": 0,   # rempli apres coup (delta de tests par PR mergee)
             **v,
         })
 
@@ -407,7 +417,7 @@ def collecter_contributeurs(repo, slug, issues_data):
         "pct_reviewed": round(merged_relues / merged_total, 2) if merged_total else None,
         "self_merges": self_merges,
     }
-    return contributeurs, bus, review
+    return contributeurs, bus, review, merged_info
 
 
 # ------------------------------------------------------------------------------
@@ -494,6 +504,73 @@ def collecter_tests(repo, run):
     else:
         tests["pct"] = None
     return tests, quality, ci_status, source
+
+
+# ------------------------------------------------------------------------------
+# Tests valides par contributeur : delta de tests verts par PR mergee
+# ------------------------------------------------------------------------------
+def compte_tests_sha(repo, sha):
+    """Nb de tests verts du run maven.yml dont head_sha == sha (artefact ou logs)."""
+    runs = gh_json(
+        f"repos/{ORG}/{repo}/actions/workflows/maven.yml/runs?head_sha={sha}&per_page=5",
+        jq=".workflow_runs[] | {id, conclusion}",
+    )
+    runs = runs if isinstance(runs, list) else ([runs] if runs else [])
+    for r in runs:
+        summary = lire_ci_summary(repo, r["id"])
+        if summary and summary.get("tests") and summary["tests"].get("passed") is not None:
+            return summary["tests"]["passed"]
+        parsed = parser_logs(repo, r["id"])
+        if parsed:
+            return parsed["passed"]
+    return None
+
+
+def charger_cache_pr():
+    if not os.path.exists(CACHE_PR_PATH):
+        return {}
+    try:
+        with open(CACHE_PR_PATH) as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def sauver_cache_pr(cache):
+    os.makedirs(os.path.dirname(CACHE_PR_PATH), exist_ok=True)
+    with open(CACHE_PR_PATH, "w") as f:
+        json.dump(cache, f, ensure_ascii=False, indent=2, sort_keys=True)
+
+
+def attribuer_tests_pr(repo, merged_info, baseline, cache_team):
+    """Delta de tests verts par PR mergee, attribue a l'auteur de la PR.
+
+    Pour chaque PR mergee (ordre de merge) : delta = tests(apres) - tests(avant) ;
+    avant = la PR precedente (ou `baseline` pour la 1re). Seuls les deltas positifs
+    comptent. Le nb de tests au commit de merge est mis en CACHE (immuable une fois
+    mergee) : le cout par build ne porte que sur les nouvelles PR. -> {login: total}.
+    """
+    merged = sorted([m for m in merged_info if m.get("sha")],
+                    key=lambda m: m.get("mergedAt") or "")
+    for m in merged:
+        key = str(m["number"])
+        entry = cache_team.get(key)
+        if not entry or entry.get("passed") is None:
+            cache_team[key] = {"sha": m["sha"], "author": m["author"],
+                               "passed": compte_tests_sha(repo, m["sha"])}
+        else:
+            cache_team[key]["author"] = m["author"]
+    valides = defaultdict(int)
+    prev = baseline
+    for m in merged:
+        info = cache_team[str(m["number"])]
+        p, author = info.get("passed"), info.get("author")
+        if p is None:
+            continue                      # compte indisponible -> on saute
+        if prev is not None and author and p > prev:
+            valides[author] += p - prev
+        prev = p
+    return dict(valides)
 
 
 # ------------------------------------------------------------------------------
@@ -610,6 +687,8 @@ def synthetiser_reference(specs, teams_reels, now):
         # Les revues RECUES sont ces memes revues, reparties sur les auteurs (par PR
         # mergees) -> total recu == total donne (economie de revue equilibree).
         rev_received = _repartir(sum(rev_act), prm_act) if sum(prm_act) > 0 else [0] * len(actifs)
+        # Tests valides : les tests au-dessus de la base, repartis par PR mergee.
+        tests_act = _repartir(max(0, passed - base), prm_act) if sum(prm_act) > 0 else [0] * len(actifs)
         idx = {m["login"]: i for i, m in enumerate(actifs)}
 
         contribs = []
@@ -618,8 +697,9 @@ def synthetiser_reference(specs, teams_reels, now):
             if m.get("freerider"):
                 contribs.append({"login": login, "commits": 0, "prs_open": 0, "prs_merged": 0,
                                  "reviews_given": 0, "reviews_received": 0, "issues_assigned": 1,
-                                 "issues_closed": 0, "reviews_total": 0, "inline_comments": 0,
-                                 "changes_requested": 0, "empty_approvals": 0, "review_quality": "na"})
+                                 "issues_closed": 0, "tests_validated": 0, "reviews_total": 0,
+                                 "inline_comments": 0, "changes_requested": 0, "empty_approvals": 0,
+                                 "review_quality": "na"})
                 continue
             i = idx[login]
             cm, pm, rg = commits_act[i], prm_act[i], rev_act[i]
@@ -630,6 +710,7 @@ def synthetiser_reference(specs, teams_reels, now):
             contribs.append({"login": login, "commits": cm, "prs_open": _h(login + "po") % 2,
                              "prs_merged": pm, "reviews_given": rg, "reviews_received": rev_received[i],
                              "issues_assigned": pm + _h(login + "ia") % 2, "issues_closed": pm,
+                             "tests_validated": tests_act[i],
                              "reviews_total": rg, "inline_comments": inl, "changes_requested": chg,
                              "empty_approvals": 0, "review_quality": qual})
 
@@ -716,7 +797,7 @@ def main():
         repo, slug = e["repo"], e["slug"]
         print(f"  - {slug} ...", file=sys.stderr)
         issues_data = collecter_issues(repo)
-        contributeurs, bus, review = collecter_contributeurs(repo, slug, issues_data)
+        contributeurs, bus, review, merged_info = collecter_contributeurs(repo, slug, issues_data)
         if args.no_tests:
             tests = {"passed": None, "total": None, "pct": None}
             quality = {"coverage_pct": None, "pmd_violations": None,
@@ -741,6 +822,8 @@ def main():
             "review": review,
             "bus_factor": bus,
             "trend": None,
+            "_repo": repo,
+            "_merged_prs": merged_info,
             "contributors": sorted(contributeurs,
                                    key=lambda c: (-c["commits"], c["login"])),
         })
@@ -755,6 +838,19 @@ def main():
     for t in teams:
         t["trend"] = tendance(hist, t["slug"], t["tests"]["passed"],
                               t["issues"]["done"], now, baseline)
+
+    # Tests valides par contributeur : delta de tests verts par PR mergee (cache).
+    if not args.no_tests:
+        cache = charger_cache_pr()
+        for t in teams:
+            ct = cache.setdefault(t["slug"], {})
+            tv = attribuer_tests_pr(t["_repo"], t["_merged_prs"], baseline, ct)
+            for c in t["contributors"]:
+                c["tests_validated"] = tv.get(c["login"], 0)
+        sauver_cache_pr(cache)
+    for t in teams:                       # nettoie les champs temporaires
+        t.pop("_repo", None)
+        t.pop("_merged_prs", None)
 
     # Equipes de reference optionnelles (secret REFERENCE_TEAMS) ; absentes si non defini.
     ref_raw = os.environ.get("REFERENCE_TEAMS")
@@ -782,7 +878,8 @@ def main():
     for t in teams:
         for c in t["contributors"]:
             students.append({**c, "team": t["slug"]})
-    students.sort(key=lambda c: (-c["prs_merged"], -c["issues_closed"], -c["commits"], c["login"]))
+    students.sort(key=lambda c: (-c["tests_validated"], -c["prs_merged"],
+                                 -c["issues_closed"], -c["commits"], c["login"]))
 
     data = {
         "generated_at": now.isoformat(),

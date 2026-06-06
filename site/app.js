@@ -203,8 +203,8 @@ function detailPanneau(t) {
 // Tri par defaut : PR mergees (travail livre/relu) > issues fermees > commits.
 // Le nombre de commits seul n'est pas fiable si les PR ne sont pas squashees.
 const ESTRING = new Set(["login", "team"]);
-const ETIEBREAK = ["prs_merged", "issues_closed", "commits"];
-let currentESort = "prs_merged";
+const ETIEBREAK = ["tests_validated", "prs_merged", "issues_closed", "commits"];
+let currentESort = "tests_validated";
 
 function compareStudents(a, b) {
   if (ESTRING.has(currentESort)) {
@@ -265,6 +265,7 @@ function renderStudents(data) {
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
       <td class="login">${esc(s.login)}</td>
       <td>${esc(s.team)}</td>
+      <td class="num"><strong>${s.tests_validated}</strong></td>
       <td class="num">${s.commits}</td>
       <td class="num">${s.prs_open}</td>
       <td class="num">${s.prs_merged}</td>
@@ -273,7 +274,7 @@ function renderStudents(data) {
       <td class="num"><span class="pastille ${s.review_quality}" title="${esc(voyantTip(s))}"></span></td>
       <td class="badges">${bs || "—"}</td>
     </tr>`;
-  }).join("") || '<tr><td colspan="10">Aucun étudiant détecté.</td></tr>';
+  }).join("") || '<tr><td colspan="11">Aucun étudiant détecté.</td></tr>';
 }
 
 function bindTri() {
