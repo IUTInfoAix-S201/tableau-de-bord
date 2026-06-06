@@ -607,6 +607,9 @@ def synthetiser_reference(specs, teams_reels, now):
         commits_act = _repartir(max(len(actifs), round(passed / 4)), poids)
         prm_act = _repartir(issues_done, poids)
         rev_act = _repartir(issues_done, list(reversed(poids)))   # revues != auteurs
+        # Les revues RECUES sont ces memes revues, reparties sur les auteurs (par PR
+        # mergees) -> total recu == total donne (economie de revue equilibree).
+        rev_received = _repartir(sum(rev_act), prm_act) if sum(prm_act) > 0 else [0] * len(actifs)
         idx = {m["login"]: i for i, m in enumerate(actifs)}
 
         contribs = []
@@ -625,7 +628,7 @@ def synthetiser_reference(specs, teams_reels, now):
             else:
                 inl, chg, qual = 0, 0, ("yellow" if cm > 0 else "na")
             contribs.append({"login": login, "commits": cm, "prs_open": _h(login + "po") % 2,
-                             "prs_merged": pm, "reviews_given": rg, "reviews_received": _h(login + "rr") % (pm + 1),
+                             "prs_merged": pm, "reviews_given": rg, "reviews_received": rev_received[i],
                              "issues_assigned": pm + _h(login + "ia") % 2, "issues_closed": pm,
                              "reviews_total": rg, "inline_comments": inl, "changes_requested": chg,
                              "empty_approvals": 0, "review_quality": qual})

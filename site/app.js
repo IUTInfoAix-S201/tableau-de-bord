@@ -191,7 +191,7 @@ function detailPanneau(t) {
     <table class="contribs">
       <thead><tr>
         <th>Contributeur (login GitHub)</th><th class="num">Commits</th>
-        <th class="num">PR ouv./merg.</th><th class="num">Revues don./rec.</th>
+        <th class="num" title="PR actuellement ouvertes (en cours) / PR mergées">PR en cours/merg.</th><th class="num">Revues don./rec.</th>
         <th class="num">Issues fer./assig.</th><th class="num">Revue</th>
       </tr></thead>
       <tbody>${contribs || '<tr><td colspan="6">Aucun contributeur détecté.</td></tr>'}</tbody>
