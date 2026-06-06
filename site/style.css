@@ -125,3 +125,4 @@ footer { text-align: center; color: var(--gris); font-size: .8rem; padding: 1.5r
 /* ---- badges (achievements) ---- */
 td.badges { white-space: nowrap; }
 .badge-emoji { font-size: 1.05rem; cursor: help; margin-right: 1px; }
+.medaille { font-size: 1.05rem; margin-right: 2px; }

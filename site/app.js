@@ -115,6 +115,16 @@ function renderTable(data) {
     return vb - va;
   });
 
+  // Podium (sur le classement canonique = tests verts), independant du tri courant.
+  const podium = {};
+  [...data.teams].filter(t => t.tests.pct != null)
+    .sort((a, b) => b.tests.pct - a.tests.pct || b.issues.done - a.issues.done
+      || a.slug.localeCompare(b.slug))
+    .slice(0, 3)
+    .forEach((t, i) => {
+      podium[t.slug] = [["👑", "Équipe en tête"], ["🥈", "2e équipe"], ["🥉", "3e équipe"]][i];
+    });
+
   const corps = document.getElementById("classement-corps");
   corps.innerHTML = "";
   teams.forEach((t, i) => {
@@ -124,7 +134,7 @@ function renderTable(data) {
     const deltaHtml = delta ? `<span class="delta pos">+${delta} / 7j</span>` : "";
     tr.innerHTML = `
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
-      <td class="nom-equipe"><span class="chevron">▶</span>${esc(t.name)}${sparkline(t.trend && t.trend.tests_series)}</td>
+      <td class="nom-equipe"><span class="chevron">▶</span>${podium[t.slug] ? `<span class="medaille" title="${esc(podium[t.slug][1])}">${podium[t.slug][0]}</span> ` : ""}${esc(t.name)}${sparkline(t.trend && t.trend.tests_series)}</td>
       <td class="num">
         ${bar(t.tests.passed || 0, t.tests.total || data.totals.tests_total, "tests", med.median_tests_pct)}
         <span class="barre-label">${t.tests.passed == null ? "n/d" : t.tests.passed + "/" + t.tests.total} (${pct(t.tests.pct)})${deltaHtml}</span>
