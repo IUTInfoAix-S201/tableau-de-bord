@@ -72,7 +72,8 @@ SEUIL_VERT = 0.50           # part de revues substantielles pour le vert
 SEUIL_ROUGE_TAMPON = 0.70   # part d'approbations vides pour le rouge
 
 # Comptes a ignorer (bots)
-BOTS = {"github-actions[bot]", "github-classroom[bot]", "actions-user", "web-flow"}
+BOTS = {"github-actions[bot]", "github-actions", "github-classroom[bot]", "github-classroom",
+        "actions-user", "web-flow", "dependabot[bot]", "dependabot"}
 
 
 # ------------------------------------------------------------------------------
@@ -144,11 +145,13 @@ def fold(s):
 def is_human(login):
     if not login:
         return False
-    if login in BOTS or login.endswith("[bot]"):
+    low = login.lower()
+    if low.endswith("[bot]") or low in {b.lower() for b in BOTS}:
         return False
-    # Le relecteur Copilot (active par le ruleset copilot_code_review) n'a pas de
-    # suffixe [bot] mais n'est pas un etudiant et ne compte pas comme revue par un pair.
-    if "copilot" in login.lower():
+    # Certains bots arrivent SANS le suffixe [bot] selon l'API (GraphQL renvoie p.ex.
+    # `github-actions` au lieu de `github-actions[bot]`) : on filtre par sous-chaine
+    # (github-actions, dependabot, relecteur Copilot active par le ruleset).
+    if any(k in low for k in ("github-actions", "dependabot", "copilot")):
         return False
     return True
 
