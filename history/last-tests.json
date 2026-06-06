@@ -1,0 +1,184 @@
+{
+  "gapple": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "giteam": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 27.0,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 106,
+      "pct": 17.1,
+      "total": 620
+    }
+  },
+  "ici_pour_faire_la_police": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "jpeuxpasjainedjar": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "la-team": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "le-corbeau-ewan": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "riplasemaine": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "td2-g5-awoooo": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "td2-g6": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "td2-vigiegroupe3": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "td4-g1_heja": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "team-rocket": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "thebatdevs": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  }
+}
