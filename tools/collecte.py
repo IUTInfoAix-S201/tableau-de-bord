@@ -348,14 +348,16 @@ def collecter_contributeurs(repo, slug, issues_data):
         if pr["state"] == "OPEN":
             if is_human(auteur):
                 prs_open[auteur] += 1
-        if pr.get("merged"):
+        # PR mergees : on EXCLUT celles authored par un bot (ex. captures auto-mergees par
+        # github-actions[bot]). Le bot self-merge sans revue par un pair : sans ce filtre, ces
+        # PR gonfleraient merged_total / self_merges et plomberaient le voyant qualite de revue.
+        if pr.get("merged") and is_human(auteur):
             merged_total += 1
-            if is_human(auteur):
-                prs_merged[auteur] += 1
-                sha = (pr.get("mergeCommit") or {}).get("oid")
-                if sha:
-                    merged_info.append({"number": pr["number"], "sha": sha,
-                                        "author": auteur, "mergedAt": pr.get("mergedAt")})
+            prs_merged[auteur] += 1
+            sha = (pr.get("mergeCommit") or {}).get("oid")
+            if sha:
+                merged_info.append({"number": pr["number"], "sha": sha,
+                                    "author": auteur, "mergedAt": pr.get("mergedAt")})
             revs = [r for r in pr["reviews"]["nodes"]]
             par_pair = [r for r in revs
                         if is_human((r.get("author") or {}).get("login"))
