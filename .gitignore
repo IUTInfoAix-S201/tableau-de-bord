@@ -1,0 +1,7 @@
+# data.json est genere a chaque run (deploye comme artefact Pages, pas versionne)
+site/data.json
+
+# artefacts de travail
+__pycache__/
+*.pyc
+.DS_Store

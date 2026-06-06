@@ -1,0 +1,64 @@
+# Construit le tableau de bord SAE 2.01 et le publie sur GitHub Pages.
+# Collecte les metriques des depots d'equipe (org IUTInfoAix-S201-2026) via gh,
+# ecrit site/data.json, historise les instantanes, puis deploie site/ sur Pages.
+name: Build dashboard
+
+on:
+  schedule:
+    - cron: "0 5 * * *"   # tous les jours ~07h (Paris) ; ajustez si besoin
+  workflow_dispatch: {}    # bouton « Run workflow » pour rafraichir a la demande
+
+# Un seul deploiement Pages a la fois.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # commit de history/history.jsonl
+  pages: write      # deploiement Pages
+  id-token: write   # OIDC pour deploy-pages
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Collecte des metriques
+        env:
+          # PAT fine-grained avec lecture sur l'org IUTInfoAix-S201-2026
+          # (Contents, Issues, Pull requests, Actions, Metadata, Members).
+          GH_TOKEN: ${{ secrets.DASHBOARD_TOKEN }}
+        run: python3 tools/collecte.py
+
+      - name: Historiser (commit si modifie)
+        run: |
+          git config user.name "dashboard-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add history/history.jsonl
+          if git diff --staged --quiet; then
+            echo "Pas de nouvel instantane a committer."
+          else
+            git commit -m "chore: instantane tableau de bord"
+            git push
+          fi
+
+      - name: Prepare l'artefact Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploie sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
