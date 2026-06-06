@@ -5,7 +5,7 @@ name: Build dashboard
 
 on:
   schedule:
-    - cron: "0 5 * * *"   # tous les jours ~07h (Paris) ; ajustez si besoin
+    - cron: "0 * * * *"   # toutes les heures (l'historique reste deduplique a 1 instantane/jour)
   workflow_dispatch: {}    # bouton « Run workflow » pour rafraichir a la demande
 
 # Un seul deploiement Pages a la fois.

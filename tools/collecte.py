@@ -509,9 +509,14 @@ def ajouter_historique(records):
 
 
 def tendance(hist, slug, tests_passed, issues_done, now):
-    """Serie + delta sur 7 jours pour une equipe."""
+    """Serie (10 jours, duree du projet) + delta sur 7 jours pour une equipe."""
     pts = [h for h in hist if h["slug"] == slug]
-    serie = [{"date": h["date"], "tests_passed": h["tests_passed"]} for h in pts][-30:]
+    serie = [{"date": h["date"], "tests_passed": h["tests_passed"]} for h in pts]
+    # inclut le point du jour courant (s'il n'y est pas deja) puis fenetre 10 jours
+    jour = now.date().isoformat()
+    if tests_passed is not None and (not serie or serie[-1]["date"][:10] != jour):
+        serie.append({"date": now.isoformat(), "tests_passed": tests_passed})
+    serie = serie[-10:]
     seuil = (now - timedelta(days=7)).isoformat()
     avant = [h for h in pts if h["date"] <= seuil]
     base = avant[-1]["tests_passed"] if avant else (pts[0]["tests_passed"] if pts else None)
@@ -616,11 +621,12 @@ def synthetiser_reference(specs, teams_reels, now):
                   "pct_reviewed": round(min(1.0, (merged - _h(slug) % 2) / merged), 2) if merged else None,
                   "self_merges": _h(slug) % 2 if merged > 2 else 0}
 
-        n = 7
+        n = 10   # fenetre du projet (10 jours)
         debut = max(base, passed - (18 + _h(slug) % 10))
         serie = [{"date": (now - timedelta(days=n - 1 - i)).isoformat(),
                   "tests_passed": round(debut + (passed - debut) * i / (n - 1))} for i in range(n)]
-        trend = {"tests_series": serie, "delta_7d": passed - serie[0]["tests_passed"]}
+        i7 = max(0, n - 1 - 7)   # point ~7 jours avant aujourd'hui
+        trend = {"tests_series": serie, "delta_7d": passed - serie[i7]["tests_passed"]}
 
         out.append({
             "slug": slug, "name": spec.get("name", slug),
@@ -743,8 +749,17 @@ def main():
     print(f"Ecrit {DATA_PATH}", file=sys.stderr)
 
     if not args.no_history and not args.no_tests:
-        ajouter_historique(snapshots)
-        print(f"Historique : +{len(snapshots)} enregistrement(s)", file=sys.stderr)
+        # Un seul instantane par equipe et par jour, meme si le build tourne
+        # toutes les heures : evite de spammer l'historique (et de reduire la
+        # sparkline a quelques heures). data.json, lui, est rafraichi a chaque run.
+        jour = now.date().isoformat()
+        deja = {(h["slug"], h["date"][:10]) for h in hist}
+        nouveaux = [s for s in snapshots if (s["slug"], jour) not in deja]
+        if nouveaux:
+            ajouter_historique(nouveaux)
+            print(f"Historique : +{len(nouveaux)} enregistrement(s)", file=sys.stderr)
+        else:
+            print("Historique : deja a jour pour aujourd'hui", file=sys.stderr)
 
 
 if __name__ == "__main__":
