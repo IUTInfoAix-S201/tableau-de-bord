@@ -214,10 +214,14 @@ let currentESort = "commits";
 function contexteBadges(students) {
   const max = k => Math.max(0, ...students.map(s => s[k] || 0));
   const actif = s => (s.commits + s.prs_merged + s.reviews_given) > 0;
+  const actifsParEquipe = {};
+  students.filter(actif).forEach(s => {
+    actifsParEquipe[s.team] = (actifsParEquipe[s.team] || 0) + 1;
+  });
   return {
     commits: max("commits"), reviews_given: max("reviews_given"),
     prs_merged: max("prs_merged"), inline_comments: max("inline_comments"),
-    equipesActives: new Set(students.filter(actif).map(s => s.team)),
+    actifsParEquipe,
   };
 }
 
@@ -235,8 +239,8 @@ function badgesEtudiant(s, c) {
     b.push(["🤝", "Fair-play : relit autant qu'il est relu"]);
   if (s.review_quality === "green" && s.changes_requested >= 1) b.push(["🧐", "Œil de lynx : vraies revues, demande des changements"]);
   if (s.review_quality === "red") b.push(["🦆", "Tampon : approbations à vide"]);
-  if ((s.commits + s.prs_merged + s.reviews_given) === 0 && c.equipesActives.has(s.team))
-    b.push(["🏄", "Passager clandestin : aucune contribution alors que des coéquipiers sont actifs"]);
+  if ((s.commits + s.prs_merged + s.reviews_given) === 0 && (c.actifsParEquipe[s.team] || 0) >= 2)
+    b.push(["👻", "Passager clandestin : aucune contribution alors qu'au moins deux coéquipiers travaillent"]);
   return b;
 }
 
