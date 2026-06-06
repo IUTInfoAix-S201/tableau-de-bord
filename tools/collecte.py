@@ -674,31 +674,31 @@ def synthetiser_reference(specs, teams_reels, now, plafond_tv=None):
     out = []
     for spec in specs:
         slug = spec["slug"]
-        factor = 1 + float(spec.get("above", 0.25))          # 20-30 % au-dessus
-        pct = min(99.0, round(best * factor, 1))
-        passed = max(round(pct / 100 * tot), base + 5)
-        gated = max(1, tot - base)
-        issues_done = min(54, max(0, round((passed - base) / gated * 54)))
-
         members = spec["members"]
         actifs = [m for m in members if not m.get("freerider")]
+        # Tests valides : chaque membre actif est cale JUSTE sous le meilleur etudiant
+        # reel (plafond_tv). gigamic (balanced) : tous au plafond ; sinon leger spread.
+        plaf = max(0, (plafond_tv or 0) - 1)
         if spec.get("balanced"):
-            poids = [3] * len(actifs)            # poids egaux -> equipe tres equilibree
+            tv_act = [plaf for _ in actifs]
+        else:
+            tv_act = [max(0, plaf - _h(slug + m["login"]) % 2) for m in actifs]
+        # COHERENCE : un membre qui valide des tests a merge >= 1 PR (qui les a livres) ;
+        # et le total de tests de l'equipe = somme des tests de ses membres.
+        prm_act = [1 if tv > 0 else 0 for tv in tv_act]
+        issues_done = sum(prm_act)
+        gain = sum(tv_act)
+        passed = min(tot, base + gain)
+        pct = round(100 * passed / tot, 1) if tot else None
+
+        if spec.get("balanced"):
+            poids = [3] * len(actifs)
         else:
             poids = [_h(slug + m["login"]) % 5 + 2 for m in actifs]
-        commits_act = _repartir(max(len(actifs), round(passed / 4)), poids)
-        prm_act = _repartir(issues_done, poids)
+        commits_act = _repartir(max(len(actifs), gain * 2), poids)
         rev_act = _repartir(issues_done, list(reversed(poids)))   # revues != auteurs
-        # Les revues RECUES sont ces memes revues, reparties sur les auteurs (par PR
-        # mergees) -> total recu == total donne (economie de revue equilibree).
+        # Revues RECUES = ces memes revues, reparties sur les auteurs -> recu == donne.
         rev_received = _repartir(sum(rev_act), prm_act) if sum(prm_act) > 0 else [0] * len(actifs)
-        # Tests valides : par defaut repartis par PR mergee ; si `plafond_tv` fourni,
-        # cales juste sous le meilleur etudiant reel (les lievres restent derriere lui).
-        if plafond_tv is not None:
-            plaf = max(0, plafond_tv - 1)
-            tv_act = [max(0, plaf - _h(slug + m["login"]) % 3) for m in actifs]
-        else:
-            tv_act = _repartir(max(0, passed - base), prm_act) if sum(prm_act) > 0 else [0] * len(actifs)
         idx = {m["login"]: i for i, m in enumerate(actifs)}
 
         contribs = []
@@ -769,7 +769,7 @@ def synthetiser_reference(specs, teams_reels, now, plafond_tv=None):
             "issues": {"done": issues_done, "total": 54},
             "priorities": {**bandes, "mvp_complete": mvp},
             "tests": {"passed": passed, "total": tot, "pct": pct},
-            "quality": {"coverage_pct": round(min(95.0, best_cov * factor + _h(slug) % 3), 1),
+            "quality": {"coverage_pct": round(min(95.0, best_cov + gain + _h(slug) % 3), 1),
                         "pmd_violations": _h(slug + "pmd") % 4, "spotless_ok": True, "archunit_ok": True},
             "review": review, "bus_factor": bus, "trend": trend,
             "contributors": sorted(contribs, key=lambda c: (-c["commits"], c["login"])),
