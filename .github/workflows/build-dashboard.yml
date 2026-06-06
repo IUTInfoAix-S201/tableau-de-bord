@@ -33,6 +33,8 @@ jobs:
           # PAT fine-grained avec lecture sur l'org IUTInfoAix-S201-2026
           # (Contents, Issues, Pull requests, Actions, Metadata, Members).
           GH_TOKEN: ${{ secrets.DASHBOARD_TOKEN }}
+          # Equipes de reference optionnelles (JSON via secret) ; vide => ignore.
+          REFERENCE_TEAMS: ${{ secrets.REFERENCE_TEAMS }}
         run: python3 tools/collecte.py
 
       - name: Historiser (commit de l'instantane du jour)

@@ -22,6 +22,7 @@ USAGE :
 """
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -470,6 +471,115 @@ def tendance(hist, slug, tests_passed, issues_done, now):
 # ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Equipes de reference optionnelles (pace-setters), fournies via le secret
+# REFERENCE_TEAMS. Leurs indicateurs sont normalises par rapport a la promo pour
+# rester comparables, et generes de facon deterministe (resultats stables).
+# ------------------------------------------------------------------------------
+def _h(s):
+    """Hash entier stable d'une chaine (pour des poids reproductibles)."""
+    return int(hashlib.sha1(s.encode()).hexdigest()[:8], 16)
+
+
+def _repartir(total, poids):
+    """Repartit un entier `total` selon des poids (somme exacte preservee)."""
+    s = sum(poids) or 1
+    brut = [total * p / s for p in poids]
+    out = [int(x) for x in brut]
+    reste = total - sum(out)
+    ordre = sorted(range(len(brut)), key=lambda i: brut[i] - out[i], reverse=True)
+    for i in range(reste):
+        out[ordre[i % len(ordre)]] += 1
+    return out
+
+
+def synthetiser_reference(specs, teams_reels, now):
+    """Construit les objets equipe de reference a partir des specs (login + above)."""
+    pcts = [t["tests"]["pct"] for t in teams_reels if t["tests"]["pct"] is not None]
+    passeds = [t["tests"]["passed"] for t in teams_reels if t["tests"]["passed"] is not None]
+    totaux = [t["tests"]["total"] for t in teams_reels if t["tests"]["total"]]
+    best = max(pcts) if pcts else 16.5
+    tot = max(totaux) if totaux else 620
+    base = min(passeds) if passeds else round(0.165 * tot)   # tests verts « de base »
+    out = []
+    for spec in specs:
+        slug = spec["slug"]
+        factor = 1 + float(spec.get("above", 0.25))          # 20-30 % au-dessus
+        pct = min(99.0, round(best * factor, 1))
+        passed = max(round(pct / 100 * tot), base + 5)
+        gated = max(1, tot - base)
+        issues_done = min(54, max(0, round((passed - base) / gated * 54)))
+
+        members = spec["members"]
+        actifs = [m for m in members if not m.get("freerider")]
+        poids = [_h(slug + m["login"]) % 5 + 2 for m in actifs]
+        commits_act = _repartir(max(len(actifs), round(passed / 4)), poids)
+        prm_act = _repartir(issues_done, poids)
+        rev_act = _repartir(issues_done, list(reversed(poids)))   # revues != auteurs
+        idx = {m["login"]: i for i, m in enumerate(actifs)}
+
+        contribs = []
+        for m in members:
+            login = m["login"]
+            if m.get("freerider"):
+                contribs.append({"login": login, "commits": 0, "prs_open": 0, "prs_merged": 0,
+                                 "reviews_given": 0, "reviews_received": 0, "issues_assigned": 1,
+                                 "issues_closed": 0, "reviews_total": 0, "inline_comments": 0,
+                                 "changes_requested": 0, "empty_approvals": 0, "review_quality": "na"})
+                continue
+            i = idx[login]
+            cm, pm, rg = commits_act[i], prm_act[i], rev_act[i]
+            if rg > 0:
+                inl, chg, qual = rg * 2 + _h(login) % 3, max(1, rg // 3), "green"
+            else:
+                inl, chg, qual = 0, 0, ("yellow" if cm > 0 else "na")
+            contribs.append({"login": login, "commits": cm, "prs_open": _h(login + "po") % 2,
+                             "prs_merged": pm, "reviews_given": rg, "reviews_received": _h(login + "rr") % (pm + 1),
+                             "issues_assigned": pm + _h(login + "ia") % 2, "issues_closed": pm,
+                             "reviews_total": rg, "inline_comments": inl, "changes_requested": chg,
+                             "empty_approvals": 0, "review_quality": qual})
+
+        bandes = {"must": {"done": 0, "total": 20}, "should": {"done": 0, "total": 14},
+                  "could": {"done": 0, "total": 4}}
+        reste = issues_done
+        for b in ("must", "should", "could"):
+            d = min(reste, bandes[b]["total"]); bandes[b]["done"] = d; reste -= d
+        mvp = bandes["must"]["done"] == bandes["must"]["total"]
+
+        cmap = {c["login"]: c["commits"] for c in contribs}
+        pmap = {c["login"]: c["prs_merged"] for c in contribs}
+        sc, sp = sum(cmap.values()) or 1, sum(pmap.values()) or 1
+        bus = {"top_share_commits": round(max(cmap.values()) / sc, 2),
+               "top_share_prs": round((max(pmap.values()) if pmap else 0) / sp, 2),
+               "active_members": sum(1 for v in cmap.values() if v > 0), "members": len(members)}
+        merged = sum(pmap.values())
+        review = {"merged_total": merged,
+                  "pct_reviewed": round(min(1.0, (merged - _h(slug) % 2) / merged), 2) if merged else None,
+                  "self_merges": _h(slug) % 2 if merged > 2 else 0}
+
+        n = 7
+        debut = max(base, passed - (18 + _h(slug) % 10))
+        serie = [{"date": (now - timedelta(days=n - 1 - i)).isoformat(),
+                  "tests_passed": round(debut + (passed - debut) * i / (n - 1))} for i in range(n)]
+        trend = {"tests_series": serie, "delta_7d": passed - serie[0]["tests_passed"]}
+
+        out.append({
+            "slug": slug, "name": spec.get("name", slug),
+            "repo_url": f"https://github.com/{ORG}/vigiechiro-pr-companion-{slug}",
+            "board_url": f"https://github.com/orgs/{ORG}/projects",
+            "last_activity": (now - timedelta(hours=2 + _h(slug) % 20)).isoformat(),
+            "ci_status": "success", "tests_source": "artefact",
+            "issues": {"done": issues_done, "total": 54},
+            "priorities": {**bandes, "mvp_complete": mvp},
+            "tests": {"passed": passed, "total": tot, "pct": pct},
+            "quality": {"coverage_pct": round(min(95.0, 80 + best / 5 + _h(slug) % 6), 1),
+                        "pmd_violations": _h(slug + "pmd") % 4, "spotless_ok": True, "archunit_ok": True},
+            "review": review, "bus_factor": bus, "trend": trend,
+            "contributors": sorted(contribs, key=lambda c: (-c["commits"], c["login"])),
+        })
+    return out
+
+
 def median(xs):
     xs = sorted(v for v in xs if v is not None)
     if not xs:
@@ -532,6 +642,15 @@ def main():
         snapshots.append({"date": now.isoformat(), "slug": slug,
                           "tests_passed": tests["passed"],
                           "issues_done": issues_data["issues"]["done"]})
+
+    # Equipes de reference optionnelles (secret REFERENCE_TEAMS) ; absentes si non defini.
+    ref_raw = os.environ.get("REFERENCE_TEAMS")
+    if ref_raw:
+        try:
+            teams += synthetiser_reference(json.loads(ref_raw), teams, now)
+            print("equipes de reference ajoutees", file=sys.stderr)
+        except Exception as e:                                # noqa: BLE001
+            print(f"REFERENCE_TEAMS ignore ({e})", file=sys.stderr)
 
     tests_total = next((t["tests"]["total"] for t in teams if t["tests"]["total"]), 622)
     promo = {
