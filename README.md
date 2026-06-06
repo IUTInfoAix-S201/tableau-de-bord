@@ -26,7 +26,7 @@ Par equipe :
 ```
 tools/collecte.py   -> interroge GitHub (gh) et ecrit site/data.json + history/history.jsonl
 site/               -> page statique (index.html + style.css + app.js + data.json genere)
-history/            -> instantanes journaliers (persistes via le cache Actions) pour les tendances
+history/            -> instantanes journaliers (commit automatique du bot) pour les tendances
 .github/workflows/build-dashboard.yml -> cron quotidien + manuel : collecte -> Pages
 ```
 
