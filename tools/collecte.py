@@ -49,6 +49,9 @@ HISTORY_PATH = os.path.join(ROOT, "history", "history.jsonl")
 # Cache des comptes de tests par PR mergee (delta de tests par contributeur).
 # Immuable une fois une PR mergee -> on ne recalcule que les nouvelles.
 CACHE_PR_PATH = os.path.join(ROOT, "history", "pr-tests.json")
+# Derniere valeur connue des tests/qualite par equipe : reutilisee si un fetch
+# echoue (hoquet API), pour ne pas afficher « n/d » de facon transitoire.
+CACHE_TESTS_PATH = os.path.join(ROOT, "history", "last-tests.json")
 
 # --- Mapping feature -> priorite (table du brief « Travail a faire ») ----------
 PRIORITE = {
@@ -547,6 +550,22 @@ def sauver_cache_pr(cache):
         json.dump(cache, f, ensure_ascii=False, indent=2, sort_keys=True)
 
 
+def charger_last_tests():
+    if not os.path.exists(CACHE_TESTS_PATH):
+        return {}
+    try:
+        with open(CACHE_TESTS_PATH) as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def sauver_last_tests(d):
+    os.makedirs(os.path.dirname(CACHE_TESTS_PATH), exist_ok=True)
+    with open(CACHE_TESTS_PATH, "w") as f:
+        json.dump(d, f, ensure_ascii=False, indent=2, sort_keys=True)
+
+
 def attribuer_tests_pr(repo, merged_info, baseline, cache_team):
     """Delta de tests verts par PR mergee, attribue a l'auteur de la PR.
 
@@ -800,6 +819,7 @@ def main():
 
     now = datetime.now(timezone.utc)
     hist = charger_historique()
+    last_tests = charger_last_tests()   # filet : derniere valeur connue par equipe
     equipes = lister_equipes(filtre)
     if not equipes:
         raise SystemExit("Aucune equipe trouvee (verifier l'acces a l'org).")
@@ -821,6 +841,14 @@ def main():
         else:
             run = dernier_run(repo)
             tests, quality, ci_status, source = collecter_tests(repo, run)
+            # Filet anti-hoquet : si le fetch echoue, reutiliser la derniere valeur
+            # connue (evite un « n/d » transitoire qui casserait tout le tableau).
+            if tests["passed"] is None and slug in last_tests:
+                lt = last_tests[slug]
+                tests, quality = lt["tests"], lt["quality"]
+                ci_status, source = lt.get("ci_status"), "cache"
+            elif tests["passed"] is not None:
+                last_tests[slug] = {"tests": tests, "quality": quality, "ci_status": ci_status}
 
         teams.append({
             "slug": slug,
@@ -863,6 +891,7 @@ def main():
             for c in t["contributors"]:
                 c["tests_validated"] = tv.get(c["login"], 0)
         sauver_cache_pr(cache)
+        sauver_last_tests(last_tests)
     for t in teams:                       # nettoie les champs temporaires
         t.pop("_repo", None)
         t.pop("_merged_prs", None)
