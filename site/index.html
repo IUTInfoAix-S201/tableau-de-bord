@@ -3,15 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tableau de bord SAE 2.01 VigieChiro</title>
+  <title>Tableau de bord SAÉ 2.01 VigieChiro</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>🦇 Tableau de bord SAE 2.01 VigieChiro</h1>
-    <p class="sous-titre">Avancement des equipes : un projet d'IHM JavaFX par la methode TDD.
-      Le classement suit la <strong>Definition of Done</strong> du sujet : une tache est faite
-      quand son <strong>test d'acceptation est vert</strong>.</p>
+    <h1>🦇 Tableau de bord SAÉ 2.01 VigieChiro</h1>
+    <p class="sous-titre">Avancement des équipes du projet VigieChiro PR Companion. Le classement suit la <strong>Definition of Done</strong> du sujet : une tâche est faite quand son <strong>test d'acceptation est vert</strong>.</p>
     <p class="meta" id="meta">Chargement...</p>
   </header>
 
@@ -23,18 +21,17 @@
 
     <section>
       <h2>Classement</h2>
-      <p class="aide">Cliquez sur l'en-tete d'une colonne pour trier, ou sur une ligne pour
-        deplier le detail de l'equipe. La barre fine grise marque la <strong>mediane de la promo</strong>.</p>
+      <p class="aide">Cliquez sur l'en-tête d'une colonne pour trier, ou sur une ligne pour déplier le détail de l'équipe. La barre fine grise marque la <strong>médiane de la promo</strong>.</p>
       <table id="classement">
         <thead>
           <tr>
             <th class="rang">#</th>
-            <th data-sort="slug">Equipe</th>
+            <th data-sort="slug">Équipe</th>
             <th data-sort="tests" class="num">Tests verts</th>
             <th data-sort="issues" class="num">Issues faites</th>
             <th class="num">MUST / SHOULD / COULD</th>
             <th data-sort="reviewed" class="num">PR relues</th>
-            <th data-sort="activity" class="num">Activite</th>
+            <th data-sort="activity" class="num">Activité</th>
             <th class="num">CI</th>
           </tr>
         </thead>
@@ -45,23 +42,20 @@
     <section class="legende">
       <h2>Comment lire ce tableau</h2>
       <ul>
-        <li><span class="pastille green"></span> <strong>Voyant qualite de revue</strong> (par contributeur) :
-          <span class="pastille green"></span> vraies revues (commentaires, changements demandes),
-          <span class="pastille yellow"></span> engagement leger,
-          <span class="pastille red"></span> approbations a vide (tampon),
+        <li><span class="pastille green"></span> <strong>Voyant qualité de revue</strong> (par contributeur) :
+          <span class="pastille green"></span> vraies revues (commentaires, changements demandés),
+          <span class="pastille yellow"></span> engagement léger,
+          <span class="pastille red"></span> approbations à vide (tampon),
           <span class="pastille na"></span> pas encore de revue.</li>
-        <li><strong>MVP</strong> ✅ = toutes les fonctionnalites MUST (dont l'ecran pivot Passage) terminees.</li>
-        <li><strong>Bus factor</strong> : part des commits portee par une seule personne ; eleve = travail desequilibre.</li>
+        <li><strong>MVP</strong> ✅ = toutes les fonctionnalités MUST (dont l'écran pivot Passage) terminées.</li>
+        <li><strong>Bus factor</strong> : part des commits portée par une seule personne ; élevé = travail déséquilibré.</li>
       </ul>
-      <p class="avertissement">⚠️ Les voyants et indicateurs collaboratifs sont des <strong>reperes
-        heuristiques, indicatifs et non des notes</strong>. Les chiffres bruts sont toujours affiches
-        pour que chacun puisse les interpreter.</p>
+      <p class="avertissement">⚠️ Les voyants et indicateurs collaboratifs sont des <strong>repères heuristiques, indicatifs et non des notes</strong>. Les chiffres bruts sont toujours affichés pour que chacun puisse les interpréter.</p>
     </section>
   </main>
 
   <footer>
-    <p>Genere automatiquement depuis les depots d'equipe (org IUTInfoAix-S201-2026).
-      Donnees agregees ; seuls les logins GitHub (publics) sont affiches.</p>
+    <p>Généré automatiquement depuis les dépôts d'équipe (org IUTInfoAix-S201-2026). Données agrégées ; seuls les logins GitHub (publics) sont affichés.</p>
   </footer>
 
   <script src="app.js"></script>

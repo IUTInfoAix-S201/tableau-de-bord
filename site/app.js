@@ -64,7 +64,7 @@ function okBadge(v, labelOk = "OK", labelKo = "KO") {
 
 function voyantTip(c) {
   return `revues=${c.reviews_given} | commentaires en ligne=${c.inline_comments} | `
-    + `changements demandes=${c.changes_requested} | approbations a vide=${c.empty_approvals}`;
+    + `changements demandés=${c.changes_requested} | approbations à vide=${c.empty_approvals}`;
 }
 
 // --- tri -------------------------------------------------------------------
@@ -79,9 +79,9 @@ let currentSort = "tests";
 
 function render(data) {
   document.getElementById("meta").textContent =
-    `Genere le ${new Date(data.generated_at).toLocaleString("fr-FR")} `
-    + `- ${data.teams.length} equipes - total ${data.totals.tests_total} tests, `
-    + `${data.totals.issues_total} taches.`;
+    `Généré le ${new Date(data.generated_at).toLocaleString("fr-FR")} `
+    + `- ${data.teams.length} équipes - total ${data.totals.tests_total} tests, `
+    + `${data.totals.issues_total} tâches.`;
 
   renderAlertes(data);
   renderTable(data);
@@ -173,7 +173,7 @@ function detailPanneau(t) {
       <div class="kpi"><b>${q.pmd_violations == null ? "n/d" : q.pmd_violations}</b><small>violations PMD</small></div>
       <div class="kpi"><b>${okBadge(q.spotless_ok)}</b><small>Spotless</small></div>
       <div class="kpi"><b>${okBadge(q.archunit_ok)}</b><small>ArchUnit (MVVM)</small></div>
-      <div class="kpi"><b>${r.merged_total}</b><small>PR mergees (${r.self_merges} sans revue)</small></div>
+      <div class="kpi"><b>${r.merged_total}</b><small>PR mergées (${r.self_merges} sans revue)</small></div>
       <div class="kpi"><b><span class="busbar"><span style="width:${bus}%"></span></span> ${bus} %</b>
         <small>bus factor (${b.active_members}/${b.members} actifs)</small></div>
     </div>
@@ -183,7 +183,7 @@ function detailPanneau(t) {
         <th class="num">PR ouv./merg.</th><th class="num">Revues don./rec.</th>
         <th class="num">Issues fer./assig.</th><th class="num">Revue</th>
       </tr></thead>
-      <tbody>${contribs || '<tr><td colspan="6">Aucun contributeur detecte.</td></tr>'}</tbody>
+      <tbody>${contribs || '<tr><td colspan="6">Aucun contributeur détecté.</td></tr>'}</tbody>
     </table>
   </div>`;
 }
