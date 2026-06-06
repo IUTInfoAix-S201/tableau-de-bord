@@ -1,0 +1,120 @@
+:root {
+  --bleu: #1a5276;
+  --bleu-clair: #4a90d9;
+  --vert: #27ae60;
+  --jaune: #e8a838;
+  --rouge: #e74c3c;
+  --gris: #7f8c8d;
+  --ardoise: #2c3e50;
+  --fond: #f4f6f8;
+  --bord: #dde3e8;
+  --texte: #2c3e50;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--texte);
+  background: var(--fond);
+  line-height: 1.5;
+}
+
+header {
+  background: linear-gradient(135deg, var(--bleu), var(--ardoise));
+  color: #fff;
+  padding: 1.6rem 1.5rem 1.8rem;
+}
+header h1 { margin: 0 0 .4rem; font-size: 1.6rem; }
+.sous-titre { margin: .2rem 0; max-width: 70ch; opacity: .95; }
+.meta { margin: .6rem 0 0; font-size: .85rem; opacity: .8; }
+
+main { max-width: 1080px; margin: 0 auto; padding: 1.5rem; }
+section { margin-bottom: 2rem; }
+h2 { font-size: 1.15rem; color: var(--bleu); border-bottom: 2px solid var(--bord); padding-bottom: .3rem; }
+.aide, .avertissement { font-size: .85rem; color: var(--gris); }
+.avertissement { background: #fff8e6; border-left: 3px solid var(--jaune); padding: .6rem .8rem; color: #7a5b00; }
+
+/* ---- alertes ---- */
+.alertes { background: #fff; border: 1px solid var(--bord); border-radius: 8px; padding: 1rem 1.2rem; }
+.alerte { display: inline-block; margin: .2rem .4rem .2rem 0; padding: .25rem .6rem;
+  border-radius: 999px; font-size: .8rem; background: #fdeceb; color: #a33027; border: 1px solid #f5c6c2; }
+.alerte.warn { background: #fff8e6; color: #7a5b00; border-color: #f0dca0; }
+
+/* ---- tableau ---- */
+table { width: 100%; border-collapse: collapse; background: #fff;
+  border: 1px solid var(--bord); border-radius: 8px; overflow: hidden; }
+thead th { background: var(--ardoise); color: #fff; font-weight: 600; font-size: .82rem;
+  text-align: left; padding: .6rem .7rem; }
+thead th[data-sort] { cursor: pointer; user-select: none; white-space: nowrap; }
+thead th[data-sort]:hover { background: #3b5266; }
+thead th.num { text-align: center; }
+th.rang { width: 2.2rem; text-align: center; }
+
+tbody tr.equipe { border-top: 1px solid var(--bord); cursor: pointer; }
+tbody tr.equipe:hover { background: #eef4fb; }
+tbody td { padding: .55rem .7rem; font-size: .9rem; vertical-align: middle; }
+td.num { text-align: center; }
+.rang-badge { font-weight: 700; color: var(--bleu); }
+.nom-equipe { font-weight: 600; }
+.nom-equipe .chevron { color: var(--gris); font-size: .75rem; margin-right: .3rem; }
+.spark { display: block; margin-top: .2rem; }
+
+/* ---- barres de progression ---- */
+.barre { position: relative; height: 16px; background: #eceff1; border-radius: 4px; overflow: hidden; min-width: 90px; }
+.barre > span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--bleu-clair); }
+.barre.tests > span { background: var(--vert); }
+.barre.issues > span { background: var(--bleu-clair); }
+.barre .mediane { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--ardoise); opacity: .55; }
+.barre-label { font-size: .78rem; color: var(--gris); margin-top: .15rem; display: block; text-align: center; }
+
+.mini-bandes { display: flex; gap: 3px; justify-content: center; align-items: center; }
+.mini { width: 34px; }
+.mini .barre { height: 10px; min-width: 34px; }
+.mini.must .barre > span { background: var(--rouge); }
+.mini.should .barre > span { background: var(--jaune); }
+.mini.could .barre > span { background: var(--vert); }
+.mini small { font-size: .62rem; color: var(--gris); display: block; text-align: center; }
+.mvp { margin-left: .3rem; font-size: .9rem; }
+
+.delta { font-size: .72rem; padding: .05rem .35rem; border-radius: 999px; margin-left: .3rem; }
+.delta.pos { background: #e3f6ea; color: #1d7a44; }
+.delta.zero { background: #eee; color: var(--gris); }
+
+/* ---- badges ---- */
+.badge { font-size: .72rem; padding: .12rem .5rem; border-radius: 999px; font-weight: 600; }
+.badge.ok { background: #e3f6ea; color: #1d7a44; }
+.badge.ko { background: #fdeceb; color: #a33027; }
+.badge.nd { background: #eee; color: var(--gris); }
+
+/* ---- pastilles voyant revue ---- */
+.pastille { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: middle; }
+.pastille.green { background: var(--vert); }
+.pastille.yellow { background: var(--jaune); }
+.pastille.red { background: var(--rouge); }
+.pastille.na { background: var(--gris); opacity: .5; }
+
+/* ---- detail equipe ---- */
+tr.detail > td { background: #f8fafc; padding: 0; }
+tr.detail .panneau { padding: 1rem 1.2rem; }
+.qualite { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+.kpi { background: #fff; border: 1px solid var(--bord); border-radius: 6px; padding: .4rem .7rem; font-size: .82rem; min-width: 110px; }
+.kpi b { display: block; font-size: 1.05rem; color: var(--bleu); }
+.kpi small { color: var(--gris); }
+
+table.contribs { border: 1px solid var(--bord); }
+table.contribs th { background: #5a6b7b; font-size: .76rem; }
+table.contribs td { font-size: .82rem; padding: .4rem .6rem; }
+table.contribs td.login { font-family: ui-monospace, monospace; font-size: .78rem; }
+.tip { cursor: help; border-bottom: 1px dotted var(--gris); }
+
+.busbar { display: inline-block; width: 120px; height: 10px; background: #eceff1; border-radius: 4px; overflow: hidden; vertical-align: middle; }
+.busbar > span { display: block; height: 100%; background: var(--jaune); }
+
+footer { text-align: center; color: var(--gris); font-size: .8rem; padding: 1.5rem; }
+
+@media (max-width: 720px) {
+  thead th.num:nth-child(n+5), tbody td.num:nth-child(n+5) { display: none; }
+  .sous-titre { font-size: .9rem; }
+}
