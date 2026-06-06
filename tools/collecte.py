@@ -37,6 +37,11 @@ from datetime import datetime, timedelta, timezone
 ORG = "IUTInfoAix-S201-2026"
 REPO_PREFIX = "vigiechiro-pr-companion-"
 
+# Date de mise a disposition des depots (debut du projet, AAAA-MM-JJ). Borne la
+# longueur des courbes des equipes de reference (lievres) : elles ne doivent pas
+# afficher d'historique anterieur au projet.
+PROJET_DEBUT = "2026-06-04"
+
 # Repertoires (relatifs a la racine du repo tableau-de-bord)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(ROOT, "site", "data.json")
@@ -621,11 +626,20 @@ def synthetiser_reference(specs, teams_reels, now):
                   "pct_reviewed": round(min(1.0, (merged - _h(slug) % 2) / merged), 2) if merged else None,
                   "self_merges": _h(slug) % 2 if merged > 2 else 0}
 
-        n = 10   # fenetre du projet (10 jours)
+        # Courbe bornee a l'age reel du projet (1 point/jour depuis PROJET_DEBUT),
+        # plafonnee a 10 jours. Pas d'historique anterieur a la distribution des depots.
+        try:
+            age = (now.date() - datetime.fromisoformat(PROJET_DEBUT).date()).days
+        except ValueError:
+            age = 9
+        n = max(1, min(10, age + 1))
         debut = max(base, passed - (18 + _h(slug) % 10))
-        serie = [{"date": (now - timedelta(days=n - 1 - i)).isoformat(),
-                  "tests_passed": round(debut + (passed - debut) * i / (n - 1))} for i in range(n)]
-        i7 = max(0, n - 1 - 7)   # point ~7 jours avant aujourd'hui
+        if n == 1:
+            serie = [{"date": now.isoformat(), "tests_passed": passed}]
+        else:
+            serie = [{"date": (now - timedelta(days=n - 1 - i)).isoformat(),
+                      "tests_passed": round(debut + (passed - debut) * i / (n - 1))} for i in range(n)]
+        i7 = max(0, n - 1 - 7)   # point ~7 jours avant aujourd'hui (ou debut si projet plus jeune)
         trend = {"tests_series": serie, "delta_7d": passed - serie[i7]["tests_passed"]}
 
         out.append({

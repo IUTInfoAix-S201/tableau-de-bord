@@ -131,7 +131,7 @@ function renderTable(data) {
     const tr = document.createElement("tr");
     tr.className = "equipe";
     const delta = t.trend && t.trend.delta_7d;
-    const deltaHtml = delta ? `<span class="delta pos">+${delta} / 7j</span>` : "";
+    const deltaHtml = delta ? `<span class="delta pos" title="progression récente des tests verts">+${delta}</span>` : "";
     tr.innerHTML = `
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
       <td class="nom-equipe"><span class="chevron">▶</span>${podium[t.slug] ? `<span class="medaille" title="${esc(podium[t.slug][1])}">${podium[t.slug][0]}</span> ` : ""}${esc(t.name)}${sparkline(t.trend && t.trend.tests_series)}</td>
