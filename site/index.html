@@ -39,6 +39,26 @@
       </table>
     </section>
 
+    <section>
+      <h2>Classement par étudiant</h2>
+      <p class="aide">Tous les contributeurs, toutes équipes confondues. Cliquez sur une colonne pour trier.</p>
+      <table id="etudiants">
+        <thead>
+          <tr>
+            <th class="rang">#</th>
+            <th data-esort="login">Étudiant</th>
+            <th data-esort="team">Équipe</th>
+            <th data-esort="commits" class="num">Commits</th>
+            <th data-esort="prs_merged" class="num">PR mergées</th>
+            <th data-esort="reviews_given" class="num">Revues</th>
+            <th data-esort="issues_closed" class="num">Issues fermées</th>
+            <th class="num">Revue</th>
+          </tr>
+        </thead>
+        <tbody id="etudiants-corps"></tbody>
+      </table>
+    </section>
+
     <section class="legende">
       <h2>Comment lire ce tableau</h2>
       <ul>

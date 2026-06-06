@@ -118,3 +118,6 @@ footer { text-align: center; color: var(--gris); font-size: .8rem; padding: 1.5r
   thead th.num:nth-child(n+5), tbody td.num:nth-child(n+5) { display: none; }
   .sous-titre { font-size: .9rem; }
 }
+
+/* ---- classement par etudiant ---- */
+#etudiants td.login { font-family: ui-monospace, monospace; font-size: .8rem; }

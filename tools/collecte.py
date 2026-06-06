@@ -544,11 +544,20 @@ def main():
              for t in teams if t["trend"]["delta_7d"]],
             key=lambda x: -x["delta_7d"])[:3],
     }
+    # Classement par etudiant : on aplatit les contributeurs de toutes les equipes
+    # (chaque etudiant appartient a une equipe -> on annote la ligne avec son slug).
+    students = []
+    for t in teams:
+        for c in t["contributors"]:
+            students.append({**c, "team": t["slug"]})
+    students.sort(key=lambda c: (-c["commits"], -c["prs_merged"], c["login"]))
+
     data = {
         "generated_at": now.isoformat(),
         "totals": {"tests_total": tests_total, "issues_total": 54},
         "promo": promo,
         "teams": teams,
+        "students": students,
     }
     os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
     with open(DATA_PATH, "w") as f:

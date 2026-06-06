@@ -85,6 +85,7 @@ function render(data) {
 
   renderAlertes(data);
   renderTable(data);
+  renderStudents(data);
 }
 
 function renderAlertes(data) {
@@ -188,11 +189,49 @@ function detailPanneau(t) {
   </div>`;
 }
 
+// --- classement par etudiant (toutes equipes confondues) ------------------
+const ESORTERS = {
+  login: s => s.login,
+  team: s => s.team,
+  commits: s => s.commits,
+  prs_merged: s => s.prs_merged,
+  reviews_given: s => s.reviews_given,
+  issues_closed: s => s.issues_closed,
+};
+let currentESort = "commits";
+
+function renderStudents(data) {
+  const corps = document.getElementById("etudiants-corps");
+  if (!corps) return;
+  const students = [...(data.students || [])].sort((a, b) => {
+    const va = ESORTERS[currentESort](a), vb = ESORTERS[currentESort](b);
+    if (typeof va === "string") return va.localeCompare(vb);
+    return vb - va;
+  });
+  corps.innerHTML = students.map((s, i) => `
+    <tr>
+      <td class="rang"><span class="rang-badge">${i + 1}</span></td>
+      <td class="login"><a href="https://github.com/${esc(s.login)}" target="_blank" rel="noopener">${esc(s.login)}</a></td>
+      <td>${esc(s.team)}</td>
+      <td class="num">${s.commits}</td>
+      <td class="num">${s.prs_merged}</td>
+      <td class="num">${s.reviews_given}</td>
+      <td class="num">${s.issues_closed}</td>
+      <td class="num"><span class="pastille ${s.review_quality}" title="${esc(voyantTip(s))}"></span></td>
+    </tr>`).join("") || '<tr><td colspan="8">Aucun étudiant détecté.</td></tr>';
+}
+
 function bindTri() {
   document.querySelectorAll("th[data-sort]").forEach(th => {
     th.addEventListener("click", () => {
       currentSort = th.dataset.sort;
       renderTable(window.__data);
+    });
+  });
+  document.querySelectorAll("th[data-esort]").forEach(th => {
+    th.addEventListener("click", () => {
+      currentESort = th.dataset.esort;
+      renderStudents(window.__data);
     });
   });
 }
