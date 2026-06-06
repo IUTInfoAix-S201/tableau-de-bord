@@ -144,6 +144,25 @@ def is_human(login):
     return True
 
 
+def facteur_bus(valeurs):
+    """Bus factor : nb minimal de contributeurs cumulant > 50 % des commits.
+
+    Convention classique : PLUS il est eleve, mieux c'est (travail reparti, l'equipe
+    survit au depart d'une personne). 1 = une seule personne porte tout. 0 = aucun
+    commit (sur la branche par defaut) pour le moment.
+    """
+    vals = sorted((v for v in valeurs if v > 0), reverse=True)
+    total = sum(vals)
+    if total == 0:
+        return 0
+    cumul = 0
+    for i, v in enumerate(vals, 1):
+        cumul += v
+        if cumul > total / 2:
+            return i
+    return len(vals)
+
+
 # ------------------------------------------------------------------------------
 # Decouverte des equipes
 # ------------------------------------------------------------------------------
@@ -349,6 +368,7 @@ def collecter_contributeurs(repo, slug, issues_data):
     total_merged_pr = sum(prs_merged.values()) or 1
     top_pr = max(prs_merged.values()) if prs_merged else 0
     bus = {
+        "factor": facteur_bus(commits.values()),
         "top_share_commits": round(top / total_commits, 2),
         "top_share_prs": round(top_pr / total_merged_pr, 2),
         "active_members": sum(1 for v in commits.values() if v > 0),
@@ -560,7 +580,8 @@ def synthetiser_reference(specs, teams_reels, now):
         cmap = {c["login"]: c["commits"] for c in contribs}
         pmap = {c["login"]: c["prs_merged"] for c in contribs}
         sc, sp = sum(cmap.values()) or 1, sum(pmap.values()) or 1
-        bus = {"top_share_commits": round(max(cmap.values()) / sc, 2),
+        bus = {"factor": facteur_bus(cmap.values()),
+               "top_share_commits": round(max(cmap.values()) / sc, 2),
                "top_share_prs": round((max(pmap.values()) if pmap else 0) / sp, 2),
                "active_members": sum(1 for v in cmap.values() if v > 0), "members": len(members)}
         merged = sum(pmap.values())

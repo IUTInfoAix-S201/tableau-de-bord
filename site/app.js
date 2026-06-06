@@ -167,7 +167,7 @@ function renderTable(data) {
 
 function detailPanneau(t) {
   const q = t.quality, b = t.bus_factor, r = t.review;
-  const bus = Math.round((b.top_share_commits || 0) * 100);
+  const busf = (b.factor != null) ? b.factor : "n/d";
   const contribs = t.contributors.map(c => `
     <tr>
       <td class="login">${esc(c.login)}</td>
@@ -185,7 +185,7 @@ function detailPanneau(t) {
       <div class="kpi"><b>${okBadge(q.spotless_ok)}</b><small>Spotless</small></div>
       <div class="kpi"><b>${okBadge(q.archunit_ok)}</b><small>ArchUnit (MVVM)</small></div>
       <div class="kpi"><b>${r.merged_total}</b><small>PR mergées (${r.self_merges} sans revue)</small></div>
-      <div class="kpi"><b><span class="busbar"><span style="width:${bus}%"></span></span> ${bus} %</b>
+      <div class="kpi"><b title="Bus factor : nombre minimal de membres dont le départ ferait perdre plus de 50% des commits. Plus il est élevé, plus le travail est partagé (sain).">${busf}</b>
         <small>bus factor (${b.active_members}/${b.members} actifs)</small></div>
     </div>
     <table class="contribs">
