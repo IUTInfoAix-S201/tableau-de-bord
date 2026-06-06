@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write   # commit de history/history.jsonl
+  contents: read    # lecture du repo (l'historique est persiste via le cache Actions)
   pages: write      # deploiement Pages
   id-token: write   # OIDC pour deploy-pages
 
@@ -28,6 +28,16 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Persistance des tendances via le cache Actions (pas de push git :
+      # evite le ruleset d'org qui exige PR + revue sur la branche par defaut).
+      - name: Restaurer l'historique
+        uses: actions/cache/restore@v4
+        with:
+          path: history/history.jsonl
+          key: history-${{ github.run_id }}
+          restore-keys: |
+            history-
+
       - name: Collecte des metriques
         env:
           # PAT fine-grained avec lecture sur l'org IUTInfoAix-S201-2026
@@ -35,20 +45,12 @@ jobs:
           GH_TOKEN: ${{ secrets.DASHBOARD_TOKEN }}
         run: python3 tools/collecte.py
 
-      - name: Historiser (commit si modifie, best-effort)
-        # Non bloquant : si le ruleset d'org refuse le push du bot, les tendances
-        # ne sont pas persistees ce run mais le deploiement Pages reussit quand meme.
-        continue-on-error: true
-        run: |
-          git config user.name "dashboard-bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add history/history.jsonl
-          if git diff --staged --quiet; then
-            echo "Pas de nouvel instantane a committer."
-          else
-            git commit -m "chore: instantane tableau de bord"
-            git push || echo "Push historique refuse (ruleset ?) : tendances non persistees ce run."
-          fi
+      - name: Sauver l'historique
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: history/history.jsonl
+          key: history-${{ github.run_id }}
 
       - name: Prepare l'artefact Pages
         uses: actions/upload-pages-artifact@v3

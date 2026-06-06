@@ -5,3 +5,6 @@ site/data.json
 __pycache__/
 *.pyc
 .DS_Store
+
+# historique persiste via le cache Actions (genere localement aussi)
+history/history.jsonl
