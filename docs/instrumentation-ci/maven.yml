@@ -1,0 +1,137 @@
+# Build et tests Maven sur chaque push / PR.
+name: Java CI with Maven
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch: {}   # permet de rejouer la CI a la demande (rafraichit le tableau de bord)
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          # JDK Temurin standard (sans JavaFX) : JavaFX 26 vient des dépendances
+          # Maven org.openjfx. La Headless Platform (glass.platform=Headless)
+          # est 100 % logicielle, donc pas besoin du runtime natif jdk+fx.
+          cache: maven
+
+      - name: Run tests
+        id: build
+        # Tests UI en headless via la Headless Platform JavaFX 26
+        # (glass.platform=Headless, cf. pom.xml) : aucun display X11 requis,
+        # plus besoin de xvfb. Reste BLOQUANT : la CI passe au rouge si un test
+        # echoue (c'est la Definition of Done du sujet).
+        run: ./mvnw -B verify --file pom.xml
+
+      - name: Vérifier le formatage (Spotless, non bloquant)
+        # Renseigne le tableau de bord sans jamais faire échouer la CI.
+        if: always()
+        id: spotless
+        continue-on-error: true
+        run: ./mvnw -B spotless:check --file pom.xml
+
+      - name: Résumé CI pour le tableau de bord
+        # Agrège surefire + JaCoCo + PMD + portes qualité en un ci-summary.json.
+        # Toujours exécuté (même build rouge) pour ne jamais perdre le comptage.
+        if: always()
+        env:
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          SPOTLESS_OUTCOME: ${{ steps.spotless.outcome }}
+          SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import glob, json, os, re, xml.etree.ElementTree as ET
+          from datetime import datetime, timezone
+
+          def fnum(s):
+              try: return int(s)
+              except (TypeError, ValueError): return 0
+
+          # --- tests (surefire) ---
+          total = failed = errors = skipped = 0
+          archunit_ok = None
+          surefire = glob.glob("**/target/surefire-reports/TEST-*.xml", recursive=True)
+          for f in surefire:
+              try:
+                  r = ET.parse(f).getroot()
+              except ET.ParseError:
+                  continue
+              t = fnum(r.get("tests")); fl = fnum(r.get("failures"))
+              er = fnum(r.get("errors")); sk = fnum(r.get("skipped"))
+              total += t; failed += fl; errors += er; skipped += sk
+              if "architecture" in f.lower() or "ArchitectureTest" in f:
+                  archunit_ok = (fl == 0 and er == 0)
+          tests = None
+          if surefire:
+              tests = {"total": total, "failed": failed, "errors": errors,
+                       "skipped": skipped, "passed": total - failed - errors - skipped}
+
+          # --- couverture (JaCoCo csv) ---
+          coverage = None
+          csv = glob.glob("**/target/site/jacoco/jacoco.csv", recursive=True)
+          if csv:
+              miss = cov = 0
+              with open(csv[0]) as fh:
+                  next(fh, None)
+                  for line in fh:
+                      c = line.rstrip("\n").split(",")
+                      if len(c) > 8:
+                          miss += fnum(c[7]); cov += fnum(c[8])
+              if miss + cov:
+                  coverage = round(100 * cov / (miss + cov), 1)
+
+          # --- PMD ---
+          pmd = None
+          for p in ("**/target/pmd.xml", "**/target/reports/pmd.xml"):
+              hits = glob.glob(p, recursive=True)
+              if hits:
+                  txt = open(hits[0], encoding="utf-8", errors="ignore").read()
+                  pmd = len(re.findall(r"<violation\b", txt))
+                  break
+
+          spot = {"success": True, "failure": False}.get(os.environ.get("SPOTLESS_OUTCOME"))
+
+          summary = {
+              "generated_at": datetime.now(timezone.utc).isoformat(),
+              "sha": os.environ.get("SHA"),
+              "build_outcome": os.environ.get("BUILD_OUTCOME"),
+              "tests": tests,
+              "quality": {"coverage_pct": coverage, "pmd_violations": pmd,
+                          "spotless_ok": spot, "archunit_ok": archunit_ok},
+          }
+          with open("ci-summary.json", "w") as fh:
+              json.dump(summary, fh, indent=2)
+
+          # recap lisible dans l'onglet Actions
+          gs = os.environ.get("GITHUB_STEP_SUMMARY")
+          if gs:
+              with open(gs, "a") as fh:
+                  fh.write("### Résumé CI (tableau de bord)\n\n")
+                  if tests:
+                      fh.write(f"- Tests : **{tests['passed']}/{tests['total']}** "
+                               f"verts ({tests['skipped']} ignorés, "
+                               f"{tests['failed'] + tests['errors']} en échec)\n")
+                  fh.write(f"- Couverture : **{coverage if coverage is not None else 'n/d'} %**\n")
+                  fh.write(f"- PMD : **{pmd if pmd is not None else 'n/d'}** violations\n")
+                  fh.write(f"- Spotless : **{spot}** | ArchUnit : **{archunit_ok}**\n")
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Publier le résumé CI
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-summary
+          path: ci-summary.json
+          if-no-files-found: warn
+          retention-days: 7
