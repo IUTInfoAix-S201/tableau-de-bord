@@ -45,13 +45,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 25.9,
+      "coverage_pct": 27.0,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 102,
-      "pct": 16.5,
+      "passed": 106,
+      "pct": 17.1,
       "total": 620
     }
   },
