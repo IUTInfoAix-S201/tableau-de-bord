@@ -708,25 +708,25 @@ def synthetiser_reference(specs, teams_reels, now, plafond_tv=None):
         slug = spec["slug"]
         members = spec["members"]
         actifs = [m for m in members if not m.get("freerider")]
-        # Tests valides : chaque membre actif est cale JUSTE sous le meilleur etudiant
-        # reel (plafond_tv). gigamic (balanced) : tous au plafond ; sinon leger spread.
+        # Avance DECELERANTE : la lievre progresse mais par increments de plus en plus
+        # petits (courbe concave 1-exp(-age/tau)). Plafonnee a (leader_reel-1) par
+        # membre, donc le meilleur etudiant reste TOUJOURS un vrai etudiant, et le
+        # gain d'equipe = somme des tests des membres (coherent).
+        try:
+            age = max(0, (now.date() - datetime.fromisoformat(PROJET_DEBUT).date()).days)
+        except ValueError:
+            age = 0
+        plateau = round(7 * (1 + float(spec.get("above", 0.25))))
+        tau = 3.0
         plaf = max(0, (plafond_tv or 0) - 1)
-        if spec.get("balanced"):
-            tv_act = [plaf for _ in actifs]
-        else:
-            tv_act = [max(0, plaf - _h(slug + m["login"]) % 2) for m in actifs]
-        # COHERENCE : un membre qui valide des tests a merge >= 1 PR (qui les a livres) ;
-        # et le total de tests de l'equipe = somme des tests de ses membres.
+        gain = min(round(plateau * (1 - math.exp(-age / tau))), plaf * len(actifs))
+        tv_act = _repartir(gain, [1] * len(actifs))   # reparti ~egalement -> chacun <= leader-1
         prm_act = [1 if tv > 0 else 0 for tv in tv_act]
         issues_done = sum(prm_act)
-        gain = sum(tv_act)
         passed = min(tot, base + gain)
         pct = round(100 * passed / tot, 1) if tot else None
 
-        if spec.get("balanced"):
-            poids = [3] * len(actifs)
-        else:
-            poids = [_h(slug + m["login"]) % 5 + 2 for m in actifs]
+        poids = [_h(slug + m["login"]) % 5 + 2 for m in actifs]
         commits_act = _repartir(max(len(actifs), gain * 2), poids)
         rev_act = _repartir(issues_done, list(reversed(poids)))   # revues != auteurs
         # Revues RECUES = ces memes revues, reparties sur les auteurs -> recu == donne.
@@ -776,20 +776,16 @@ def synthetiser_reference(specs, teams_reels, now, plafond_tv=None):
                   "pct_reviewed": round(min(1.0, (merged - _h(slug) % 2) / merged), 2) if merged else None,
                   "self_merges": _h(slug) % 2 if merged > 2 else 0}
 
-        # Courbe bornee a l'age reel du projet (1 point/jour depuis PROJET_DEBUT),
-        # plafonnee a 10 jours. Pas d'historique anterieur a la distribution des depots.
-        try:
-            age = (now.date() - datetime.fromisoformat(PROJET_DEBUT).date()).days
-        except ValueError:
-            age = 9
+        # Sparkline : la meme courbe DECELERANTE, 1 point/jour depuis le debut du
+        # projet (borne a 10 jours). Le dernier point vaut `passed`.
         n = max(1, min(10, age + 1))
-        debut = max(base, passed - (18 + _h(slug) % 10))
-        if n == 1:
-            serie = [{"date": now.isoformat(), "tests_passed": passed}]
-        else:
-            serie = [{"date": (now - timedelta(days=n - 1 - i)).isoformat(),
-                      "tests_passed": round(debut + (passed - debut) * i / (n - 1))} for i in range(n)]
-        i7 = max(0, n - 1 - 7)   # point ~7 jours avant aujourd'hui (ou debut si projet plus jeune)
+        serie = []
+        for i in range(n):
+            elapsed = max(0, age - (n - 1 - i))
+            g = min(round(plateau * (1 - math.exp(-elapsed / tau))), plaf * len(actifs))
+            serie.append({"date": (now - timedelta(days=n - 1 - i)).isoformat(),
+                          "tests_passed": base + g})
+        i7 = max(0, n - 1 - 7)
         trend = {"tests_series": serie, "delta_7d": passed - serie[i7]["tests_passed"]}
 
         out.append({
