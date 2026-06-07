@@ -83,6 +83,20 @@
       "total": 620
     }
   },
+  "linkedin_ou_interpol": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
   "riplasemaine": {
     "ci_status": "success",
     "quality": {
