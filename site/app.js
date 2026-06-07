@@ -180,6 +180,7 @@ function detailPanneau(t) {
 
   return `<div class="panneau">
     <div class="qualite">
+      <div class="kpi"><b>${t.open_branches == null ? "n/d" : t.open_branches}</b><small>branches en cours</small></div>
       <div class="kpi"><b>${q.coverage_pct == null ? "n/d" : q.coverage_pct + " %"}</b><small>couverture JaCoCo</small></div>
       <div class="kpi"><b>${q.pmd_violations == null ? "n/d" : q.pmd_violations}</b><small>violations PMD</small></div>
       <div class="kpi"><b>${okBadge(q.spotless_ok)}</b><small>Spotless</small></div>

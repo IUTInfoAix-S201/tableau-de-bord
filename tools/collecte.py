@@ -289,6 +289,14 @@ query($owner:String!,$name:String!,$cursor:String){
 """
 
 
+def compter_branches(repo):
+    """Nombre de branches autres que la branche par defaut (travail en cours)."""
+    noms = gh_json(f"repos/{ORG}/{repo}/branches?per_page=100", jq=".[].name", paginate=True)
+    if isinstance(noms, str):
+        noms = [noms]
+    return sum(1 for n in noms if n not in ("main", "master"))
+
+
 def collecter_prs(repo):
     """Renvoie la liste des PR avec leurs revues (toutes pages)."""
     prs, cursor = [], None
@@ -791,6 +799,7 @@ def synthetiser_reference(specs, teams_reels, now, plafond_tv=None):
             "last_activity": (now - timedelta(hours=2 + _h(slug) % 20)).isoformat(),
             "ci_status": "success", "tests_source": "artefact",
             "issues": {"done": issues_done, "total": 54},
+            "open_branches": sum(c["prs_open"] for c in contribs) + _h(slug + "br") % 3,
             "priorities": {**bandes, "mvp_complete": mvp},
             "tests": {"passed": passed, "total": tot, "pct": pct},
             "quality": {"coverage_pct": round(min(95.0, best_cov + gain + _h(slug) % 3), 1),
@@ -833,6 +842,7 @@ def main():
         print(f"  - {slug} ...", file=sys.stderr)
         issues_data = collecter_issues(repo)
         contributeurs, bus, review, merged_info = collecter_contributeurs(repo, slug, issues_data)
+        open_branches = compter_branches(repo)
         if args.no_tests:
             tests = {"passed": None, "total": None, "pct": None}
             quality = {"coverage_pct": None, "pmd_violations": None,
@@ -860,6 +870,7 @@ def main():
             "tests_source": source,
             "issues": issues_data["issues"],
             "priorities": issues_data["priorities"],
+            "open_branches": open_branches,
             "tests": tests,
             "quality": quality,
             "review": review,
