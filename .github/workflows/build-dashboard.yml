@@ -45,10 +45,23 @@ jobs:
           git add history/
           if git diff --staged --quiet; then
             echo "Rien de nouveau a committer (historique + cache PR a jour)."
-          else
-            git commit -m "chore: instantane + cache tests par PR"
-            git push
+            exit 0
           fi
+          git commit -m "chore: instantane + cache tests par PR"
+          # Push robuste : si main a bouge pendant le run (merge/push concurrent, ou un autre build
+          # horaire), un git push simple est rejete en non fast-forward. On rebase sur main distant
+          # et on reessaie. Le commit ne touche que history/ (append + dedup 1 instantane/jour),
+          # donc le rebase se fait sans conflit.
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "Pousse."
+              exit 0
+            fi
+            echo "Push rejete (main a bouge), rebase + nouvelle tentative ($i/5)..."
+            git pull --rebase --autostash origin main
+          done
+          echo "::error::Echec du push apres 5 tentatives (course persistante sur main)."
+          exit 1
 
       - name: Prepare l'artefact Pages
         uses: actions/upload-pages-artifact@v5
