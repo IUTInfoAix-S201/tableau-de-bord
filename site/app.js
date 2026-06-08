@@ -173,7 +173,8 @@ function detailPanneau(t) {
   const contribs = t.contributors.map(c => `
     <tr>
       <td class="login">${esc(c.login)}</td>
-      <td class="num">${c.commits}</td>
+      <td class="num"><strong>${c.tests_validated ?? 0}</strong></td>
+      <td class="num">${c.branch_commits ?? 0}</td>
       <td class="num">${c.prs_open}/${c.prs_merged}</td>
       <td class="num">${c.reviews_given}/${c.reviews_received}</td>
       <td class="num">${c.issues_closed}/${c.issues_assigned}</td>
@@ -195,11 +196,13 @@ function detailPanneau(t) {
     </div>
     <table class="contribs">
       <thead><tr>
-        <th>Contributeur (login GitHub)</th><th class="num">Commits</th>
+        <th>Contributeur (login GitHub)</th>
+        <th class="num" title="Tests verts apportés par les PR mergées de l'étudiant">Tests validés</th>
+        <th class="num" title="Commits dans des branches non encore mergées (travail en cours)">Travail en cours</th>
         <th class="num" title="PR actuellement ouvertes (en cours) / PR mergées">PR en cours/merg.</th><th class="num">Revues don./rec.</th>
         <th class="num">Issues fer./assig.</th><th class="num">Revue</th><th>Badges</th>
       </tr></thead>
-      <tbody>${contribs || '<tr><td colspan="7">Aucun contributeur détecté.</td></tr>'}</tbody>
+      <tbody>${contribs || '<tr><td colspan="8">Aucun contributeur détecté.</td></tr>'}</tbody>
     </table>
   </div>`;
 }
