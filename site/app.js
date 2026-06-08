@@ -76,6 +76,7 @@ const SORTERS = {
   slug: t => t.slug,
 };
 let currentSort = "tests";
+let badgeCtx = null;   // contexte des badges (superlatifs promo) partage equipe/etudiant
 
 function render(data) {
   document.getElementById("meta").textContent =
@@ -83,6 +84,7 @@ function render(data) {
     + `- ${data.teams.length} équipes - total ${data.totals.tests_total} tests, `
     + `${data.totals.issues_total} tâches.`;
 
+  badgeCtx = contexteBadges(data.students);
   renderAlertes(data);
   renderTable(data);
   renderStudents(data);
@@ -176,6 +178,8 @@ function detailPanneau(t) {
       <td class="num">${c.reviews_given}/${c.reviews_received}</td>
       <td class="num">${c.issues_closed}/${c.issues_assigned}</td>
       <td class="num"><span class="pastille ${c.review_quality}" title="${esc(voyantTip(c))}"></span></td>
+      <td class="badges">${(badgeCtx ? badgesEtudiant({ ...c, team: t.slug }, badgeCtx) : [])
+        .map(([e, tt]) => `<span class="badge-emoji" title="${esc(tt)}">${e}</span>`).join(" ") || "—"}</td>
     </tr>`).join("");
 
   return `<div class="panneau">
@@ -193,9 +197,9 @@ function detailPanneau(t) {
       <thead><tr>
         <th>Contributeur (login GitHub)</th><th class="num">Commits</th>
         <th class="num" title="PR actuellement ouvertes (en cours) / PR mergées">PR en cours/merg.</th><th class="num">Revues don./rec.</th>
-        <th class="num">Issues fer./assig.</th><th class="num">Revue</th>
+        <th class="num">Issues fer./assig.</th><th class="num">Revue</th><th>Badges</th>
       </tr></thead>
-      <tbody>${contribs || '<tr><td colspan="6">Aucun contributeur détecté.</td></tr>'}</tbody>
+      <tbody>${contribs || '<tr><td colspan="7">Aucun contributeur détecté.</td></tr>'}</tbody>
     </table>
   </div>`;
 }
@@ -257,7 +261,7 @@ function renderStudents(data) {
   const corps = document.getElementById("etudiants-corps");
   if (!corps) return;
   const students = [...(data.students || [])].sort(compareStudents);
-  const ctx = contexteBadges(students);
+  const ctx = badgeCtx || contexteBadges(students);
   corps.innerHTML = students.map((s, i) => {
     const bs = badgesEtudiant(s, ctx)
       .map(([e, t]) => `<span class="badge-emoji" title="${esc(t)}">${e}</span>`).join(" ");
