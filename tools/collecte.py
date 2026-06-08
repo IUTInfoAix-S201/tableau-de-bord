@@ -290,13 +290,19 @@ query($owner:String!,$name:String!,$cursor:String){
 """
 
 
-def collecter_branches(repo):
+def collecter_branches(repo, membres=None):
     """Travail EN COURS dans les branches non mergees.
 
     Renvoie (nb de branches en avance sur main, {login: commits en avance}).
     Les commits en avance sur `main` (compare main...branche) mesurent le travail
     pas encore merge (et meme pas encore en PR). Une branche deja mergee est en
     avance de 0 -> ni comptee, ni double-comptee.
+
+    Si `membres` (set de logins) est fourni, on n'attribue qu'aux membres de
+    l'equipe : un commit attribue a un non-membre vient quasi toujours d'un email
+    git mal configure (ex. `youremail@example.com`) que GitHub rattache a un compte
+    aleatoire -> contributeur fantome, ecarte. (Le decompte de branches, lui, reste
+    complet : la branche est bien « en cours », meme si on ne peut pas crediter.)
     """
     noms = gh_json(f"repos/{ORG}/{repo}/branches?per_page=100", jq=".[].name", paginate=True)
     if isinstance(noms, str):
@@ -314,7 +320,8 @@ def collecter_branches(repo):
             en_cours += 1
         for c in data.get("commits") or []:
             sha, login = c.get("sha"), c.get("login")
-            if sha and sha not in vus and is_human(login):
+            if (sha and sha not in vus and is_human(login)
+                    and (membres is None or login in membres)):
                 vus.add(sha)
                 par_login[login] += 1
     return en_cours, dict(par_login)
@@ -420,8 +427,9 @@ def collecter_contributeurs(repo, slug, issues_data):
                       jq=".[].login", paginate=True)
     membres = [m for m in membres if is_human(m)]
 
-    # Travail EN COURS : commits en avance sur main dans les branches non mergees.
-    branches_en_cours, wip = collecter_branches(repo)
+    # Travail EN COURS : commits en avance sur main dans les branches non mergees,
+    # attribues aux seuls membres (evite les fantomes dus a un email git mal configure).
+    branches_en_cours, wip = collecter_branches(repo, set(membres))
 
     logins = set(commits) | set(prs_open) | set(prs_merged) | set(revues_donnees) \
         | set(membres) | set(issues_data["_assignes"]) | set(wip)
