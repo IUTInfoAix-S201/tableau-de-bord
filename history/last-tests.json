@@ -31,13 +31,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 27.0,
+      "coverage_pct": 27.8,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 106,
-      "pct": 17.1,
+      "passed": 113,
+      "pct": 18.2,
       "total": 620
     }
   },
@@ -45,13 +45,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 27.0,
+      "coverage_pct": 33.2,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 106,
-      "pct": 17.1,
+      "passed": 129,
+      "pct": 20.8,
       "total": 620
     }
   },
@@ -111,17 +111,59 @@
       "total": 620
     }
   },
-  "riplasemaine": {
+  "mathieu_kyle_lenny_diego": {
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 32.6,
+      "coverage_pct": 25.9,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 133,
-      "pct": 21.5,
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "riplasemaine": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 32.7,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 134,
+      "pct": 21.6,
+      "total": 620
+    }
+  },
+  "t1g3": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
+      "total": 620
+    }
+  },
+  "td2-g1": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 25.9,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 102,
+      "pct": 16.5,
       "total": 620
     }
   },
@@ -195,7 +237,7 @@
       "total": 620
     }
   },
-  "team-rocket": {
+  "td4_g5": {
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
@@ -209,17 +251,45 @@
       "total": 620
     }
   },
-  "thebatdevs": {
+  "team-rocket": {
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 25.9,
+      "coverage_pct": 28.1,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 102,
-      "pct": 16.5,
+      "passed": 104,
+      "pct": 16.8,
+      "total": 620
+    }
+  },
+  "thebatdevs": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 37.2,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 127,
+      "pct": 20.5,
+      "total": 620
+    }
+  },
+  "vigiechiro-tommy-manal-yannick-tasnim": {
+    "ci_status": "success",
+    "quality": {
+      "archunit_ok": true,
+      "coverage_pct": 45.0,
+      "pmd_violations": 3,
+      "spotless_ok": true
+    },
+    "tests": {
+      "passed": 111,
+      "pct": 17.9,
       "total": 620
     }
   }
