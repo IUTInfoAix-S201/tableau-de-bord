@@ -1,6 +1,6 @@
 {
   "gael_matteo_kenzi_thomas_g3": {
-    "ci_status": "success",
+    "ci_status": null,
     "quality": {
       "archunit_ok": true,
       "coverage_pct": 25.9,
@@ -185,13 +185,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 27.3,
+      "coverage_pct": 28.5,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 108,
-      "pct": 17.4,
+      "passed": 112,
+      "pct": 18.1,
       "total": 620
     }
   },
