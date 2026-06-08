@@ -252,8 +252,8 @@ function badgesEtudiant(s, c) {
     b.push(["🤝", "Fair-play : relit autant qu'il est relu"]);
   if (s.review_quality === "green" && s.changes_requested >= 1) b.push(["🧐", "Œil de lynx : vraies revues, demande des changements"]);
   if (s.review_quality === "red") b.push(["🦆", "Tampon : approbations à vide"]);
-  if ((s.commits + s.prs_merged + s.reviews_given + (s.branch_commits || 0)) === 0 && (c.actifsParEquipe[s.team] || 0) >= 2)
-    b.push(["👻", "Passager clandestin : aucune contribution (ni mergée, ni en cours dans une branche) alors qu'au moins deux coéquipiers travaillent"]);
+  if ((s.commits + s.prs_merged + s.reviews_given + (s.branch_commits || 0)) === 0 && (c.actifsParEquipe[s.team] || 0) >= 1)
+    b.push(["👻", "Passager clandestin : aucune contribution (ni mergée, ni en cours dans une branche) alors qu'au moins un coéquipier travaille"]);
   return b;
 }
 
