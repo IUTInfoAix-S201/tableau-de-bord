@@ -222,7 +222,7 @@ function compareStudents(a, b) {
 // Contexte pour les badges : maxima de la promo + equipes ayant au moins un actif.
 function contexteBadges(students) {
   const max = k => Math.max(0, ...students.map(s => s[k] || 0));
-  const actif = s => (s.commits + s.prs_merged + s.reviews_given) > 0;
+  const actif = s => (s.commits + s.prs_merged + s.reviews_given + (s.branch_commits || 0)) > 0;
   const actifsParEquipe = {};
   students.filter(actif).forEach(s => {
     actifsParEquipe[s.team] = (actifsParEquipe[s.team] || 0) + 1;
@@ -248,8 +248,8 @@ function badgesEtudiant(s, c) {
     b.push(["🤝", "Fair-play : relit autant qu'il est relu"]);
   if (s.review_quality === "green" && s.changes_requested >= 1) b.push(["🧐", "Œil de lynx : vraies revues, demande des changements"]);
   if (s.review_quality === "red") b.push(["🦆", "Tampon : approbations à vide"]);
-  if ((s.commits + s.prs_merged + s.reviews_given) === 0 && (c.actifsParEquipe[s.team] || 0) >= 2)
-    b.push(["👻", "Passager clandestin : aucune contribution alors qu'au moins deux coéquipiers travaillent"]);
+  if ((s.commits + s.prs_merged + s.reviews_given + (s.branch_commits || 0)) === 0 && (c.actifsParEquipe[s.team] || 0) >= 2)
+    b.push(["👻", "Passager clandestin : aucune contribution (ni mergée, ni en cours dans une branche) alors qu'au moins deux coéquipiers travaillent"]);
   return b;
 }
 
