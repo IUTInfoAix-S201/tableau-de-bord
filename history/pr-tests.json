@@ -189,6 +189,21 @@
       "author": "mankaiadamgit",
       "passed": 199,
       "sha": "5b555bfa8ba779ed0d6e11381243885230f179e9"
+    },
+    "73": {
+      "author": "mankaiadamgit",
+      "passed": 202,
+      "sha": "d049a7c162053db304bfd0e0f7960eecfdc5b12d"
+    },
+    "74": {
+      "author": "lucitronas",
+      "passed": 227,
+      "sha": "56358787ab0aba1d66b239e941a17dd3c13a06a6"
+    },
+    "75": {
+      "author": "AmadeusTdev",
+      "passed": 240,
+      "sha": "6dc5a1f16045557070049910aacd7eb1b05a6e8e"
     }
   },
   "t1g3": {
