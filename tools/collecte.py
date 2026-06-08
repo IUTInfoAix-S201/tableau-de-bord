@@ -79,6 +79,9 @@ SEUIL_ROUGE_TAMPON = 0.70   # part d'approbations vides pour le rouge
 BOTS = {"github-actions[bot]", "github-actions", "github-classroom[bot]", "github-classroom",
         "actions-user", "web-flow", "dependabot[bot]", "dependabot"}
 
+# Comptes a exclure du tableau : encadrants/enseignants (pas des etudiants).
+COMPTES_EXCLUS = {"nedseb"}
+
 
 # ------------------------------------------------------------------------------
 # Helpers gh / GraphQL (calques sur creer-board-equipe.py)
@@ -151,6 +154,8 @@ def is_human(login):
         return False
     low = login.lower()
     if low.endswith("[bot]") or low in {b.lower() for b in BOTS}:
+        return False
+    if low in {c.lower() for c in COMPTES_EXCLUS}:   # encadrants/enseignants
         return False
     # Certains bots arrivent SANS le suffixe [bot] selon l'API (GraphQL renvoie p.ex.
     # `github-actions` au lieu de `github-actions[bot]`) : on filtre par sous-chaine
