@@ -184,6 +184,11 @@
       "author": "ToulouseAurelien",
       "passed": 180,
       "sha": "8b308922a701f9ae1a346d4c12f22130c6c87385"
+    },
+    "71": {
+      "author": "mankaiadamgit",
+      "passed": 199,
+      "sha": "5b555bfa8ba779ed0d6e11381243885230f179e9"
     }
   },
   "t1g3": {
@@ -228,7 +233,7 @@
     },
     "60": {
       "author": "ChevremontLilian",
-      "passed": null,
+      "passed": 132,
       "sha": "ad2b3e26f51afc2be16669211e917484885730da"
     }
   },
@@ -274,7 +279,18 @@
       "sha": "a2c71858805ad93c9a576f4cded6e533654a007e"
     }
   },
-  "td4_g5": {},
+  "td4_g5": {
+    "56": {
+      "author": "BULUT-Melissa-25006748",
+      "passed": 109,
+      "sha": "b2359c4e72dde2537df5b1bc5cd077ce028c4c32"
+    },
+    "57": {
+      "author": "BEGHIN-Timothee-25011060",
+      "passed": 116,
+      "sha": "acfb8ce1182524c7be0f2e62d1288c42fbbde057"
+    }
+  },
   "team-rocket": {
     "57": {
       "author": "NicolasMoyenin",
@@ -300,6 +316,11 @@
       "author": "Abdelrahmane03",
       "passed": 124,
       "sha": "bb930d0fb3304a9db865cfdf00668b8b6dbcad8c"
+    },
+    "64": {
+      "author": "NicolasMoyenin",
+      "passed": 134,
+      "sha": "850d8cd0ce93bcdbe6b91353f34adfebc9db5269"
     }
   },
   "thebatdevs": {
