@@ -33,6 +33,7 @@ import time
 import unicodedata
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
+from urllib.parse import quote
 
 ORG = "IUTInfoAix-S201-2026"
 REPO_PREFIX = "vigiechiro-pr-companion-"
@@ -289,12 +290,34 @@ query($owner:String!,$name:String!,$cursor:String){
 """
 
 
-def compter_branches(repo):
-    """Nombre de branches autres que la branche par defaut (travail en cours)."""
+def collecter_branches(repo):
+    """Travail EN COURS dans les branches non mergees.
+
+    Renvoie (nb de branches en avance sur main, {login: commits en avance}).
+    Les commits en avance sur `main` (compare main...branche) mesurent le travail
+    pas encore merge (et meme pas encore en PR). Une branche deja mergee est en
+    avance de 0 -> ni comptee, ni double-comptee.
+    """
     noms = gh_json(f"repos/{ORG}/{repo}/branches?per_page=100", jq=".[].name", paginate=True)
     if isinstance(noms, str):
         noms = [noms]
-    return sum(1 for n in noms if n not in ("main", "master"))
+    features = [b for b in noms if b not in ("main", "master")]
+    vus, par_login, en_cours = set(), defaultdict(int), 0
+    for b in features:
+        data = gh_json(
+            f"repos/{ORG}/{repo}/compare/main...{quote(b, safe='')}",
+            jq='{ahead: .ahead_by, commits: [.commits[] | {sha, login: (.author.login // "")}]}',
+        )
+        if not isinstance(data, dict):
+            continue
+        if (data.get("ahead") or 0) > 0:
+            en_cours += 1
+        for c in data.get("commits") or []:
+            sha, login = c.get("sha"), c.get("login")
+            if sha and sha not in vus and is_human(login):
+                vus.add(sha)
+                par_login[login] += 1
+    return en_cours, dict(par_login)
 
 
 def collecter_prs(repo):
@@ -397,14 +420,18 @@ def collecter_contributeurs(repo, slug, issues_data):
                       jq=".[].login", paginate=True)
     membres = [m for m in membres if is_human(m)]
 
+    # Travail EN COURS : commits en avance sur main dans les branches non mergees.
+    branches_en_cours, wip = collecter_branches(repo)
+
     logins = set(commits) | set(prs_open) | set(prs_merged) | set(revues_donnees) \
-        | set(membres) | set(issues_data["_assignes"])
+        | set(membres) | set(issues_data["_assignes"]) | set(wip)
     contributeurs = []
     for login in sorted(logins):
         v = voyant_revue(revues_donnees.get(login, []))
         contributeurs.append({
             "login": login,
             "commits": commits.get(login, 0),
+            "branch_commits": wip.get(login, 0),
             "prs_open": prs_open.get(login, 0),
             "prs_merged": prs_merged.get(login, 0),
             "reviews_given": v["reviews_total"],
@@ -433,7 +460,7 @@ def collecter_contributeurs(repo, slug, issues_data):
         "pct_reviewed": round(merged_relues / merged_total, 2) if merged_total else None,
         "self_merges": self_merges,
     }
-    return contributeurs, bus, review, merged_info
+    return contributeurs, bus, review, merged_info, branches_en_cours
 
 
 # ------------------------------------------------------------------------------
@@ -737,7 +764,8 @@ def synthetiser_reference(specs, teams_reels, now, plafond_tv=None):
         for m in members:
             login = m["login"]
             if m.get("freerider"):
-                contribs.append({"login": login, "commits": 0, "prs_open": 0, "prs_merged": 0,
+                contribs.append({"login": login, "commits": 0, "branch_commits": 0,
+                                 "prs_open": 0, "prs_merged": 0,
                                  "reviews_given": 0, "reviews_received": 0, "issues_assigned": 1,
                                  "issues_closed": 0, "tests_validated": 0, "reviews_total": 0,
                                  "inline_comments": 0, "changes_requested": 0, "empty_approvals": 0,
@@ -749,7 +777,8 @@ def synthetiser_reference(specs, teams_reels, now, plafond_tv=None):
                 inl, chg, qual = rg * 2 + _h(login) % 3, max(1, rg // 3), "green"
             else:
                 inl, chg, qual = 0, 0, ("yellow" if cm > 0 else "na")
-            contribs.append({"login": login, "commits": cm, "prs_open": _h(login + "po") % 2,
+            contribs.append({"login": login, "commits": cm, "branch_commits": _h(login + "wip") % 5,
+                             "prs_open": _h(login + "po") % 2,
                              "prs_merged": pm, "reviews_given": rg, "reviews_received": rev_received[i],
                              "issues_assigned": pm + _h(login + "ia") % 2, "issues_closed": pm,
                              "tests_validated": tv_act[i],
@@ -837,8 +866,8 @@ def main():
         repo, slug = e["repo"], e["slug"]
         print(f"  - {slug} ...", file=sys.stderr)
         issues_data = collecter_issues(repo)
-        contributeurs, bus, review, merged_info = collecter_contributeurs(repo, slug, issues_data)
-        open_branches = compter_branches(repo)
+        contributeurs, bus, review, merged_info, open_branches = \
+            collecter_contributeurs(repo, slug, issues_data)
         if args.no_tests:
             tests = {"passed": None, "total": None, "pct": None}
             quality = {"coverage_pct": None, "pmd_violations": None,
@@ -932,8 +961,8 @@ def main():
     for t in teams:
         for c in t["contributors"]:
             students.append({**c, "team": t["slug"]})
-    students.sort(key=lambda c: (-c["tests_validated"], -c["prs_merged"],
-                                 -c["issues_closed"], -c["commits"], c["login"]))
+    students.sort(key=lambda c: (-c["tests_validated"], -c["prs_merged"], -c["issues_closed"],
+                                 -c["branch_commits"], -c["commits"], c["login"]))
 
     data = {
         "generated_at": now.isoformat(),
