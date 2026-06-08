@@ -10,6 +10,11 @@
       "author": "Aurele879",
       "passed": null,
       "sha": "86958083da47d209b565b2445d076defacd8a6be"
+    },
+    "61": {
+      "author": "Aurele879",
+      "passed": 122,
+      "sha": "6e698f8427743db54ebe781751161e9a6fa54533"
     }
   },
   "giteam": {
@@ -27,6 +32,21 @@
       "author": "MORSILLI-Timeo-25002755",
       "passed": 113,
       "sha": "dd4e99882e2431ad2c5a282dc303b7640d55ad6b"
+    },
+    "63": {
+      "author": "MORSILLI-Timeo-25002755",
+      "passed": 119,
+      "sha": "9d8ce379ef89eb96f1a48567037d9c7f16980e34"
+    },
+    "64": {
+      "author": "KEOKHAM-Rayan-25015317",
+      "passed": 119,
+      "sha": "4abfb89c9cd9471b79976e9dc34f531fdc823f29"
+    },
+    "65": {
+      "author": "MORSILLI-Timeo-25002755",
+      "passed": 121,
+      "sha": "3eb9ffeb9619ad8df4b3e0fcce24e9ac60d632f0"
     }
   },
   "ici_pour_faire_la_police": {
@@ -42,15 +62,52 @@
     }
   },
   "jpeuxpasjainedjar": {},
-  "la-team": {},
+  "la-team": {
+    "60": {
+      "author": "lochlann-fabbi",
+      "passed": 102,
+      "sha": "7372e9c0a868062f5c47a0760d87369bac3e1a05"
+    },
+    "61": {
+      "author": "Timeo-84",
+      "passed": 109,
+      "sha": "bdb186ec169a5e35f3d8dc18c1b1fc541024662e"
+    }
+  },
   "le-corbeau-ewan": {
     "55": {
       "author": "github-actions",
       "passed": null,
       "sha": "37ef2c19a053376dfee09612aef6da165dfa138e"
+    },
+    "58": {
+      "author": "EwanFRANCOIS",
+      "passed": 121,
+      "sha": "1a9d5ed2fc3bb899a6498abeade669798f378209"
+    },
+    "60": {
+      "author": "Matteo-Y07",
+      "passed": 177,
+      "sha": "bc95ece5320d49a33f0225f21ebfa769f7492991"
     }
   },
-  "linkedin_ou_interpol": {},
+  "linkedin_ou_interpol": {
+    "56": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": 106,
+      "sha": "34cae51b00870c70f12e0d74957262417038c861"
+    },
+    "57": {
+      "author": "DURAN-Kalvin-25013186",
+      "passed": 107,
+      "sha": "c24488d12a45d20d88eaf49c72572f365c06d071"
+    },
+    "58": {
+      "author": "DURAN-Kalvin-25013186",
+      "passed": 113,
+      "sha": "44bdc573799b8ced5a74ff2199f0dec6e8d6c11c"
+    }
+  },
   "mathieu_kyle_lenny_diego": {},
   "riplasemaine": {
     "57": {
@@ -67,21 +124,96 @@
       "author": "AmadeusTdev",
       "passed": 134,
       "sha": "bd6d0eed4ffc07593cabd5fc7f2377ec193dc124"
+    },
+    "63": {
+      "author": "AyoubHSSINI13",
+      "passed": 141,
+      "sha": "2fb81b3315af5085bd2596de7356e85c0a41a596"
+    },
+    "64": {
+      "author": "AmadeusTdev",
+      "passed": 169,
+      "sha": "500e698d2afc54ed444c9cc30833c0b362691491"
+    },
+    "65": {
+      "author": "lucitronas",
+      "passed": 150,
+      "sha": "2ddedd886505d27031fe99cd7593301a0c1f38cc"
+    },
+    "67": {
+      "author": "AyoubHSSINI13",
+      "passed": 174,
+      "sha": "9b21621768ff8c66124a8c9e6bb9d1dd505a996c"
+    },
+    "68": {
+      "author": "AmadeusTdev",
+      "passed": 180,
+      "sha": "1724531ec2326ee8143232510fc92d64e7e03b1d"
     }
   },
-  "t1g3": {},
-  "td2-g1": {},
-  "td2-g5-awoooo": {},
+  "t1g3": {
+    "56": {
+      "author": "brandonzeabaez",
+      "passed": 108,
+      "sha": "e357a6a8ac8c887e19b017a133dd3b8cdcd3bdb9"
+    },
+    "57": {
+      "author": "MilannB25",
+      "passed": 115,
+      "sha": "dde165279087d8265ba64ee6d24a5fe6af4c1a74"
+    }
+  },
+  "td2-g1": {
+    "56": {
+      "author": "Renethan",
+      "passed": 106,
+      "sha": "af8020aa021eb67138e4c985e32d98f433c6afbd"
+    }
+  },
+  "td2-g5-awoooo": {
+    "58": {
+      "author": "CoIib",
+      "passed": 121,
+      "sha": "b4a622a724089b424f2a1671f816d152b2ac91a4"
+    },
+    "59": {
+      "author": "KhadissovaLezina",
+      "passed": 125,
+      "sha": "9c500ce33a5b47c55a60aa5b17fe349294c57a74"
+    }
+  },
   "td2-g6": {},
   "td2-vigiegroupe3": {},
-  "td4-g1_heja": {},
-  "td4_g4": {},
+  "td4-g1_heja": {
+    "58": {
+      "author": "BANTI-Hugo-25004176",
+      "passed": 102,
+      "sha": "e3435653949b5b1ec1349cde8e48fbb435b975a7"
+    }
+  },
+  "td4_g4": {
+    "57": {
+      "author": "ZOPPI-Nicolas-25003515",
+      "passed": 102,
+      "sha": "8be93ae43a7165a0f289ea729f14c8258357c01e"
+    },
+    "58": {
+      "author": "BARSALI-Ilyas-b25002745",
+      "passed": 109,
+      "sha": "a2c71858805ad93c9a576f4cded6e533654a007e"
+    }
+  },
   "td4_g5": {},
   "team-rocket": {
     "57": {
       "author": "NicolasMoyenin",
       "passed": 104,
       "sha": "9c3eaec1bd60ea6c2be54dfcc2429abcfd882dd7"
+    },
+    "60": {
+      "author": "NicolasMoyenin",
+      "passed": 104,
+      "sha": "b402669b6f610b72493ea3cdc48735df0574d4c0"
     }
   },
   "thebatdevs": {
