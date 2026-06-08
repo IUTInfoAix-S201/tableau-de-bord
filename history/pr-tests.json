@@ -15,6 +15,11 @@
       "author": "Aurele879",
       "passed": 122,
       "sha": "6e698f8427743db54ebe781751161e9a6fa54533"
+    },
+    "63": {
+      "author": "OmbelineChaud",
+      "passed": 122,
+      "sha": "82fdace6574bd5444e446f10c4d34d117e5ca674"
     }
   },
   "giteam": {
@@ -59,6 +64,11 @@
       "author": "NinaMATCHA",
       "passed": 129,
       "sha": "3786cd1fefd2a7c0a859b2bc4956bc82eaa56182"
+    },
+    "59": {
+      "author": "Imen-Bengadha20242027",
+      "passed": 147,
+      "sha": "f99b3637ce99da4115d47f9d4b71ee4340fe3f4f"
     }
   },
   "jpeuxpasjainedjar": {},
@@ -72,6 +82,16 @@
       "author": "Timeo-84",
       "passed": 109,
       "sha": "bdb186ec169a5e35f3d8dc18c1b1fc541024662e"
+    },
+    "62": {
+      "author": "lochlann-fabbi",
+      "passed": 109,
+      "sha": "3e09dbc2cd2376e732334f5c1800d693d3fadc4a"
+    },
+    "63": {
+      "author": "lochlann-fabbi",
+      "passed": 109,
+      "sha": "6dc6a6856d4ef81617c85cec14bac65ff226db4d"
     }
   },
   "le-corbeau-ewan": {
@@ -89,6 +109,11 @@
       "author": "Matteo-Y07",
       "passed": 177,
       "sha": "bc95ece5320d49a33f0225f21ebfa769f7492991"
+    },
+    "62": {
+      "author": "EwanFRANCOIS",
+      "passed": 177,
+      "sha": "9b6f6439e095d21f262d861fff0a23a124ab41af"
     }
   },
   "linkedin_ou_interpol": {
@@ -149,6 +174,16 @@
       "author": "AmadeusTdev",
       "passed": 180,
       "sha": "1724531ec2326ee8143232510fc92d64e7e03b1d"
+    },
+    "69": {
+      "author": "AmadeusTdev",
+      "passed": 180,
+      "sha": "a65247c1b5b9f73daebf6ed7e2bbd1278a93de7f"
+    },
+    "70": {
+      "author": "ToulouseAurelien",
+      "passed": 180,
+      "sha": "8b308922a701f9ae1a346d4c12f22130c6c87385"
     }
   },
   "t1g3": {
@@ -168,6 +203,16 @@
       "author": "Renethan",
       "passed": 106,
       "sha": "af8020aa021eb67138e4c985e32d98f433c6afbd"
+    },
+    "57": {
+      "author": "Renethan",
+      "passed": 106,
+      "sha": "91ba4405e1e596218ea27a912d8b0f94010dfcc4"
+    },
+    "59": {
+      "author": "Renethan",
+      "passed": 107,
+      "sha": "3af8f25d16cc07aadf0bd65e73fa89ccde1d3cee"
     }
   },
   "td2-g5-awoooo": {
@@ -180,15 +225,41 @@
       "author": "KhadissovaLezina",
       "passed": 125,
       "sha": "9c500ce33a5b47c55a60aa5b17fe349294c57a74"
+    },
+    "60": {
+      "author": "ChevremontLilian",
+      "passed": null,
+      "sha": "ad2b3e26f51afc2be16669211e917484885730da"
     }
   },
-  "td2-g6": {},
+  "td2-g6": {
+    "62": {
+      "author": "ikram-aouad",
+      "passed": 108,
+      "sha": "2903d0732106ba377321ee522cae8afc08faa5fe"
+    }
+  },
   "td2-vigiegroupe3": {},
   "td4-g1_heja": {
     "58": {
       "author": "BANTI-Hugo-25004176",
       "passed": 102,
       "sha": "e3435653949b5b1ec1349cde8e48fbb435b975a7"
+    },
+    "59": {
+      "author": "BANTI-Hugo-25004176",
+      "passed": 106,
+      "sha": "5c33d8459db5529ad1b55b7246458ae0e8a920f0"
+    },
+    "60": {
+      "author": "ORDAS-Ethan-25003317",
+      "passed": 106,
+      "sha": "fb719cbbe5be2ab1761991da72c2d92085299e9c"
+    },
+    "61": {
+      "author": "BANTI-Hugo-25004176",
+      "passed": 106,
+      "sha": "9468fd92f508c6b821629565f4b5da72ae98e0b4"
     }
   },
   "td4_g4": {
@@ -214,6 +285,21 @@
       "author": "NicolasMoyenin",
       "passed": 104,
       "sha": "b402669b6f610b72493ea3cdc48735df0574d4c0"
+    },
+    "61": {
+      "author": "MaelanP77",
+      "passed": 124,
+      "sha": "46fba5491582d3c8b156dbc6f793f422cf31cecf"
+    },
+    "62": {
+      "author": "Abdelrahmane03",
+      "passed": 124,
+      "sha": "793362eb6304b28a2d6e2cae78ddbe5f1930728b"
+    },
+    "63": {
+      "author": "Abdelrahmane03",
+      "passed": 124,
+      "sha": "bb930d0fb3304a9db865cfdf00668b8b6dbcad8c"
     }
   },
   "thebatdevs": {

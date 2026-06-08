@@ -17,7 +17,7 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 31.8,
+      "coverage_pct": 31.7,
       "pmd_violations": 3,
       "spotless_ok": true
     },
@@ -45,13 +45,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 33.2,
+      "coverage_pct": 36.2,
       "pmd_violations": 3,
-      "spotless_ok": true
+      "spotless_ok": false
     },
     "tests": {
-      "passed": 129,
-      "pct": 20.8,
+      "passed": 147,
+      "pct": 23.7,
       "total": 620
     }
   },
@@ -73,7 +73,7 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 26.4,
+      "coverage_pct": 26.3,
       "pmd_violations": 5,
       "spotless_ok": false
     },
@@ -131,7 +131,7 @@
       "archunit_ok": true,
       "coverage_pct": 43.2,
       "pmd_violations": 4,
-      "spotless_ok": true
+      "spotless_ok": false
     },
     "tests": {
       "passed": 180,
@@ -157,13 +157,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 27.0,
+      "coverage_pct": 27.5,
       "pmd_violations": 3,
       "spotless_ok": false
     },
     "tests": {
-      "passed": 106,
-      "pct": 17.1,
+      "passed": 107,
+      "pct": 17.3,
       "total": 620
     }
   },
@@ -185,13 +185,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 25.9,
+      "coverage_pct": 27.3,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 102,
-      "pct": 16.5,
+      "passed": 108,
+      "pct": 17.4,
       "total": 620
     }
   },
@@ -213,13 +213,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 25.7,
+      "coverage_pct": 26.8,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 102,
-      "pct": 16.5,
+      "passed": 106,
+      "pct": 17.1,
       "total": 620
     }
   },
@@ -255,13 +255,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 28.1,
+      "coverage_pct": 34.7,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 104,
-      "pct": 16.8,
+      "passed": 124,
+      "pct": 20.0,
       "total": 620
     }
   },
