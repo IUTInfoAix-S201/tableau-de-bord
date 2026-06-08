@@ -1,6 +1,6 @@
 {
   "gael_matteo_kenzi_thomas_g3": {
-    "ci_status": null,
+    "ci_status": "success",
     "quality": {
       "archunit_ok": true,
       "coverage_pct": 25.9,
