@@ -241,13 +241,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 28.3,
-      "pmd_violations": 3,
+      "coverage_pct": 35.2,
+      "pmd_violations": 2,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 116,
-      "pct": 18.7,
+      "passed": 135,
+      "pct": 21.8,
       "total": 620
     }
   },
