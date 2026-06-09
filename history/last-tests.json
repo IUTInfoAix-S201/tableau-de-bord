@@ -51,18 +51,18 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 32.7,
+      "coverage_pct": 43.0,
       "pmd_violations": 3,
-      "spotless_ok": false
+      "spotless_ok": true
     },
     "tests": {
-      "passed": 140,
-      "pct": 22.6,
+      "passed": 167,
+      "pct": 26.9,
       "total": 620
     },
     "tests_by_feature": {
       "bibliotheque": {
-        "passed": 0,
+        "passed": 21,
         "total": 22
       },
       "diagnostic": {
@@ -70,7 +70,7 @@
         "total": 24
       },
       "importation": {
-        "passed": 0,
+        "passed": 24,
         "total": 83
       },
       "lot": {
@@ -82,7 +82,7 @@
         "total": 53
       },
       "passage": {
-        "passed": 18,
+        "passed": 0,
         "total": 111
       },
       "qualification": {

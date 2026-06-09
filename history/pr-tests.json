@@ -76,6 +76,11 @@
       "author": "Nguyen-Thomas1",
       "passed": 167,
       "sha": "9544bdea0076d6751a8ac7ce711b84b5b4ae1d66"
+    },
+    "74": {
+      "author": "Nguyen-Thomas1",
+      "passed": 167,
+      "sha": "8d9db2b3cbf65b228f7bfaec7bb1613435f68ddc"
     }
   },
   "giteam": {
@@ -792,6 +797,11 @@
       "author": "JolanRAMBEAUX",
       "passed": null,
       "sha": "f5fe90b57a64cdfefcf488ec2fa778e668de419d"
+    },
+    "80": {
+      "author": "Lohann-B",
+      "passed": null,
+      "sha": "ca52bd9edf63d89b160b0b949368035b40ca91b6"
     }
   },
   "vigiechiro-tommy-manal-yannick-tasnim": {
