@@ -71,7 +71,13 @@
       "sha": "f99b3637ce99da4115d47f9d4b71ee4340fe3f4f"
     }
   },
-  "jpeuxpasjainedjar": {},
+  "jpeuxpasjainedjar": {
+    "64": {
+      "author": "Alexandre-SBEGHEN",
+      "passed": 108,
+      "sha": "734f0de8ba6825c63d953e5efc187b46e5b6f239"
+    }
+  },
   "la-team": {
     "60": {
       "author": "lochlann-fabbi",
@@ -92,6 +98,21 @@
       "author": "lochlann-fabbi",
       "passed": 109,
       "sha": "6dc6a6856d4ef81617c85cec14bac65ff226db4d"
+    },
+    "65": {
+      "author": "lochlann-fabbi",
+      "passed": 109,
+      "sha": "6807ecd770e2d5204b61663e9870509471e7fcd1"
+    },
+    "66": {
+      "author": "lochlann-fabbi",
+      "passed": 109,
+      "sha": "0c6524bb6b2f393921028a05a2b2e8c12dbe8aef"
+    },
+    "67": {
+      "author": "lochlann-fabbi",
+      "passed": 109,
+      "sha": "fb9957cec737471e82a4c890dbedf5a094a4a921"
     }
   },
   "le-corbeau-ewan": {
@@ -258,6 +279,16 @@
       "author": "Renethan",
       "passed": 107,
       "sha": "3af8f25d16cc07aadf0bd65e73fa89ccde1d3cee"
+    },
+    "67": {
+      "author": "Renethan",
+      "passed": 114,
+      "sha": "5e7fad8f9cc9e4b351d1b61dc03774f35f4a3e70"
+    },
+    "68": {
+      "author": "JimmyLefebvre",
+      "passed": 133,
+      "sha": "a9c67fe578b8ef8d2b3eb4563a44b574a77e626e"
     }
   },
   "td2-g5-awoooo": {
@@ -287,6 +318,21 @@
       "author": "ikram-aouad",
       "passed": 108,
       "sha": "2903d0732106ba377321ee522cae8afc08faa5fe"
+    },
+    "71": {
+      "author": "Hafuyo",
+      "passed": 114,
+      "sha": "ef30c67838e63e5a8feb361e149e6f70bbf482d6"
+    },
+    "73": {
+      "author": "Hafuyo",
+      "passed": 114,
+      "sha": "1448f2817b81fd344508c8443475030ddac73c69"
+    },
+    "74": {
+      "author": "Hafuyo",
+      "passed": 114,
+      "sha": "bcde4ee17621e15e0697ea7f0c2210a5b6c04d6b"
     }
   },
   "td2-vigiegroupe3": {},
@@ -388,6 +434,11 @@
       "author": "GKMat",
       "passed": 127,
       "sha": "672eb7871667916fb73ea20bb366f81025f1a730"
+    },
+    "62": {
+      "author": "JolanRAMBEAUX",
+      "passed": 145,
+      "sha": "a90297c167bfb7c4fa0611f935d72df1872a5755"
     }
   },
   "vigiechiro-tommy-manal-yannick-tasnim": {
