@@ -432,6 +432,11 @@
       "author": "AmadeusTdev",
       "passed": 417,
       "sha": "a7aecf03be501617a7fead18fc25fc7f60a4a7f7"
+    },
+    "85": {
+      "author": "mankaiadamgit",
+      "passed": 446,
+      "sha": "a97e4e34ac3a346fcfe671e542c0913f885f70f2"
     }
   },
   "t1g3": {
@@ -615,6 +620,11 @@
       "author": "Hafuyo",
       "passed": 114,
       "sha": "e62b985c62114796b781f8abb68c0c9fadd5ce91"
+    },
+    "87": {
+      "author": "Hafuyo",
+      "passed": 218,
+      "sha": "b5dad02c3a1f4dfc9ebc65d6d2de88d17ea6e5e6"
     }
   },
   "td2-vigiegroupe3": {
