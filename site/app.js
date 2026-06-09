@@ -167,6 +167,44 @@ function renderTable(data) {
   });
 }
 
+// --- frise d'avancement par feature (chaine VigieChiro) -------------------
+const FEATURE_LABEL = {
+  diagnostic: "Diagnostic", lot: "Lot", bibliotheque: "Bibliothèque",
+  validation: "Validation", importation: "Importation",
+  qualification: "Qualification", multisite: "Multisite", passage: "Passage",
+};
+const FEATURE_EMOJI = {
+  diagnostic: "🩺", lot: "📦", bibliotheque: "📚", validation: "✅",
+  importation: "📥", qualification: "🎧", multisite: "🗺️", passage: "🎯",
+};
+const MOSCOW = { must: "M", should: "S", could: "C" };
+
+function friseFeatures(t) {
+  if (!t.features || !t.features.length) return "";
+  const total = t.features.length;
+  const faits = t.features.filter(f => f.complete).length;
+  const noeuds = t.features.map((f, i) => {
+    const p = f.total ? Math.round(100 * f.done / f.total) : 0;
+    const etat = f.complete ? "complete" : (f.done > 0 ? "encours" : "vide");
+    const lbl = FEATURE_LABEL[f.key] || f.key;
+    const mos = f.priority
+      ? `<span class="moscow ${f.priority}" title="${esc(f.priority)}">${MOSCOW[f.priority] || ""}</span>` : "";
+    const lien = f.capture_url
+      ? `<a class="capture" href="${esc(f.capture_url)}" target="_blank" rel="noopener" title="Voir l'écran (capture dans le dépôt)">📸 voir l'écran ↗</a>` : "";
+    const fleche = i < total - 1 ? `<span class="fleche">▸</span>` : "";
+    return `<div class="feat ${etat}" title="${esc(lbl)} — ${f.done}/${f.total} tâches">
+        <span class="feat-tete"><span class="emoji">${FEATURE_EMOJI[f.key] || "•"}</span> ${esc(lbl)} ${mos}</span>
+        <span class="jauge"><span style="width:${p}%"></span></span>
+        <span class="cpt">${f.done}/${f.total}</span>
+        ${lien}
+      </div>${fleche}`;
+  }).join("");
+  return `<div class="frise">
+      <div class="frise-titre">Avancement par écran <small>${faits}/${total} terminés</small></div>
+      <div class="frise-rail">${noeuds}</div>
+    </div>`;
+}
+
 function detailPanneau(t) {
   const q = t.quality, b = t.bus_factor, r = t.review;
   const bal = (b.balance != null) ? b.balance : null;
@@ -184,6 +222,7 @@ function detailPanneau(t) {
     </tr>`).join("");
 
   return `<div class="panneau">
+    ${friseFeatures(t)}
     <div class="qualite">
       <div class="kpi"><b>${t.open_branches == null ? "n/d" : t.open_branches}</b><small>branches en cours</small></div>
       <div class="kpi"><b>${q.coverage_pct == null ? "n/d" : q.coverage_pct + " %"}</b><small>couverture JaCoCo</small></div>
