@@ -317,28 +317,40 @@ def capture_vues_verte(repo):
     return out == "success"
 
 
-def chaine_features(repo, repo_url, par_feature):
-    """Construit la frise par feature : done/total, complete, lien capture (option A).
+def _avancement(key, par_feature, tests_by_feature):
+    """(done, total, source) : tests si la donnee existe pour cet ecran, sinon issues."""
+    tbf = (tests_by_feature or {}).get(key)
+    if tbf and tbf.get("total"):
+        return tbf["passed"], tbf["total"], "tests"
+    iss = par_feature.get(key, {"done": 0, "total": 0})
+    return iss["done"], iss["total"], "issues"
 
-    Le lien capture n'apparait que si la feature est terminee, son PNG existe ET
-    `capture-vues` est verte (galerie a jour). Les appels reseau ne sont faits que
-    s'il y a au moins une feature terminee.
+
+def chaine_features(repo, repo_url, par_feature, tests_by_feature=None):
+    """Frise par feature. Jauge = tests passes/total si dispo, sinon issues (repli).
+
+    `complete` (vert + lien) = mesure primaire a 100 %. Le lien capture exige en
+    plus que le PNG existe ET que `capture-vues` soit verte (galerie a jour). Les
+    appels reseau ne sont faits que s'il y a au moins une feature terminee.
     """
-    complets = {k for k in CHAINE
-                if par_feature.get(k, {}).get("total", 0) > 0
-                and par_feature[k]["done"] == par_feature[k]["total"]}
+    primaire = {k: _avancement(k, par_feature, tests_by_feature) for k in CHAINE}
+    complets = {k for k, (d, t, _) in primaire.items() if t > 0 and d == t}
     caps = captures_presentes(repo) if complets else set()
     fraiche = capture_vues_verte(repo) if complets else False
     frise = []
     for key in CHAINE:
-        pf = par_feature.get(key, {"done": 0, "total": 0})
+        done, total, source = primaire[key]
         complete = key in complets
         png = CAPTURE.get(key)
         url = (f"{repo_url}/blob/main/.github/assets/{png}"
                if complete and fraiche and png in caps else None)
+        iss = par_feature.get(key, {"done": 0, "total": 0})
+        tbf = (tests_by_feature or {}).get(key)
         frise.append({"key": key, "priority": PRIORITE.get(key),
-                      "done": pf["done"], "total": pf["total"],
-                      "complete": complete, "capture_url": url})
+                      "done": done, "total": total, "source": source,
+                      "complete": complete, "capture_url": url,
+                      "issues": {"done": iss["done"], "total": iss["total"]},
+                      "tests": ({"passed": tbf["passed"], "total": tbf["total"]} if tbf else None)})
     return frise
 
 
@@ -596,13 +608,14 @@ def parser_logs(repo, run_id):
 
 
 def collecter_tests(repo, run):
-    """Renvoie (tests_dict, quality_dict, ci_status, source)."""
+    """Renvoie (tests_dict, quality_dict, ci_status, source, tests_by_feature)."""
     ci_status = run.get("conclusion")
     run_id = run.get("id")
     quality = {"coverage_pct": None, "pmd_violations": None,
                "spotless_ok": None, "archunit_ok": None}
+    tbf = None
     if not run_id:
-        return ({"passed": None, "total": None, "pct": None}, quality, ci_status, "aucun-run")
+        return ({"passed": None, "total": None, "pct": None}, quality, ci_status, "aucun-run", tbf)
 
     summary = lire_ci_summary(repo, run_id)
     if summary and summary.get("tests"):
@@ -615,11 +628,12 @@ def collecter_tests(repo, run):
             "spotless_ok": q.get("spotless_ok"),
             "archunit_ok": q.get("archunit_ok"),
         }
+        tbf = summary.get("tests_by_feature")
         source = "artefact"
     else:
         parsed = parser_logs(repo, run_id)
         if not parsed:
-            return ({"passed": None, "total": None, "pct": None}, quality, ci_status, "indisponible")
+            return ({"passed": None, "total": None, "pct": None}, quality, ci_status, "indisponible", tbf)
         tests = {"passed": parsed["passed"], "total": parsed["total"]}
         source = "logs"
 
@@ -627,7 +641,7 @@ def collecter_tests(repo, run):
         tests["pct"] = round(100 * tests["passed"] / tests["total"], 1)
     else:
         tests["pct"] = None
-    return tests, quality, ci_status, source
+    return tests, quality, ci_status, source, tbf
 
 
 # ------------------------------------------------------------------------------
@@ -953,18 +967,20 @@ def main():
             tests = {"passed": None, "total": None, "pct": None}
             quality = {"coverage_pct": None, "pmd_violations": None,
                        "spotless_ok": None, "archunit_ok": None}
-            ci_status, source = None, "saute"
+            ci_status, source, tbf = None, "saute", None
         else:
             run = dernier_run(repo)
-            tests, quality, ci_status, source = collecter_tests(repo, run)
+            tests, quality, ci_status, source, tbf = collecter_tests(repo, run)
             # Filet anti-hoquet : si le fetch echoue, reutiliser la derniere valeur
             # connue (evite un « n/d » transitoire qui casserait tout le tableau).
             if tests["passed"] is None and slug in last_tests:
                 lt = last_tests[slug]
                 tests, quality = lt["tests"], lt["quality"]
+                tbf = lt.get("tests_by_feature")
                 ci_status, source = lt.get("ci_status"), "cache"
             elif tests["passed"] is not None:
-                last_tests[slug] = {"tests": tests, "quality": quality, "ci_status": ci_status}
+                last_tests[slug] = {"tests": tests, "quality": quality,
+                                    "ci_status": ci_status, "tests_by_feature": tbf}
 
         teams.append({
             "slug": slug,
@@ -976,7 +992,7 @@ def main():
             "tests_source": source,
             "issues": issues_data["issues"],
             "priorities": issues_data["priorities"],
-            "features": chaine_features(repo, e["url"], issues_data["par_feature"]),
+            "features": chaine_features(repo, e["url"], issues_data["par_feature"], tbf),
             "open_branches": open_branches,
             "tests": tests,
             "quality": quality,
