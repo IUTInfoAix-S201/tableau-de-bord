@@ -70,6 +70,23 @@ PRIORITE = {
 }
 BANDES = ["must", "should", "could"]
 
+# --- Chaine des 8 features a construire (ordre pipeline VigieChiro) ------------
+# `sites` + `commun` sont fournis en reference ; ces 8-la sont le travail etudiant.
+CHAINE = ["diagnostic", "lot", "bibliotheque", "validation",
+          "importation", "qualification", "multisite", "passage"]
+# Capture representative par feature (option A : lien vers le blob du repo prive).
+# NB : `importation` -> fichiers prefixes `apercu-import-*` (et non `apercu-importation-`).
+CAPTURE = {
+    "diagnostic": "apercu-diagnostic.png",
+    "lot": "apercu-lot-preparer.png",
+    "bibliotheque": "apercu-bibliotheque-sons.png",
+    "validation": "apercu-validation-revue.png",
+    "importation": "apercu-import-assistant.png",
+    "qualification": "apercu-qualification.png",
+    "multisite": "apercu-multisite.png",
+    "passage": "apercu-passage.png",
+}
+
 # --- Seuils du voyant qualite de revue (REGLABLES) ----------------------------
 CORPS_SUBSTANTIEL = 80      # une revue avec un corps >= 80 car. compte comme vraie
 SEUIL_VERT = 0.50           # part de revues substantielles pour le vert
@@ -251,12 +268,18 @@ def collecter_issues(repo):
     )
     done = sum(1 for i in issues if i["closed"])
     bandes = {b: {"done": 0, "total": 0} for b in BANDES}
+    par_feature = {f: {"done": 0, "total": 0} for f in CHAINE}
     for i in issues:
-        prio = PRIORITE.get(prefixe_feature(i["title"]))
+        feat = prefixe_feature(i["title"])
+        prio = PRIORITE.get(feat)
         if prio in bandes:
             bandes[prio]["total"] += 1
             if i["closed"]:
                 bandes[prio]["done"] += 1
+        if feat in par_feature:
+            par_feature[feat]["total"] += 1
+            if i["closed"]:
+                par_feature[feat]["done"] += 1
     mvp = bandes["must"]["total"] > 0 and bandes["must"]["done"] == bandes["must"]["total"]
     # suivi par assignee
     assignes = defaultdict(int)
@@ -269,9 +292,33 @@ def collecter_issues(repo):
     return {
         "issues": {"done": done, "total": len(issues)},
         "priorities": {**bandes, "mvp_complete": mvp},
+        "par_feature": par_feature,
         "_assignes": dict(assignes),
         "_fermees_par": dict(fermees_par),
     }
+
+
+def captures_presentes(repo):
+    """Noms des `apercu-*.png` commites dans .github/assets (set ; vide si absent)."""
+    out = gh_json(f"repos/{ORG}/{repo}/contents/.github/assets?ref=main", jq=".[].name")
+    if isinstance(out, str):
+        out = [out]
+    return {n for n in out if isinstance(n, str) and n.startswith("apercu-") and n.endswith(".png")}
+
+
+def chaine_features(repo, repo_url, par_feature):
+    """Construit la frise par feature : done/total, complete, lien capture (option A)."""
+    caps = captures_presentes(repo)
+    frise = []
+    for key in CHAINE:
+        pf = par_feature.get(key, {"done": 0, "total": 0})
+        complete = pf["total"] > 0 and pf["done"] == pf["total"]
+        png = CAPTURE.get(key)
+        url = f"{repo_url}/blob/main/.github/assets/{png}" if complete and png in caps else None
+        frise.append({"key": key, "priority": PRIORITE.get(key),
+                      "done": pf["done"], "total": pf["total"],
+                      "complete": complete, "capture_url": url})
+    return frise
 
 
 # ------------------------------------------------------------------------------
@@ -908,6 +955,7 @@ def main():
             "tests_source": source,
             "issues": issues_data["issues"],
             "priorities": issues_data["priorities"],
+            "features": chaine_features(repo, e["url"], issues_data["par_feature"]),
             "open_branches": open_branches,
             "tests": tests,
             "quality": quality,
