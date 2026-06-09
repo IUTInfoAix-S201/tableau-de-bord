@@ -192,7 +192,10 @@ function friseFeatures(t) {
     const lien = f.capture_url
       ? `<a class="capture" href="${esc(f.capture_url)}" target="_blank" rel="noopener" title="Voir l'écran (capture dans le dépôt)">📸 voir l'écran ↗</a>` : "";
     const fleche = i < total - 1 ? `<span class="fleche">▸</span>` : "";
-    return `<div class="feat ${etat}" title="${esc(lbl)} — ${f.done}/${f.total} tâches">
+    const tTests = f.tests ? `tests ${f.tests.passed}/${f.tests.total}` : "tests n/d";
+    const tTaches = f.issues ? ` · tâches ${f.issues.done}/${f.issues.total}` : "";
+    const tip = `${lbl} — ${tTests}${tTaches}` + (f.source === "issues" ? " (jauge : tâches)" : "");
+    return `<div class="feat ${etat}" title="${esc(tip)}">
         <span class="feat-tete"><span class="emoji">${FEATURE_EMOJI[f.key] || "•"}</span> ${esc(lbl)} ${mos}</span>
         <span class="jauge"><span style="width:${p}%"></span></span>
         <span class="cpt">${f.done}/${f.total}</span>
