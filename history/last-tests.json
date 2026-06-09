@@ -593,13 +593,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 29.7,
+      "coverage_pct": 31.8,
       "pmd_violations": 3,
-      "spotless_ok": true
+      "spotless_ok": false
     },
     "tests": {
-      "passed": 114,
-      "pct": 18.4,
+      "passed": 132,
+      "pct": 21.3,
       "total": 620
     },
     "tests_by_feature": {
@@ -624,7 +624,7 @@
         "total": 53
       },
       "passage": {
-        "passed": 0,
+        "passed": 18,
         "total": 111
       },
       "qualification": {
