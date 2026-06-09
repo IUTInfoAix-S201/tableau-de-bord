@@ -306,15 +306,36 @@ def captures_presentes(repo):
     return {n for n in out if isinstance(n, str) and n.startswith("apercu-") and n.endswith(".png")}
 
 
+def capture_vues_verte(repo):
+    """Vrai si le dernier run `capture-vues` sur main est vert.
+
+    Sinon la galerie d'apercus peut etre perimee (la capture est tout-ou-rien :
+    une seule vue cassee fige tous les PNG) -> on n'affiche pas de lien.
+    """
+    out = gh_json(f"repos/{ORG}/{repo}/actions/workflows/capture-vues.yml/runs"
+                  "?branch=main&per_page=1", jq=".workflow_runs[0].conclusion")
+    return out == "success"
+
+
 def chaine_features(repo, repo_url, par_feature):
-    """Construit la frise par feature : done/total, complete, lien capture (option A)."""
-    caps = captures_presentes(repo)
+    """Construit la frise par feature : done/total, complete, lien capture (option A).
+
+    Le lien capture n'apparait que si la feature est terminee, son PNG existe ET
+    `capture-vues` est verte (galerie a jour). Les appels reseau ne sont faits que
+    s'il y a au moins une feature terminee.
+    """
+    complets = {k for k in CHAINE
+                if par_feature.get(k, {}).get("total", 0) > 0
+                and par_feature[k]["done"] == par_feature[k]["total"]}
+    caps = captures_presentes(repo) if complets else set()
+    fraiche = capture_vues_verte(repo) if complets else False
     frise = []
     for key in CHAINE:
         pf = par_feature.get(key, {"done": 0, "total": 0})
-        complete = pf["total"] > 0 and pf["done"] == pf["total"]
+        complete = key in complets
         png = CAPTURE.get(key)
-        url = f"{repo_url}/blob/main/.github/assets/{png}" if complete and png in caps else None
+        url = (f"{repo_url}/blob/main/.github/assets/{png}"
+               if complete and fraiche and png in caps else None)
         frise.append({"key": key, "priority": PRIORITE.get(key),
                       "done": pf["done"], "total": pf["total"],
                       "complete": complete, "capture_url": url})
