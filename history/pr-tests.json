@@ -56,6 +56,21 @@
       "author": "Nguyen-Thomas1",
       "passed": 140,
       "sha": "3af4f52770b5f2e65ff8bc4bd4dbb49201fa0c48"
+    },
+    "70": {
+      "author": "Nguyen-Thomas1",
+      "passed": null,
+      "sha": "3cb56627876cf78125fddb4d05fbc1f38b43155c"
+    },
+    "71": {
+      "author": "Nguyen-Thomas1",
+      "passed": null,
+      "sha": "29e6f76cbf4226ce6329e775aa75072052c14260"
+    },
+    "72": {
+      "author": "Nguyen-Thomas1",
+      "passed": 122,
+      "sha": "2aa6e6af73746027b19d07da8a50ae885edece0a"
     }
   },
   "giteam": {
@@ -158,7 +173,7 @@
     },
     "69": {
       "author": "NinaMATCHA",
-      "passed": null,
+      "passed": 287,
       "sha": "5ed190417226974e104efea923819ec58f9639fd"
     }
   },
@@ -400,7 +415,7 @@
     },
     "82": {
       "author": "AmadeusTdev",
-      "passed": null,
+      "passed": 417,
       "sha": "a7aecf03be501617a7fead18fc25fc7f60a4a7f7"
     }
   },
