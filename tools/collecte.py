@@ -138,8 +138,12 @@ def gh_json(path, jq=None, paginate=False):
     return json.loads(out)
 
 
-def gql(query, variables, tries=5):
-    """Appel GraphQL via gh, avec retry sur reponse vide / erreur transitoire."""
+def gql(query, variables, tries=6):
+    """Appel GraphQL via gh, robuste aux hoquets : reponse vide, JSON invalide,
+    erreurs GraphQL transitoires, et enveloppe d'erreur SANS cle `data` (ex.
+    secondary rate limit `{"message": "..."}`) qui faisait planter par KeyError.
+    Retry avec backoff progressif ; message clair en cas d'echec final."""
+    dernier = ""
     for i in range(tries):
         p = subprocess.run(
             ["gh", "api", "graphql", "--input", "-"],
@@ -149,15 +153,20 @@ def gql(query, variables, tries=5):
         )
         out = p.stdout.strip()
         if out:
-            data = json.loads(out)
-            if "errors" in data:
-                if i < tries - 1:
-                    time.sleep(2)
-                    continue
-                raise SystemExit("ERREUR GraphQL : " + json.dumps(data["errors"])[:400])
-            return data["data"]
-        time.sleep(2)
-    raise SystemExit("ERREUR : reponse GraphQL vide persistante.")
+            try:
+                data = json.loads(out)
+            except json.JSONDecodeError:
+                dernier = out[:400]
+            else:
+                if isinstance(data, dict) and data.get("data") is not None and "errors" not in data:
+                    return data["data"]
+                # erreurs GraphQL OU enveloppe d'erreur REST (rate limit, abuse...)
+                dernier = json.dumps(data.get("errors") or data.get("message") or data)[:400]
+        else:
+            dernier = (p.stderr or "").strip()[:400]
+        if i < tries - 1:
+            time.sleep(2 * (i + 1))   # backoff 2,4,6,8,10 s (aide sur secondary rate limit)
+    raise SystemExit(f"ERREUR GraphQL (apres {tries} essais) : {dernier}")
 
 
 def fold(s):
