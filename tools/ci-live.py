@@ -123,18 +123,25 @@ def _dt(s):
         return None
 
 
-def depuis(s, now):
-    d = _dt(s)
-    if not d:
-        return ""
-    sec = int((now - d).total_seconds())
-    if sec < 0:
-        sec = 0
+def _fmt(sec):
+    sec = max(0, int(sec))
     if sec < 60:
         return f"{sec}s"
     if sec < 3600:
         return f"{sec // 60}m{sec % 60:02d}s"
     return f"{sec // 3600}h{(sec % 3600) // 60:02d}m"
+
+
+def depuis(s, now):
+    """Temps ecoule depuis l'instant `s` (ISO) jusqu'a `now`."""
+    d = _dt(s)
+    return _fmt((now - d).total_seconds()) if d else ""
+
+
+def duree_run(start, end):
+    """Duree d'un run = end - start (deux instants ISO)."""
+    a, b = _dt(start), _dt(end)
+    return _fmt((b - a).total_seconds()) if a and b else ""
 
 
 # rang de tri + glyphe/couleur par etat
@@ -158,20 +165,26 @@ def construire_lignes(resultats, now, recent_min):
     for full, runs in resultats:
         for r in runs:
             st = r.get("status")
-            if st != "completed":
+            if st == "in_progress":
                 rang, etat = classer(r)
-                quand = depuis(r.get("startedAt") or r.get("createdAt"), now) if st == "in_progress" else ""
-            else:
+                duree = depuis(r.get("startedAt") or r.get("createdAt"), now)   # tourne depuis
+                quand = ""
+            elif st != "completed":            # queued / waiting / pending
+                rang, etat = classer(r)
+                duree = ""
+                quand = "en file " + depuis(r.get("createdAt"), now)           # attend depuis
+            else:                              # completed
                 fin = _dt(r.get("updatedAt"))
                 if not fin or (now - fin).total_seconds() > recent_min * 60:
                     continue   # trop ancien -> on ne garde que l'actif + le tout recent
                 rang, etat = classer(r)
-                quand = "il y a " + depuis(r.get("updatedAt"), now)
+                duree = duree_run(r.get("startedAt"), r.get("updatedAt"))      # a dure
+                quand = "il y a " + depuis(r.get("updatedAt"), now)           # fini il y a
             lignes.append({
                 "rang": rang, "repo": alias(full), "etat": etat,
                 "wf": r.get("workflowName") or "?", "branche": r.get("headBranch") or "?",
-                "runner": r.get("runner", ""), "quand": quand, "url": r.get("url") or "",
-                "tri2": r.get("startedAt") or r.get("createdAt") or "",
+                "runner": r.get("runner", ""), "duree": duree, "quand": quand,
+                "url": r.get("url") or "", "tri2": r.get("startedAt") or r.get("createdAt") or "",
             })
     lignes.sort(key=lambda x: (x["rang"], x["repo"]) if x["rang"] < 2 else (x["rang"], _inv(x["tri2"])))
     return lignes
@@ -221,16 +234,18 @@ def afficher(now, runner, lignes, interval, once):
         wetat = max([largeur_visible(l["etat"]) for l in lignes] + [8])
         wwf = max([len(l["wf"]) for l in lignes] + [8])
         wrun = max([len(l["runner"]) for l in lignes] + [6])   # >= len("RUNNER")
+        wdur = max([len(l["duree"]) for l in lignes] + [6])    # >= len("DUREE")
         entete = ("  " + "REPO".ljust(wrepo) + "  " + "STATUT".ljust(wetat) + "  "
                   + "RUNNER".ljust(wrun) + "  " + "WORKFLOW".ljust(wwf) + "  "
-                  + "BRANCHE".ljust(10) + "  QUAND")
+                  + "BRANCHE".ljust(10) + "  " + "DUREE".ljust(wdur) + "  QUAND")
         out.append(col(entete, GRAY))
         for l in lignes:
             run_aff = col(l["runner"], CYAN) if l["runner"] else ""
+            dur_aff = col(l["duree"], YELLOW if l["rang"] == 0 else GRAY) if l["duree"] else ""
             out.append("  " + pad(l["repo"], wrepo) + "  " + pad(l["etat"], wetat) + "  "
                        + pad(run_aff, wrun) + "  "
                        + l["wf"].ljust(wwf) + "  " + l["branche"].ljust(10) + "  "
-                       + col(l["quand"], GRAY))
+                       + pad(dur_aff, wdur) + "  " + col(l["quand"], GRAY))
     if not once:
         out.append("")
         out.append(col(f"  rafraichi toutes les {interval}s · Ctrl-C pour quitter", GRAY))
