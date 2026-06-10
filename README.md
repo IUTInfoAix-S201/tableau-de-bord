@@ -25,6 +25,7 @@ Par équipe :
 
 ```
 tools/collecte.py   -> interroge GitHub (gh) et écrit site/data.json + history/history.jsonl
+tools/ci-live.py    -> moniteur CLI temps réel des runs CI de tous les dépôts SAÉ
 site/               -> page statique (index.html + style.css + app.js + data.json généré)
 history/            -> instantanés journaliers (commit automatique du bot) pour les tendances
 .github/workflows/build-dashboard.yml -> cron quotidien + manuel : collecte -> Pages
@@ -65,6 +66,23 @@ python3 -m http.server --directory site                    # http://localhost:80
 
 Options : `--teams a,b` (limiter), `--no-tests` (saute tests/qualité, plus rapide),
 `--no-history` (n'écrit pas l'historique).
+
+## Suivre les runs CI en direct
+
+Le tableau de bord se reconstruit à l'heure : pour voir **en temps réel** ce qui tourne / attend /
+vient de finir sur **tous** les dépôts SAÉ (21 forks + canonique + dashboard + classroom-sync),
+utiliser le moniteur CLI. Pratique quand le runner self-hosted est un goulot : on voit la file
+d'un coup d'oeil, et l'état (libre / occupé / hors ligne) de chaque runner.
+
+```bash
+python3 tools/ci-live.py                 # boucle, rafraichi toutes les 20 s
+python3 tools/ci-live.py --interval 30   # autre cadence
+python3 tools/ci-live.py --once          # un seul affichage (scripts/cron)
+python3 tools/ci-live.py --recent 20     # garde les runs finis depuis < 20 min
+```
+
+Lecture seule (aucune action sur les repos), via ton `gh` authentifié. Coût ~1 appel API par repo
+et par rafraichissement (allonger `--interval` si le token sert ailleurs en parallèle).
 
 ## Réglages
 
