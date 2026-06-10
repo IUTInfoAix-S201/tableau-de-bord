@@ -373,6 +373,11 @@
       "author": "DURAN-Kalvin-25013186",
       "passed": null,
       "sha": "2f2220fde51d1193b0943b9c15ff26a11c82a269"
+    },
+    "79": {
+      "author": "GOUDJIL-Mohamed-25013944",
+      "passed": null,
+      "sha": "5184564415a37d9855c593e377026f0e5f001952"
     }
   },
   "mathieu_kyle_lenny_diego": {
@@ -609,6 +614,16 @@
       "author": "SalahEdine-bou",
       "passed": null,
       "sha": "3ceb21aede8f3656bf98fb7d9c912ee6f647e681"
+    },
+    "69": {
+      "author": "MilannB25",
+      "passed": null,
+      "sha": "50821334a7ae272b23b2908ee756822bcfa45772"
+    },
+    "70": {
+      "author": "Barny-Rafael",
+      "passed": null,
+      "sha": "d549d02ff2ce879fb2425eb209c8288a3454e9b4"
     }
   },
   "td2-g1": {
