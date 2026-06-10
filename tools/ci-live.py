@@ -81,30 +81,35 @@ def alias(full):
     return nom[len(FORK_PREFIX):] if nom.startswith(FORK_PREFIX) else nom
 
 
-def runner_du_run(full, run_id):
-    """Nom du runner qui execute le(s) job(s) d'un run (1 appel API cible)."""
+def job_actif(full, run_id):
+    """(runner, started_at) du job en cours d'un run (1 appel API cible).
+
+    On lit le `started_at` du JOB (instant ou le runner l'a reellement pris en
+    charge), et non le `startedAt` du run (proche du declenchement) : pour un run
+    qui a attendu en file, les deux different fortement.
+    """
     if not run_id:
-        return ""
+        return "", ""
     jobs = gh_json(["api", f"repos/{full}/actions/runs/{run_id}/jobs",
-                    "--jq", "[.jobs[] | {status, runner_name}]"])
+                    "--jq", "[.jobs[] | {status, runner_name, started_at}]"])
     if not isinstance(jobs, list):
-        return ""
+        return "", ""
     for j in jobs:                       # privilegie le job ENCORE en cours
-        if j.get("status") == "in_progress" and j.get("runner_name"):
-            return j["runner_name"]
+        if j.get("status") == "in_progress":
+            return j.get("runner_name") or "", j.get("started_at") or ""
     for j in jobs:
-        if j.get("runner_name"):
-            return j["runner_name"]
-    return ""
+        if j.get("runner_name") or j.get("started_at"):
+            return j.get("runner_name") or "", j.get("started_at") or ""
+    return "", ""
 
 
 def runs_du_repo(full):
     data = gh_json(["run", "list", "--repo", full, "--limit", "8", "--json",
                     "databaseId,workflowName,status,conclusion,headBranch,event,startedAt,createdAt,updatedAt,url"])
     runs = data if isinstance(data, list) else []
-    for r in runs:                       # quel runner pour les jobs en cours (appel cible)
+    for r in runs:                       # runner + instant d'activation reelle du job en cours
         if r.get("status") == "in_progress":
-            r["runner"] = runner_du_run(full, r.get("databaseId"))
+            r["runner"], r["job_started"] = job_actif(full, r.get("databaseId"))
     return full, runs
 
 
@@ -167,7 +172,8 @@ def construire_lignes(resultats, now, recent_min):
             st = r.get("status")
             if st == "in_progress":
                 rang, etat = classer(r)
-                duree = depuis(r.get("startedAt") or r.get("createdAt"), now)   # tourne depuis
+                # actif depuis = started_at du JOB (pas du run, qui inclut l'attente en file)
+                duree = depuis(r.get("job_started") or r.get("startedAt") or r.get("createdAt"), now)
                 quand = ""
             elif st != "completed":            # queued / waiting / pending
                 rang, etat = classer(r)
