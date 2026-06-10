@@ -593,6 +593,11 @@
       "author": "ChevremontLilian",
       "passed": 132,
       "sha": "ad2b3e26f51afc2be16669211e917484885730da"
+    },
+    "62": {
+      "author": "CoIib",
+      "passed": null,
+      "sha": "d696dd99672a637ac54ec196769989e76f5f6266"
     }
   },
   "td2-g6": {
@@ -711,6 +716,11 @@
       "author": "BARSALI-Ilyas-b25002745",
       "passed": 109,
       "sha": "a2c71858805ad93c9a576f4cded6e533654a007e"
+    },
+    "61": {
+      "author": "ZOPPI-Nicolas-25003515",
+      "passed": 176,
+      "sha": "41a9414d0231cbdd473fb10342720ba5be108417"
     },
     "64": {
       "author": "RUIZ-Enrique-25002136",
