@@ -10,14 +10,15 @@ self-hosted est partage : on voit le goulot (file d'attente) d'un coup d'oeil.
 PREREQUIS : `gh` authentifie (`gh auth login`) avec lecture sur les orgs S201.
 
 Usage :
-    python3 tools/ci-live.py                 # boucle, rafraichi toutes les 20 s
+    python3 tools/ci-live.py                 # boucle, rafraichi toutes les 25 s
     python3 tools/ci-live.py --interval 30   # autre cadence
     python3 tools/ci-live.py --once          # un seul affichage (scripts/cron)
     python3 tools/ci-live.py --recent 20     # garde les runs finis depuis < 20 min
 
-Cout API : ~1 appel par repo et par rafraichissement (+1 pour le runner). A 20 s
-sur ~24 repos -> ~4500 appels/h, sous la limite de 5000/h du token. Allonger
-`--interval` si le token sert aussi a autre chose en parallele.
+Cout API par rafraichissement : ~1 appel par repo (~24) + 1 pour les runners + 1
+par run EN COURS (pour savoir sur quel runner il tourne). A 25 s -> ~4300 appels/h,
+sous la limite de 5000/h du token. Allonger `--interval` si le token sert aussi a
+autre chose en parallele.
 """
 
 from __future__ import annotations
@@ -80,10 +81,31 @@ def alias(full):
     return nom[len(FORK_PREFIX):] if nom.startswith(FORK_PREFIX) else nom
 
 
+def runner_du_run(full, run_id):
+    """Nom du runner qui execute le(s) job(s) d'un run (1 appel API cible)."""
+    if not run_id:
+        return ""
+    jobs = gh_json(["api", f"repos/{full}/actions/runs/{run_id}/jobs",
+                    "--jq", "[.jobs[] | {status, runner_name}]"])
+    if not isinstance(jobs, list):
+        return ""
+    for j in jobs:                       # privilegie le job ENCORE en cours
+        if j.get("status") == "in_progress" and j.get("runner_name"):
+            return j["runner_name"]
+    for j in jobs:
+        if j.get("runner_name"):
+            return j["runner_name"]
+    return ""
+
+
 def runs_du_repo(full):
     data = gh_json(["run", "list", "--repo", full, "--limit", "8", "--json",
-                    "workflowName,status,conclusion,headBranch,event,startedAt,createdAt,updatedAt,url"])
-    return full, (data if isinstance(data, list) else [])
+                    "databaseId,workflowName,status,conclusion,headBranch,event,startedAt,createdAt,updatedAt,url"])
+    runs = data if isinstance(data, list) else []
+    for r in runs:                       # quel runner pour les jobs en cours (appel cible)
+        if r.get("status") == "in_progress":
+            r["runner"] = runner_du_run(full, r.get("databaseId"))
+    return full, runs
 
 
 def runner_status():
@@ -148,7 +170,7 @@ def construire_lignes(resultats, now, recent_min):
             lignes.append({
                 "rang": rang, "repo": alias(full), "etat": etat,
                 "wf": r.get("workflowName") or "?", "branche": r.get("headBranch") or "?",
-                "quand": quand, "url": r.get("url") or "",
+                "runner": r.get("runner", ""), "quand": quand, "url": r.get("url") or "",
                 "tri2": r.get("startedAt") or r.get("createdAt") or "",
             })
     lignes.sort(key=lambda x: (x["rang"], x["repo"]) if x["rang"] < 2 else (x["rang"], _inv(x["tri2"])))
@@ -195,11 +217,18 @@ def afficher(now, runner, lignes, interval, once):
     if not lignes:
         out.append(col("  (rien d'actif ni de recemment termine)", GRAY))
     else:
-        wrepo = max((largeur_visible(l["repo"]) for l in lignes), default=4)
-        wetat = max((largeur_visible(l["etat"]) for l in lignes), default=8)
-        wwf = max((len(l["wf"]) for l in lignes), default=8)
+        wrepo = max([largeur_visible(l["repo"]) for l in lignes] + [4])
+        wetat = max([largeur_visible(l["etat"]) for l in lignes] + [8])
+        wwf = max([len(l["wf"]) for l in lignes] + [8])
+        wrun = max([len(l["runner"]) for l in lignes] + [6])   # >= len("RUNNER")
+        entete = ("  " + "REPO".ljust(wrepo) + "  " + "STATUT".ljust(wetat) + "  "
+                  + "RUNNER".ljust(wrun) + "  " + "WORKFLOW".ljust(wwf) + "  "
+                  + "BRANCHE".ljust(10) + "  QUAND")
+        out.append(col(entete, GRAY))
         for l in lignes:
+            run_aff = col(l["runner"], CYAN) if l["runner"] else ""
             out.append("  " + pad(l["repo"], wrepo) + "  " + pad(l["etat"], wetat) + "  "
+                       + pad(run_aff, wrun) + "  "
                        + l["wf"].ljust(wwf) + "  " + l["branche"].ljust(10) + "  "
                        + col(l["quand"], GRAY))
     if not once:
@@ -211,7 +240,7 @@ def afficher(now, runner, lignes, interval, once):
 
 def main():
     ap = argparse.ArgumentParser(description="Moniteur CLI temps reel des runs CI SAE.")
-    ap.add_argument("--interval", type=int, default=20, help="secondes entre rafraichissements")
+    ap.add_argument("--interval", type=int, default=25, help="secondes entre rafraichissements")
     ap.add_argument("--once", action="store_true", help="un seul affichage puis quitte")
     ap.add_argument("--recent", type=int, default=10, help="garder les runs finis depuis < N minutes")
     args = ap.parse_args()
