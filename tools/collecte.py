@@ -696,13 +696,32 @@ def sauver_last_tests(d):
         json.dump(d, f, ensure_ascii=False, indent=2, sort_keys=True)
 
 
-def attribuer_tests_pr(repo, merged_info, baseline, cache_team):
+def repartir(acc, delta, auteurs):
+    """Repartit `delta` tests entre `auteurs` (liste, doublons = plusieurs PR) a
+    parts egales PAR PR. Accumulation en float (arrondie en fin de calcul). Ne fait
+    rien si delta <= 0 (les regressions ne creditent personne)."""
+    if not auteurs or delta <= 0:
+        return
+    part = delta / len(auteurs)
+    for a in auteurs:
+        acc[a] += part
+
+
+def attribuer_tests_pr(repo, merged_info, baseline, cache_team, live_total=None):
     """Delta de tests verts par PR mergee, attribue a l'auteur de la PR.
 
-    Pour chaque PR mergee (ordre de merge) : delta = tests(apres) - tests(avant) ;
-    avant = la PR precedente (ou `baseline` pour la 1re). Seuls les deltas positifs
-    comptent. Le nb de tests au commit de merge est mis en CACHE (immuable une fois
-    mergee) : le cout par build ne porte que sur les nouvelles PR. -> {login: total}.
+    Pour chaque PR mergee (ordre de merge) : delta = tests(apres) - tests(avant).
+    Le nb de tests au commit de merge est mis en CACHE (immuable une fois mergee) :
+    le cout par build ne porte que sur les nouvelles PR.
+
+    Robustesse aux comptes manquants (`passed=None`, typiquement un run CI annule
+    par `cancel-in-progress` sur des merges rapproches). On ne « saute » plus ces
+    PR en versant tout leur delta a la PR mesuree suivante (ce qui creditait le
+    MAUVAIS auteur, cf. bug remonte par une etudiante). On accumule les auteurs des
+    PR `None` dans un « trou » ; en atteignant la PR mesuree suivante, on REPARTIT
+    le delta du trou entre tous ses auteurs (PR `None` + PR mesuree), au prorata du
+    nombre de PR. Les PR `None` de fin de file sont creditees via `live_total` (le
+    total courant de l'equipe) comme point final. -> {login: total}.
     """
     merged = sorted([m for m in merged_info if m.get("sha")],
                     key=lambda m: m.get("mergedAt") or "")
@@ -714,17 +733,26 @@ def attribuer_tests_pr(repo, merged_info, baseline, cache_team):
                                "passed": compte_tests_sha(repo, m["sha"])}
         else:
             cache_team[key]["author"] = m["author"]
-    valides = defaultdict(int)
+
+    valides = defaultdict(float)
     prev = baseline
+    trou = []                      # auteurs des PR None depuis le dernier point mesure
     for m in merged:
         info = cache_team[str(m["number"])]
         p, author = info.get("passed"), info.get("author")
         if p is None:
-            continue                      # compte indisponible -> on saute
-        if prev is not None and author and p > prev:
-            valides[author] += p - prev
+            if author:
+                trou.append(author)        # en attente d'un point mesure pour crediter
+            continue
+        beneficiaires = trou + ([author] if author else [])
+        if prev is not None:
+            repartir(valides, p - prev, beneficiaires)
         prev = p
-    return dict(valides)
+        trou = []
+    # PR None de fin de file : creditees via le total live comme point final.
+    if trou and prev is not None and live_total is not None:
+        repartir(valides, live_total - prev, trou)
+    return {a: int(round(v)) for a, v in valides.items() if round(v) > 0}
 
 
 # ------------------------------------------------------------------------------
@@ -1021,7 +1049,8 @@ def main():
         cache = charger_cache_pr()
         for t in teams:
             ct = cache.setdefault(t["slug"], {})
-            tv = attribuer_tests_pr(t["_repo"], t["_merged_prs"], baseline, ct)
+            tv = attribuer_tests_pr(t["_repo"], t["_merged_prs"], baseline, ct,
+                                    live_total=t["tests"]["passed"])
             for c in t["contributors"]:
                 c["tests_validated"] = tv.get(c["login"], 0)
         sauver_cache_pr(cache)
