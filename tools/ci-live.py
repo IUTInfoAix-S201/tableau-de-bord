@@ -58,14 +58,20 @@ def gh(args):
     return p.stdout.strip(), p.returncode
 
 
-def gh_json(args):
-    out, code = gh(args)
-    if code != 0 or not out:
-        return None
-    try:
-        return json.loads(out)
-    except json.JSONDecodeError:
-        return None
+def gh_json(args, tries=3):
+    """gh -> objet JSON, avec quelques retries (les appels paralleles hoquettent
+    parfois : sans retry, un repo disparaissait du tableau et un job en cours
+    passait inapercu)."""
+    for i in range(tries):
+        out, code = gh(args)
+        if code == 0 and out:
+            try:
+                return json.loads(out)
+            except json.JSONDecodeError:
+                pass
+        if i < tries - 1:
+            time.sleep(0.4 * (i + 1))
+    return None
 
 
 def decouvrir_forks():
@@ -219,31 +225,45 @@ def pad(s, n):
 
 def afficher(now, runner, lignes, interval, once):
     out = [] if once else [CLEAR]
-    # bandeau runner
-    if runner:
-        etats = []
-        for rn in runner:
-            if rn.get("status") != "online":
-                etats.append(col(f"{rn['name']} HORS LIGNE", RED))
-            elif rn.get("busy"):
-                etats.append(col(f"{rn['name']} OCCUPE", YELLOW))
-            else:
-                etats.append(col(f"{rn['name']} libre", GREEN))
-        bandeau = "RUNNER : " + "  ".join(etats)
-    else:
-        # repli sans scope admin:org : on deduit les runners OCCUPES depuis les jobs en cours
-        occ = sorted({l["runner"] for l in lignes if l["rang"] == 0 and l.get("runner")})
-        if occ:
-            bandeau = (col("RUNNERS occupes (deduits des jobs ; admin:org pour la liste complete) : ", GRAY)
-                       + "  ".join(col(r, YELLOW) for r in occ))
-        else:
-            bandeau = col("RUNNERS : n/d (scope admin:org absent pour lister l'org ?)", GRAY)
+    # Quel job tourne sur quel runner, vu cote tableau (jobs reellement en cours).
+    par_runner = {l["runner"]: (l["repo"], l["wf"]) for l in lignes
+                  if l["rang"] == 0 and l.get("runner")}
     en_cours = sum(1 for l in lignes if l["rang"] == 0)
     en_file = sum(1 for l in lignes if l["rang"] == 1)
     out.append(col("SAE 2.01 - CI en direct", BOLD) + "   " + now.astimezone().strftime("%H:%M:%S"))
-    out.append(bandeau)
     out.append(f"  {col(str(en_cours)+' en cours', YELLOW)} · {col(str(en_file)+' en file', GRAY)} · "
                f"{len(lignes)} lignes")
+    # Bandeau runners : on rapproche la liste org (busy/libre) du job reel.
+    if runner:
+        out.append(col("RUNNERS :", BOLD))
+        w = max((len(rn["name"]) for rn in runner), default=0)
+        deja = set()
+        for rn in sorted(runner, key=lambda r: r["name"]):
+            nom, name = rn["name"].ljust(w), rn["name"]
+            if rn.get("status") != "online":
+                out.append("  " + col(nom + "  hors ligne", RED))
+            elif name in par_runner:
+                repo, wf = par_runner[name]
+                deja.add(name)
+                out.append("  " + col(nom, BOLD) + "  " + col("● " + repo, YELLOW) + col(f"  ({wf})", GRAY))
+            elif rn.get("busy"):
+                out.append("  " + col(nom + "  occupe, aucun job SAE visible (vient de finir ? bloque ? hors scope ?)", RED))
+            else:
+                out.append("  " + col(nom + "  libre", GREEN))
+        # job detecte sur un runner que l'org ne liste pas (rare)
+        for r, (repo, wf) in sorted(par_runner.items()):
+            if r not in deja and r not in {rn["name"] for rn in runner}:
+                out.append("  " + col(r.ljust(w), BOLD) + "  " + col("● " + repo, YELLOW)
+                           + col(f"  ({wf}) [hors liste org]", GRAY))
+    else:
+        occ = sorted({l["runner"] for l in lignes if l["rang"] == 0 and l.get("runner")})
+        if occ:
+            out.append(col("RUNNERS occupes (deduits des jobs ; admin:org pour la liste complete) :", GRAY))
+            for r in occ:
+                repo, wf = par_runner[r]
+                out.append("  " + col(r, BOLD) + "  " + col("● " + repo, YELLOW) + col(f"  ({wf})", GRAY))
+        else:
+            out.append(col("  RUNNERS : n/d (scope admin:org absent pour lister l'org ?)", GRAY))
     out.append("")
     if not lignes:
         out.append(col("  (rien d'actif ni de recemment termine)", GRAY))
