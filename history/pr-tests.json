@@ -19,6 +19,11 @@
       "author": "7ept",
       "passed": 178,
       "sha": "280369b001ce102d98126968d2f21b2093638812"
+    },
+    "76": {
+      "author": "mjgoat07",
+      "passed": 210,
+      "sha": "f1e85350df1b1ff3148cec4a16c29b6b6357ff8a"
     }
   },
   "gapple": {
@@ -294,6 +299,11 @@
       "author": "lochlann-fabbi",
       "passed": 223,
       "sha": "b4227809c807c9d29053844330bd5b0a07270fc2"
+    },
+    "106": {
+      "author": "l-L-E-N-A-l",
+      "passed": 232,
+      "sha": "35d4fc019c052c7d68c23f56842126e200f741c8"
     },
     "60": {
       "author": "lochlann-fabbi",
@@ -844,6 +854,11 @@
       "author": "MilannB25",
       "passed": 443,
       "sha": "052733d09da554464f546b01e2775a4341ac3958"
+    },
+    "83": {
+      "author": "SalahEdine-bou",
+      "passed": 458,
+      "sha": "de410de8321d6995bb05d7fc7ff97d1e86e8e80f"
     }
   },
   "td2-g1": {
