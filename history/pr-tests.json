@@ -154,6 +154,21 @@
       "passed": 172,
       "sha": "5a84a6962b6b19e39909243792381b490a6e35eb"
     },
+    "79": {
+      "author": "MORSILLI-Timeo-25002755",
+      "passed": null,
+      "sha": "623a397ce5de68a0b488e18d29ddce5a382f3b4e"
+    },
+    "81": {
+      "author": "MORSILLI-Timeo-25002755",
+      "passed": null,
+      "sha": "1c2acd8ad9d409d2adab58793bb8661e59a0b556"
+    },
+    "83": {
+      "author": "KEOKHAM-Rayan-25015317",
+      "passed": null,
+      "sha": "a88c3745691416945e021761ccbc7c600ac0cdbd"
+    },
     "85": {
       "author": "EL-MESTARI-Aymen-24005190",
       "passed": 200,
@@ -227,6 +242,11 @@
       "author": "GabrielGouin1",
       "passed": 157,
       "sha": "3a485616a8ebab56fa68d25fe7095bf2c9c2987c"
+    },
+    "78": {
+      "author": "noepetit",
+      "passed": 351,
+      "sha": "5418a7c2081d6ed37854bb608fbdf7abb0e1da68"
     }
   },
   "la-team": {
@@ -275,10 +295,20 @@
       "passed": 139,
       "sha": "4dd3e8ee732b47918c5225dcb36865f94ed09c47"
     },
+    "76": {
+      "author": "YasmineBestDev",
+      "passed": null,
+      "sha": "fbae862a8f4c5848a86be8877d3a6a3d5f4ee6d8"
+    },
     "80": {
       "author": "lochlann-fabbi",
       "passed": 139,
       "sha": "3527ba5841eb392aefc9a1237a7f4a3bf5bd091d"
+    },
+    "86": {
+      "author": "lochlann-fabbi",
+      "passed": 181,
+      "sha": "01f4a2af426212c3e5732d49413f4a6b5e39b73f"
     }
   },
   "le-corbeau-ewan": {
@@ -692,6 +722,26 @@
     }
   },
   "td2-g1": {
+    "102": {
+      "author": "Renethan",
+      "passed": null,
+      "sha": "26567d0dc83862e42f974af547394ed36ea204b3"
+    },
+    "103": {
+      "author": "Willow84120",
+      "passed": null,
+      "sha": "199459a71794f2549fdea9ef298d6315eaf51e54"
+    },
+    "105": {
+      "author": "Noah2829",
+      "passed": null,
+      "sha": "ae24df3511e9e42a5215b2e98ff76096fcfd79ce"
+    },
+    "106": {
+      "author": "Renethan",
+      "passed": null,
+      "sha": "3acc0c982478c4eb74098c14de3367ab2cc572d0"
+    },
     "56": {
       "author": "Renethan",
       "passed": 106,
@@ -841,6 +891,11 @@
     }
   },
   "td2-g6": {
+    "101": {
+      "author": "harshbhavesh-shah",
+      "passed": null,
+      "sha": "bbb514538e2c3e1affc2d010c4069b676acc2a4b"
+    },
     "61": {
       "author": "Hafuyo",
       "passed": 112,
@@ -885,6 +940,16 @@
       "author": "harshbhavesh-shah",
       "passed": null,
       "sha": "6919bfd3cea4b036b891255ef8141dc926075e2a"
+    },
+    "92": {
+      "author": "AlexandreJ07",
+      "passed": 329,
+      "sha": "4c681bfae55981ae17f569abb7ced536d7b2e616"
+    },
+    "93": {
+      "author": "ikram-aouad",
+      "passed": 304,
+      "sha": "09e18efdb1bcf106f4b884a81a96a51e5907b0de"
     },
     "94": {
       "author": "Hafuyo",
@@ -1024,6 +1089,11 @@
       "author": "SISE-Aboubakar-24027352",
       "passed": null,
       "sha": "b8e10805eb797ec5c2aaa61ad92e86433fb1af97"
+    },
+    "95": {
+      "author": "SISE-Aboubakar-24027352",
+      "passed": null,
+      "sha": "1b6225fc5136b3dfe46f709a362e04ebfd66e284"
     }
   },
   "td4_g4": {
@@ -1066,6 +1136,16 @@
       "author": "RUIZ-Enrique-25002136",
       "passed": null,
       "sha": "4a84a37d999dc87efc0f851d89068936ab9f4d3e"
+    },
+    "77": {
+      "author": "RUIZ-Enrique-25002136",
+      "passed": null,
+      "sha": "aedc0f75ebd15b3d9f3b33add631d20f574ff9de"
+    },
+    "79": {
+      "author": "RUIZ-Enrique-25002136",
+      "passed": null,
+      "sha": "94629dd56b7c0f96d66d531edf6e2aba19b5d743"
     }
   },
   "td4_g5": {
@@ -1192,6 +1272,16 @@
       "author": "Lohann-B",
       "passed": null,
       "sha": "ca52bd9edf63d89b160b0b949368035b40ca91b6"
+    },
+    "82": {
+      "author": "Lohann-B",
+      "passed": null,
+      "sha": "459042a8e4049cb05a581ee4e29a2fa63d938b1a"
+    },
+    "87": {
+      "author": "JolanRAMBEAUX",
+      "passed": null,
+      "sha": "80aa336ce375c68c1423d5ee8096e2ada5e7efc3"
     }
   },
   "vigiechiro-tommy-manal-yannick-tasnim": {
