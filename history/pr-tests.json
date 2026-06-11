@@ -850,6 +850,11 @@
       "passed": 365,
       "sha": "8e4da353fc72879833f9a0dacc6b41c3965cee79"
     },
+    "80": {
+      "author": "Barny-Rafael",
+      "passed": 458,
+      "sha": "3151c2fc2a35ca8f40d02f2d1a47e3736519df71"
+    },
     "82": {
       "author": "MilannB25",
       "passed": 443,
@@ -859,6 +864,11 @@
       "author": "SalahEdine-bou",
       "passed": 458,
       "sha": "de410de8321d6995bb05d7fc7ff97d1e86e8e80f"
+    },
+    "86": {
+      "author": "brandonzeabaez",
+      "passed": 467,
+      "sha": "61120256fa4f248bae9cf68d1771a700df630f0d"
     }
   },
   "td2-g1": {
@@ -1415,6 +1425,11 @@
       "author": "NicolasMoyenin",
       "passed": 464,
       "sha": "dd2d782c611b642b92402985d25f849d1d80254e"
+    },
+    "77": {
+      "author": "MaelanP77",
+      "passed": 575,
+      "sha": "9bc9471431e81ad03f38d0d0a0f452df5e6bd614"
     }
   },
   "thebatdevs": {
