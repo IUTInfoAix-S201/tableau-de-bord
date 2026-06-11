@@ -148,6 +148,11 @@
       "author": "MORSILLI-Timeo-25002755",
       "passed": 172,
       "sha": "5a84a6962b6b19e39909243792381b490a6e35eb"
+    },
+    "85": {
+      "author": "EL-MESTARI-Aymen-24005190",
+      "passed": 200,
+      "sha": "1517a7d2cd80a7da28ffc577be977064181b57d6"
     }
   },
   "ici_pour_faire_la_police": {
@@ -195,6 +200,11 @@
       "author": "NinaMATCHA",
       "passed": 287,
       "sha": "5ed190417226974e104efea923819ec58f9639fd"
+    },
+    "74": {
+      "author": "kawthar23661-wq",
+      "passed": 414,
+      "sha": "34e94c66effddf0d01d3b682f979e6aed4fb0b3c"
     }
   },
   "jpeuxpasjainedjar": {
@@ -306,6 +316,21 @@
       "author": "LoisBeeckmans-git",
       "passed": 252,
       "sha": "d743af17ff272bcf7d1bbb340facc7242ec6687e"
+    },
+    "71": {
+      "author": "EwanFRANCOIS",
+      "passed": 272,
+      "sha": "b4725116cec76755a2d9df835e36600a887251cf"
+    },
+    "73": {
+      "author": "EwanFRANCOIS",
+      "passed": 365,
+      "sha": "46dbdb7b60e5025c66476f342a555424a7d29465"
+    },
+    "75": {
+      "author": "Matteo-Y07",
+      "passed": 380,
+      "sha": "23eb5e93bc5959e4b6f2af110a7fd12a1fbec0f0"
     }
   },
   "linkedin_ou_interpol": {
@@ -383,6 +408,11 @@
       "author": "DUMONT-Vladislav-25009525",
       "passed": null,
       "sha": "097c77e6189de795e597dba6424090842690c951"
+    },
+    "82": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": null,
+      "sha": "d64f89da99d8d86b63ec54458996f9db4a5cdcef"
     }
   },
   "mathieu_kyle_lenny_diego": {
@@ -1164,6 +1194,16 @@
       "author": "YannickAit",
       "passed": 296,
       "sha": "c0b1cf982635a8c1f99612389298b8e81a89fa6e"
+    },
+    "70": {
+      "author": "tommylehli",
+      "passed": 315,
+      "sha": "f8d846384d087b177da8eb011b4cf6dae5de70fd"
+    },
+    "71": {
+      "author": "tommylehli",
+      "passed": 313,
+      "sha": "188ffdba7980fcb5b7f7fb9f9fef37cf6133565d"
     }
   }
 }

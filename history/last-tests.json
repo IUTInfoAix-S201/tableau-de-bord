@@ -96,16 +96,16 @@
     }
   },
   "giteam": {
-    "ci_status": "success",
+    "ci_status": "failure",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 43.5,
-      "pmd_violations": 1,
+      "coverage_pct": null,
+      "pmd_violations": null,
       "spotless_ok": false
     },
     "tests": {
-      "passed": 202,
-      "pct": 31.1,
+      "passed": 200,
+      "pct": 30.8,
       "total": 650
     },
     "tests_by_feature": {
@@ -147,13 +147,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 54.4,
-      "pmd_violations": 3,
+      "coverage_pct": 62.6,
+      "pmd_violations": 2,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 317,
-      "pct": 48.8,
+      "passed": 414,
+      "pct": 63.7,
       "total": 650
     },
     "tests_by_feature": {
@@ -186,7 +186,7 @@
         "total": 73
       },
       "validation": {
-        "passed": 0,
+        "passed": 96,
         "total": 103
       }
     }
@@ -291,13 +291,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 56.5,
-      "pmd_violations": 2,
+      "coverage_pct": 66.7,
+      "pmd_violations": 1,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 252,
-      "pct": 38.8,
+      "passed": 380,
+      "pct": 58.5,
       "total": 650
     },
     "tests_by_feature": {
@@ -306,7 +306,7 @@
         "total": 22
       },
       "diagnostic": {
-        "passed": 0,
+        "passed": 20,
         "total": 24
       },
       "importation": {
@@ -318,11 +318,11 @@
         "total": 27
       },
       "multisite": {
-        "passed": 0,
+        "passed": 15,
         "total": 53
       },
       "passage": {
-        "passed": 18,
+        "passed": 111,
         "total": 111
       },
       "qualification": {
@@ -963,13 +963,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 64.2,
+      "coverage_pct": 66.3,
       "pmd_violations": 5,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 296,
-      "pct": 45.5,
+      "passed": 315,
+      "pct": 48.5,
       "total": 650
     },
     "tests_by_feature": {
@@ -986,7 +986,7 @@
         "total": 83
       },
       "lot": {
-        "passed": 7,
+        "passed": 26,
         "total": 27
       },
       "multisite": {
