@@ -821,11 +821,11 @@
       "archunit_ok": true,
       "coverage_pct": null,
       "pmd_violations": null,
-      "spotless_ok": true
+      "spotless_ok": false
     },
     "tests": {
-      "passed": 173,
-      "pct": 26.6,
+      "passed": 175,
+      "pct": 26.9,
       "total": 650
     },
     "tests_by_feature": {
@@ -864,16 +864,16 @@
     }
   },
   "team-rocket": {
-    "ci_status": "failure",
+    "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": null,
-      "pmd_violations": null,
-      "spotless_ok": true
+      "coverage_pct": 66.3,
+      "pmd_violations": 2,
+      "spotless_ok": false
     },
     "tests": {
-      "passed": 343,
-      "pct": 52.8,
+      "passed": 345,
+      "pct": 53.1,
       "total": 650
     },
     "tests_by_feature": {
