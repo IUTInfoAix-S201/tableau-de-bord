@@ -101,6 +101,11 @@
       "author": "OmbelineChaud",
       "passed": 375,
       "sha": "a84d19f1141c4c4510a36552a5dbf72804a2adcf"
+    },
+    "87": {
+      "author": "Aurele879",
+      "passed": 384,
+      "sha": "f044e24d1fc3dd55c222ce3c831298cffacddbee"
     }
   },
   "giteam": {
@@ -240,6 +245,11 @@
       "author": "kawthar23661-wq",
       "passed": 414,
       "sha": "34e94c66effddf0d01d3b682f979e6aed4fb0b3c"
+    },
+    "80": {
+      "author": "Imen-Bengadha20242027",
+      "passed": 428,
+      "sha": "83f0f908410f94f082163160cf1ffece9d4705bd"
     }
   },
   "jpeuxpasjainedjar": {
@@ -262,9 +272,19 @@
       "author": "noepetit",
       "passed": 351,
       "sha": "5418a7c2081d6ed37854bb608fbdf7abb0e1da68"
+    },
+    "80": {
+      "author": "GabrielGouin1",
+      "passed": 370,
+      "sha": "4a7751b34e5da47c6ce50a8a6e36e254aea5e356"
     }
   },
   "la-team": {
+    "100": {
+      "author": "l-L-E-N-A-l",
+      "passed": 192,
+      "sha": "c4996c5d5a5fcccf7f52e139000d83202e1f3171"
+    },
     "60": {
       "author": "lochlann-fabbi",
       "passed": 102,
@@ -300,6 +320,11 @@
       "passed": 109,
       "sha": "fb9957cec737471e82a4c890dbedf5a094a4a921"
     },
+    "73": {
+      "author": "Timeo-84",
+      "passed": 199,
+      "sha": "d2ff39030a3185f09c331350d06e6eacbc9e8d6f"
+    },
     "74": {
       "author": "lochlann-fabbi",
       "passed": null,
@@ -315,6 +340,11 @@
       "passed": null,
       "sha": "fbae862a8f4c5848a86be8877d3a6a3d5f4ee6d8"
     },
+    "77": {
+      "author": "YasmineBestDev",
+      "passed": 199,
+      "sha": "c0c99a6cfb2dec01318006093d88f72f7cfa2598"
+    },
     "80": {
       "author": "lochlann-fabbi",
       "passed": 139,
@@ -325,6 +355,11 @@
       "passed": 181,
       "sha": "01f4a2af426212c3e5732d49413f4a6b5e39b73f"
     },
+    "88": {
+      "author": "Timeo-84",
+      "passed": 217,
+      "sha": "09a1b468af7b7e8ca1ce1daba5521823a408eda6"
+    },
     "91": {
       "author": "lochlann-fabbi",
       "passed": null,
@@ -334,6 +369,21 @@
       "author": "lochlann-fabbi",
       "passed": 181,
       "sha": "2e15621b8dcb9aa730cd552acbee378bd8a4ed40"
+    },
+    "93": {
+      "author": "EvanLeBoss66",
+      "passed": 181,
+      "sha": "a8037833ad6834558f8f8ebc7a409045aed65bf0"
+    },
+    "96": {
+      "author": "lochlann-fabbi",
+      "passed": 183,
+      "sha": "649e7ffc8a07183ddab31335c3880642f27104d1"
+    },
+    "98": {
+      "author": "l-L-E-N-A-l",
+      "passed": 183,
+      "sha": "34cc2741224a58efa82e6b0f111859a775361a4f"
     }
   },
   "le-corbeau-ewan": {
@@ -533,6 +583,11 @@
     }
   },
   "riplasemaine": {
+    "101": {
+      "author": "AyoubHSSINI13",
+      "passed": 651,
+      "sha": "28898b8ec7ad8c2940503f0335bc710038e112e1"
+    },
     "57": {
       "author": "AmadeusTdev",
       "passed": 126,
@@ -787,6 +842,16 @@
       "passed": 573,
       "sha": "3acc0c982478c4eb74098c14de3367ab2cc572d0"
     },
+    "107": {
+      "author": "Renethan",
+      "passed": 584,
+      "sha": "e8e2e0b06dec9e6cc4b9279e72b5857315f20e7e"
+    },
+    "108": {
+      "author": "JimmyLefebvre",
+      "passed": null,
+      "sha": "615363917009019a90b86b01ba2b7d9e8f3c7b22"
+    },
     "56": {
       "author": "Renethan",
       "passed": 106,
@@ -923,6 +988,11 @@
       "author": "CoIib",
       "passed": null,
       "sha": "d696dd99672a637ac54ec196769989e76f5f6266"
+    },
+    "63": {
+      "author": "KhadissovaLezina",
+      "passed": 200,
+      "sha": "3569ffe203851fc27b0c97b1cbf6c7ffeccd8ded"
     },
     "65": {
       "author": "ChevremontLilian",
@@ -1295,6 +1365,16 @@
       "author": "Abdelrahmane03",
       "passed": 270,
       "sha": "40fadb96713710d5222813f55f1f2df9ae0b5c83"
+    },
+    "73": {
+      "author": "NicolasMoyenin",
+      "passed": 457,
+      "sha": "5600c6d7dc1c0afb32114426fdcc919f3b55cefd"
+    },
+    "75": {
+      "author": "NicolasMoyenin",
+      "passed": 464,
+      "sha": "dd2d782c611b642b92402985d25f849d1d80254e"
     }
   },
   "thebatdevs": {
@@ -1360,7 +1440,7 @@
     },
     "89": {
       "author": "JolanRAMBEAUX",
-      "passed": null,
+      "passed": 321,
       "sha": "1218c7cda471e49024fb3f19d02518277b09d806"
     }
   },
