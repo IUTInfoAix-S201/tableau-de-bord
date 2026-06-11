@@ -285,6 +285,16 @@
       "passed": 192,
       "sha": "c4996c5d5a5fcccf7f52e139000d83202e1f3171"
     },
+    "102": {
+      "author": "l-L-E-N-A-l",
+      "passed": 232,
+      "sha": "931c82093db18a430ca25b10e7146a56ef92c43f"
+    },
+    "103": {
+      "author": "lochlann-fabbi",
+      "passed": 223,
+      "sha": "b4227809c807c9d29053844330bd5b0a07270fc2"
+    },
     "60": {
       "author": "lochlann-fabbi",
       "passed": 102,
@@ -580,6 +590,11 @@
       "author": "MathieuGaydon",
       "passed": 178,
       "sha": "a3cc6549459310e085d86fa3f686b1f4ad3a823c"
+    },
+    "79": {
+      "author": "diegomartin102",
+      "passed": 180,
+      "sha": "92f6b6a617e552ca73c25b24e136d81e1e42dc71"
     }
   },
   "riplasemaine": {
@@ -819,6 +834,16 @@
       "author": "brandonzeabaez",
       "passed": 283,
       "sha": "0d1c311a8b8f00da0646553ad729e3163103fc9f"
+    },
+    "79": {
+      "author": "SalahEdine-bou",
+      "passed": 365,
+      "sha": "8e4da353fc72879833f9a0dacc6b41c3965cee79"
+    },
+    "82": {
+      "author": "MilannB25",
+      "passed": 443,
+      "sha": "052733d09da554464f546b01e2775a4341ac3958"
     }
   },
   "td2-g1": {
@@ -849,7 +874,7 @@
     },
     "108": {
       "author": "JimmyLefebvre",
-      "passed": null,
+      "passed": 584,
       "sha": "615363917009019a90b86b01ba2b7d9e8f3c7b22"
     },
     "56": {
@@ -1484,6 +1509,16 @@
       "author": "tommylehli",
       "passed": 313,
       "sha": "188ffdba7980fcb5b7f7fb9f9fef37cf6133565d"
+    },
+    "76": {
+      "author": "tsnm28",
+      "passed": 334,
+      "sha": "d65b19474395ebffdf03e7d40850f2a640f86eeb"
+    },
+    "78": {
+      "author": "tommylehli",
+      "passed": 338,
+      "sha": "992af9cce19bfdb12d3a44672bb8e5bee10022eb"
     }
   }
 }
