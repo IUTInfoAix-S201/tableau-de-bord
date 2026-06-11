@@ -82,34 +82,32 @@ def alias(full):
 
 
 def job_actif(full, run_id):
-    """(runner, started_at) du job en cours d'un run (1 appel API cible).
+    """(status, runner, started_at) du job le plus pertinent d'un run (1 appel).
 
-    On lit le `started_at` du JOB (instant ou le runner l'a reellement pris en
-    charge), et non le `startedAt` du run (proche du declenchement) : pour un run
-    qui a attendu en file, les deux different fortement.
+    Un run peut etre `in_progress` au niveau RUN alors que son job est encore
+    `queued` (en attente d'un runner libre) : on renvoie donc le STATUT du job,
+    pour afficher l'etat reel. `started_at` est celui du JOB (instant ou le runner
+    l'a pris en charge), pas le `startedAt` du run (proche du declenchement).
     """
     if not run_id:
-        return "", ""
+        return "", "", ""
     jobs = gh_json(["api", f"repos/{full}/actions/runs/{run_id}/jobs",
                     "--jq", "[.jobs[] | {status, runner_name, started_at}]"])
-    if not isinstance(jobs, list):
-        return "", ""
-    for j in jobs:                       # privilegie le job ENCORE en cours
-        if j.get("status") == "in_progress":
-            return j.get("runner_name") or "", j.get("started_at") or ""
-    for j in jobs:
-        if j.get("runner_name") or j.get("started_at"):
-            return j.get("runner_name") or "", j.get("started_at") or ""
-    return "", ""
+    if not isinstance(jobs, list) or not jobs:
+        return "", "", ""
+    enc = next((j for j in jobs if j.get("status") == "in_progress"), None)
+    enf = next((j for j in jobs if j.get("status") in ("queued", "waiting", "pending")), None)
+    j = enc or enf or jobs[-1]
+    return j.get("status") or "", j.get("runner_name") or "", j.get("started_at") or ""
 
 
 def runs_du_repo(full):
     data = gh_json(["run", "list", "--repo", full, "--limit", "8", "--json",
                     "databaseId,workflowName,status,conclusion,headBranch,event,startedAt,createdAt,updatedAt,url"])
     runs = data if isinstance(data, list) else []
-    for r in runs:                       # runner + instant d'activation reelle du job en cours
+    for r in runs:                       # statut/runner/debut REELS du job (run actif != job actif)
         if r.get("status") == "in_progress":
-            r["runner"], r["job_started"] = job_actif(full, r.get("databaseId"))
+            r["job_status"], r["runner"], r["job_started"] = job_actif(full, r.get("databaseId"))
     return full, runs
 
 
@@ -150,18 +148,17 @@ def duree_run(start, end):
 
 
 # rang de tri + glyphe/couleur par etat
-def classer(r):
-    st, cc = r.get("status"), r.get("conclusion")
-    if st == "in_progress":
+def classer_etat(status, conclusion=None):
+    if status == "in_progress":
         return 0, col("● en cours", YELLOW)
-    if st == "queued":
+    if status == "queued":
         return 1, col("○ en file", GRAY)
-    if st in ("requested", "waiting", "pending"):
-        return 1, col("○ " + st, GRAY)
+    if status in ("requested", "waiting", "pending"):
+        return 1, col("○ " + status, GRAY)
     # completed
     glyph = {"success": col("✓ ok", GREEN), "failure": col("✗ echec", RED),
              "cancelled": col("⊘ annule", GRAY), "skipped": col("• skip", GRAY)}.get(
-                 cc, col(f"• {cc}", GRAY))
+                 conclusion, col(f"• {conclusion}", GRAY))
     return 2, glyph
 
 
@@ -171,19 +168,28 @@ def construire_lignes(resultats, now, recent_min):
         for r in runs:
             st = r.get("status")
             if st == "in_progress":
-                rang, etat = classer(r)
-                # actif depuis = started_at du JOB (pas du run, qui inclut l'attente en file)
-                duree = depuis(r.get("job_started") or r.get("startedAt") or r.get("createdAt"), now)
-                quand = ""
-            elif st != "completed":            # queued / waiting / pending
-                rang, etat = classer(r)
+                # statut REEL = celui du job. Le run peut etre "actif" alors que
+                # le job attend encore un runner libre (pool sature).
+                jst = r.get("job_status") or "in_progress"
+                if jst == "in_progress":
+                    rang, etat = classer_etat("in_progress")
+                    # actif depuis = started_at du JOB (pas du run, qui inclut l'attente)
+                    duree = depuis(r.get("job_started") or r.get("startedAt") or r.get("createdAt"), now)
+                    quand = ""
+                else:                          # job encore en file -> on l'affiche comme tel
+                    rang = 1
+                    etat = col("○ attend runner", GRAY)
+                    duree = ""
+                    quand = "en file " + depuis(r.get("createdAt"), now)
+            elif st != "completed":            # run queued / waiting / pending
+                rang, etat = classer_etat(st)
                 duree = ""
                 quand = "en file " + depuis(r.get("createdAt"), now)           # attend depuis
             else:                              # completed
                 fin = _dt(r.get("updatedAt"))
                 if not fin or (now - fin).total_seconds() > recent_min * 60:
                     continue   # trop ancien -> on ne garde que l'actif + le tout recent
-                rang, etat = classer(r)
+                rang, etat = classer_etat("completed", r.get("conclusion"))
                 duree = duree_run(r.get("startedAt"), r.get("updatedAt"))      # a dure
                 quand = "il y a " + depuis(r.get("updatedAt"), now)           # fini il y a
             lignes.append({
@@ -225,7 +231,13 @@ def afficher(now, runner, lignes, interval, once):
                 etats.append(col(f"{rn['name']} libre", GREEN))
         bandeau = "RUNNER : " + "  ".join(etats)
     else:
-        bandeau = col("RUNNER : n/d (pas de runner self-hosted au niveau org ?)", GRAY)
+        # repli sans scope admin:org : on deduit les runners OCCUPES depuis les jobs en cours
+        occ = sorted({l["runner"] for l in lignes if l["rang"] == 0 and l.get("runner")})
+        if occ:
+            bandeau = (col("RUNNERS occupes (deduits des jobs ; admin:org pour la liste complete) : ", GRAY)
+                       + "  ".join(col(r, YELLOW) for r in occ))
+        else:
+            bandeau = col("RUNNERS : n/d (scope admin:org absent pour lister l'org ?)", GRAY)
     en_cours = sum(1 for l in lignes if l["rang"] == 0)
     en_file = sum(1 for l in lignes if l["rang"] == 1)
     out.append(col("SAE 2.01 - CI en direct", BOLD) + "   " + now.astimezone().strftime("%H:%M:%S"))
