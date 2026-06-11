@@ -51,13 +51,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 65.7,
+      "coverage_pct": 66.5,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 368,
-      "pct": 56.6,
+      "passed": 375,
+      "pct": 57.7,
       "total": 650
     },
     "tests_by_feature": {
@@ -86,7 +86,7 @@
         "total": 111
       },
       "qualification": {
-        "passed": 0,
+        "passed": 7,
         "total": 73
       },
       "validation": {
@@ -435,14 +435,14 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 86.2,
+      "coverage_pct": 90.0,
       "pmd_violations": 1,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 628,
-      "pct": 96.6,
-      "total": 650
+      "passed": 651,
+      "pct": 100.0,
+      "total": 651
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -867,9 +867,9 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 66.3,
+      "coverage_pct": 66.0,
       "pmd_violations": 2,
-      "spotless_ok": false
+      "spotless_ok": true
     },
     "tests": {
       "passed": 345,
