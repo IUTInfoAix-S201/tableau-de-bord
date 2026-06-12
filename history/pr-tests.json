@@ -15,6 +15,11 @@
       "passed": 129,
       "sha": "fc9577c06f57d6dbbf4bafb4494413a18799e684"
     },
+    "73": {
+      "author": "thomas-serra",
+      "passed": 216,
+      "sha": "25fc006cc2f1a4cef3d7d3c50ed1d93fb1a40a77"
+    },
     "74": {
       "author": "7ept",
       "passed": 178,
@@ -24,6 +29,16 @@
       "author": "mjgoat07",
       "passed": 210,
       "sha": "f1e85350df1b1ff3148cec4a16c29b6b6357ff8a"
+    },
+    "80": {
+      "author": "mjgoat07",
+      "passed": 215,
+      "sha": "e639456e89685bb8e866b0c9715ff79c5c58bdc1"
+    },
+    "83": {
+      "author": "7ept",
+      "passed": 267,
+      "sha": "f951d68944eee7d0673c9ae9506c1f129fe5066c"
     }
   },
   "gapple": {
@@ -720,6 +735,11 @@
       "author": "MathieuGaydon",
       "passed": 289,
       "sha": "629f650e04e062dbc0fedfe55600a48d6849f796"
+    },
+    "88": {
+      "author": "MathieuGaydon",
+      "passed": 297,
+      "sha": "c951fc475ad3ba09462faf476153260ee9149090"
     }
   },
   "riplasemaine": {
@@ -999,6 +1019,11 @@
       "author": "brandonzeabaez",
       "passed": 518,
       "sha": "c7a213cf9b373e325a7a68a9447bc22e8e08d2d4"
+    },
+    "92": {
+      "author": "SalahEdine-bou",
+      "passed": 530,
+      "sha": "49ba2a48860f4e1ea72d67f4b1369f8ef73e8896"
     }
   },
   "td2-g1": {
