@@ -116,6 +116,11 @@
       "author": "Aurele879",
       "passed": 384,
       "sha": "f044e24d1fc3dd55c222ce3c831298cffacddbee"
+    },
+    "92": {
+      "author": "Aurele879",
+      "passed": 455,
+      "sha": "e6ad766ef710f7eeff069ac32a4d8cd49ea80348"
     }
   },
   "giteam": {
@@ -189,6 +194,11 @@
       "passed": null,
       "sha": "1c2acd8ad9d409d2adab58793bb8661e59a0b556"
     },
+    "82": {
+      "author": "EL-MESTARI-Aymen-24005190",
+      "passed": 268,
+      "sha": "8cc102241aeebe9e2a5ce655a07120423edc56dd"
+    },
     "83": {
       "author": "KEOKHAM-Rayan-25015317",
       "passed": null,
@@ -208,6 +218,11 @@
       "author": "MORSILLI-Timeo-25002755",
       "passed": 250,
       "sha": "735cf1dfdaf4e309339595e91ecae662713d2cc1"
+    },
+    "96": {
+      "author": "MORSILLI-Timeo-25002755",
+      "passed": 263,
+      "sha": "dac92823c907e1c090c03bb6685ed94d8bcc79f4"
     }
   },
   "ici_pour_faire_la_police": {
@@ -278,7 +293,7 @@
     },
     "86": {
       "author": "Imen-Bengadha20242027",
-      "passed": null,
+      "passed": 470,
       "sha": "e07ed88415e0dfbe467845edbaf7fcc2e407431c"
     }
   },
@@ -317,6 +332,16 @@
       "author": "Alexandre-SBEGHEN",
       "passed": 397,
       "sha": "6414e0b9c992716de15dfe67fbc32e4c19bbd660"
+    },
+    "83": {
+      "author": "Alexandre-SBEGHEN",
+      "passed": 450,
+      "sha": "97f92419fe2a86873558fbd5998e98b70304d2a4"
+    },
+    "84": {
+      "author": "Alexandre-SBEGHEN",
+      "passed": 452,
+      "sha": "72804c6bcf572a45b83fac959ce56a563bb0c0b0"
     }
   },
   "la-team": {
@@ -613,6 +638,11 @@
       "author": "DUMONT-Vladislav-25009525",
       "passed": 265,
       "sha": "9f29232917cb5708c5f091dcc27725b33ed52608"
+    },
+    "92": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": 265,
+      "sha": "0ea57d4361bf11a50e88535d0b0ef026eada2ffc"
     }
   },
   "mathieu_kyle_lenny_diego": {
@@ -665,6 +695,21 @@
       "author": "diegomartin102",
       "passed": 180,
       "sha": "92f6b6a617e552ca73c25b24e136d81e1e42dc71"
+    },
+    "83": {
+      "author": "MathieuGaydon",
+      "passed": 185,
+      "sha": "221fc75450507fe4254531078355db42298d4004"
+    },
+    "85": {
+      "author": "MathieuGaydon",
+      "passed": 204,
+      "sha": "c56a566a3ef8b16f124a4c71c355c029b3829e26"
+    },
+    "87": {
+      "author": "MathieuGaydon",
+      "passed": 289,
+      "sha": "629f650e04e062dbc0fedfe55600a48d6849f796"
     }
   },
   "riplasemaine": {
@@ -1268,6 +1313,11 @@
       "passed": 172,
       "sha": "e95a024ea66d281c4d75d354143f694a5f183eeb"
     },
+    "80": {
+      "author": "RINALDI-Antoine-24006744",
+      "passed": 218,
+      "sha": "904b88dfbcdbbdad80ec15ec3b00d40202859b09"
+    },
     "83": {
       "author": "Alam-Aguilar",
       "passed": 193,
@@ -1319,6 +1369,31 @@
       "author": "SISE-Aboubakar-24027352",
       "passed": 429,
       "sha": "5ab836a7a8dc5dd7104000956c5b975f289df5d2"
+    },
+    "113": {
+      "author": "BANTI-Hugo-25004176",
+      "passed": 479,
+      "sha": "fe681152312a2164590acc2f3e4cc0c52e95f488"
+    },
+    "115": {
+      "author": "SISE-Aboubakar-24027352",
+      "passed": null,
+      "sha": "baea02a8fd1223e1da2fe45e56e8e6c960f8757f"
+    },
+    "116": {
+      "author": "BANTI-Hugo-25004176",
+      "passed": null,
+      "sha": "b8c18028765e8e88ffb0a2bd2d0c0abd6bf6ce0b"
+    },
+    "117": {
+      "author": "SISE-Aboubakar-24027352",
+      "passed": null,
+      "sha": "e5bc61270f62c8a06ff558cbc653018bdb027078"
+    },
+    "119": {
+      "author": "ORDAS-Ethan-25003317",
+      "passed": 526,
+      "sha": "91a8a41848035c48a40bb874a46297baa1b9801e"
     },
     "58": {
       "author": "BANTI-Hugo-25004176",
@@ -1502,6 +1577,16 @@
       "passed": 211,
       "sha": "86dde1d5738fc38c40b4ce8902705ecfa30238f9"
     },
+    "94": {
+      "author": "ZOPPI-Nicolas-25003515",
+      "passed": null,
+      "sha": "b1d462e3435c1d713c2a3c2981a5735ef47db642"
+    },
+    "95": {
+      "author": "ZOPPI-Nicolas-25003515",
+      "passed": 217,
+      "sha": "1293276dcb0710c0aeb27ee1c1e8497916da6bea"
+    },
     "96": {
       "author": "RUIZ-Enrique-25002136",
       "passed": 217,
@@ -1538,6 +1623,11 @@
       "author": "BULUT-Melissa-25006748",
       "passed": 173,
       "sha": "597ce882367e09dbc210331fc6c2f13763f7e2f0"
+    },
+    "74": {
+      "author": "BULUT-Melissa-25006748",
+      "passed": 195,
+      "sha": "fcbc6beb76e24184aeabba1bee35b7843d9fbde5"
     }
   },
   "team-rocket": {
