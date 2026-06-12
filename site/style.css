@@ -149,6 +149,28 @@ footer { text-align: center; color: var(--gris); font-size: .8rem; padding: 1.5r
 
 /* ---- classement par etudiant ---- */
 #etudiants td.login { font-family: ui-monospace, monospace; font-size: .8rem; }
+tbody tr.etudiant { border-top: 1px solid var(--bord); cursor: pointer; }
+tbody tr.etudiant:hover { background: #eef4fb; }
+#etudiants td.login .chevron { color: var(--gris); font-size: .75rem; margin-right: .35rem; font-family: system-ui, sans-serif; }
+
+/* ---- detail etudiant ---- */
+.kpi.part { min-width: 132px; }
+.kpi.part .barre.part-barre { height: 8px; min-width: 0; margin-top: .3rem; }
+.kpi.part .barre.part-barre > span { background: var(--bleu-clair); }
+.kpi.part .add { color: var(--vert); }
+.kpi.part .del { color: var(--rouge); }
+.part-lbl { font-size: .68rem; color: var(--gris); }
+
+.feat-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.feat-chip { background: #fff; border: 1px solid var(--bord); border-left: 3px solid var(--vert);
+  border-radius: 6px; padding: .22rem .5rem; font-size: .76rem; font-weight: 600; white-space: nowrap; }
+.feat-chip .emoji { font-size: .9rem; }
+
+table.contribs.prs { margin-top: .3rem; }
+table.contribs.prs td a { color: var(--bleu-clair); text-decoration: none; }
+table.contribs.prs td a:hover { text-decoration: underline; }
+.contribs.prs .diff .add { color: var(--vert); font-weight: 600; }
+.contribs.prs .diff .del { color: var(--rouge); font-weight: 600; }
 
 /* ---- badges (achievements) ---- */
 td.badges { white-space: nowrap; }

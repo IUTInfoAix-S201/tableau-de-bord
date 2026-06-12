@@ -302,18 +302,102 @@ function badgesEtudiant(s, c) {
   return b;
 }
 
+// Totaux d'equipe (denominateurs des parts de contribution), calcules a partir
+// des contributeurs de chaque equipe -> {slug: {lines, prs, issues_closed, commits, tests_validated}}.
+function totauxEquipes(data) {
+  const m = {};
+  (data.teams || []).forEach(t => {
+    const cs = t.contributors || [];
+    const som = f => cs.reduce((a, c) => a + (f(c) || 0), 0);
+    m[t.slug] = {
+      lines: som(c => (c.lines_added || 0) + (c.lines_deleted || 0)),
+      prs: som(c => (c.prs_open || 0) + (c.prs_merged || 0)),
+      issues_closed: som(c => c.issues_closed),
+      commits: som(c => c.commits),
+      tests_validated: som(c => c.tests_validated),
+    };
+  });
+  return m;
+}
+
+function partPct(v, total) { return total ? Math.round(100 * v / total) : 0; }
+
+// Bloc KPI avec barre de part de contribution a l'equipe.
+function kpiPart(label, valHtml, val, total) {
+  const p = partPct(val, total);
+  return `<div class="kpi part">
+    <b>${valHtml}</b><small>${esc(label)}</small>
+    <div class="barre part-barre"><span style="width:${p}%"></span></div>
+    <small class="part-lbl">${total ? p + " % de l'équipe" : "n/d"}</small>
+  </div>`;
+}
+
+function featuresEtudiant(s) {
+  const fs = s.features || [];
+  if (!fs.length)
+    return `<p class="aide">Aucune feature identifiée (ni issue assignée préfixée <code>[feature]</code>, ni PR taguée).</p>`;
+  const chips = fs.map(k =>
+    `<span class="feat-chip"><span class="emoji">${FEATURE_EMOJI[k] || "•"}</span> ${esc(FEATURE_LABEL[k] || k)}</span>`).join(" ");
+  return `<div class="feat-chips">${chips}</div>`;
+}
+
+function prListEtudiant(s) {
+  const prs = s.prs || [];
+  if (!prs.length) return `<p class="aide">Aucune pull request (ouverte ou mergée).</p>`;
+  const rows = prs.map(p => {
+    const etat = p.merged ? `<span class="badge ok">mergée</span>`
+      : (p.state === "OPEN" ? `<span class="badge nd">ouverte</span>` : `<span class="badge ko">fermée</span>`);
+    return `<tr>
+      <td><a href="${esc(p.url)}" target="_blank" rel="noopener">#${p.number} ${esc(p.title)} ↗</a></td>
+      <td class="num">${etat}</td>
+      <td class="num diff"><span class="add">+${p.additions}</span> <span class="del">−${p.deletions}</span></td>
+    </tr>`;
+  }).join("");
+  return `<table class="contribs prs">
+    <thead><tr><th>Pull request</th><th class="num">État</th><th class="num">Lignes</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+function detailEtudiant(s, tot) {
+  tot = tot || { lines: 0, prs: 0, issues_closed: 0, commits: 0, tests_validated: 0 };
+  const add = s.lines_added || 0, del = s.lines_deleted || 0;
+  const lignes = add + del;
+  const prCount = (s.prs_open || 0) + (s.prs_merged || 0);
+  const lignesHtml = `<span class="add">+${add}</span> <span class="del">−${del}</span>`;
+  return `<div class="panneau">
+    <div class="qualite">
+      ${kpiPart("lignes modifiées (PR)", lignesHtml, lignes, tot.lines)}
+      ${kpiPart("PR ouvertes + mergées", String(prCount), prCount, tot.prs)}
+      ${kpiPart("issues fermées", String(s.issues_closed || 0), s.issues_closed || 0, tot.issues_closed)}
+      ${kpiPart("commits (branche défaut)", String(s.commits || 0), s.commits || 0, tot.commits)}
+      ${kpiPart("tests validés", String(s.tests_validated || 0), s.tests_validated || 0, tot.tests_validated)}
+    </div>
+    <div class="frise-titre">Features touchées <small>${(s.features || []).length}/8</small></div>
+    ${featuresEtudiant(s)}
+    <div class="frise-titre" style="margin-top:.9rem">Pull requests <small>${(s.prs || []).length}</small></div>
+    ${prListEtudiant(s)}
+  </div>`;
+}
+
 function renderStudents(data) {
   const corps = document.getElementById("etudiants-corps");
   if (!corps) return;
+  const totaux = totauxEquipes(data);
   const students = [...(data.students || [])].sort(compareStudents);
   const ctx = badgeCtx || contexteBadges(students);
-  corps.innerHTML = students.map((s, i) => {
+  corps.innerHTML = "";
+  if (!students.length) {
+    corps.innerHTML = '<tr><td colspan="10">Aucun étudiant détecté.</td></tr>';
+    return;
+  }
+  students.forEach((s, i) => {
     const bs = badgesEtudiant(s, ctx)
       .map(([e, t]) => `<span class="badge-emoji" title="${esc(t)}">${e}</span>`).join(" ");
-    return `
-    <tr>
+    const tr = document.createElement("tr");
+    tr.className = "etudiant";
+    tr.innerHTML = `
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
-      <td class="login">${esc(s.login)}</td>
+      <td class="login"><span class="chevron">▶</span>${esc(s.login)}</td>
       <td>${esc(s.team)}</td>
       <td class="num"><strong>${s.tests_validated}</strong></td>
       <td class="num">${s.branch_commits ?? 0}</td>
@@ -321,9 +405,19 @@ function renderStudents(data) {
       <td class="num">${s.prs_merged}</td>
       <td class="num">${s.reviews_given}</td>
       <td class="num"><span class="pastille ${s.review_quality}" title="${esc(voyantTip(s))}"></span></td>
-      <td class="badges">${bs || "—"}</td>
-    </tr>`;
-  }).join("") || '<tr><td colspan="10">Aucun étudiant détecté.</td></tr>';
+      <td class="badges">${bs || "—"}</td>`;
+    const detail = document.createElement("tr");
+    detail.className = "detail";
+    detail.hidden = true;
+    detail.innerHTML = `<td colspan="10">${detailEtudiant(s, totaux[s.team])}</td>`;
+    tr.addEventListener("click", e => {
+      if (e.target.closest("a")) return;   // ne pas replier en cliquant un lien de PR
+      detail.hidden = !detail.hidden;
+      tr.querySelector(".chevron").textContent = detail.hidden ? "▶" : "▼";
+    });
+    corps.appendChild(tr);
+    corps.appendChild(detail);
+  });
 }
 
 function bindTri() {

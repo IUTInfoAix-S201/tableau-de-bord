@@ -293,17 +293,22 @@ def collecter_issues(repo):
     # suivi par assignee
     assignes = defaultdict(int)
     fermees_par = defaultdict(int)
+    features_par_assigne = defaultdict(set)   # login -> {feature, ...} (issues assignees)
     for i in issues:
+        feat = prefixe_feature(i["title"])
         for a in i["assignees"]:
             assignes[a] += 1
             if i["closed"]:
                 fermees_par[a] += 1
+            if feat in par_feature:
+                features_par_assigne[a].add(feat)
     return {
         "issues": {"done": done, "total": len(issues)},
         "priorities": {**bandes, "mvp_complete": mvp},
         "par_feature": par_feature,
         "_assignes": dict(assignes),
         "_fermees_par": dict(fermees_par),
+        "_features_assigne": {k: sorted(v) for k, v in features_par_assigne.items()},
     }
 
 
@@ -372,7 +377,7 @@ query($owner:String!,$name:String!,$cursor:String){
     pullRequests(first:50, after:$cursor, states:[OPEN,MERGED,CLOSED]){
       pageInfo{hasNextPage endCursor}
       nodes{
-        number state merged mergedAt
+        number state merged mergedAt title url additions deletions
         mergeCommit{oid}
         author{login}
         mergedBy{login}
@@ -474,6 +479,10 @@ def collecter_contributeurs(repo, slug, issues_data):
     prs = collecter_prs(repo)
     prs_open = defaultdict(int)
     prs_merged = defaultdict(int)
+    pr_liste = defaultdict(list)         # login -> [resume PR visible, ...] (ouvertes + mergees)
+    lignes_ajout = defaultdict(int)      # login -> total additions (PR ouvertes + mergees)
+    lignes_suppr = defaultdict(int)      # login -> total deletions (PR ouvertes + mergees)
+    feats_pr = defaultdict(set)          # login -> {feature, ...} d'apres le prefixe du titre de PR
     revues_donnees = defaultdict(list)   # login -> [revue, ...]
     revues_recues = defaultdict(int)     # login (auteur PR) -> nb revues par pairs
     # conformite revue (equipe)
@@ -483,6 +492,26 @@ def collecter_contributeurs(repo, slug, issues_data):
     merged_info = []   # PR mergees : {number, sha, author, mergedAt} pour le delta de tests
     for pr in prs:
         auteur = (pr.get("author") or {}).get("login")
+        # PR « visibles » (ouvertes en cours + mergees livrees) : on accumule le
+        # detail par auteur (liste cliquable, lignes modifiees, feature du titre).
+        # Les PR fermees sans merge (travail jete) sont ignorees.
+        if is_human(auteur) and (pr["state"] == "OPEN" or pr.get("merged")):
+            add = pr.get("additions") or 0
+            sup = pr.get("deletions") or 0
+            lignes_ajout[auteur] += add
+            lignes_suppr[auteur] += sup
+            pr_liste[auteur].append({
+                "number": pr["number"],
+                "title": pr.get("title") or "",
+                "url": pr.get("url") or "",
+                "state": pr["state"],
+                "merged": bool(pr.get("merged")),
+                "additions": add,
+                "deletions": sup,
+            })
+            f = prefixe_feature(pr.get("title"))
+            if f in CHAINE:
+                feats_pr[auteur].add(f)
         if pr["state"] == "OPEN":
             if is_human(auteur):
                 prs_open[auteur] += 1
@@ -527,20 +556,28 @@ def collecter_contributeurs(repo, slug, issues_data):
 
     logins = set(commits) | set(prs_open) | set(prs_merged) | set(revues_donnees) \
         | set(membres) | set(issues_data["_assignes"]) | set(wip)
+    feats_issues = issues_data.get("_features_assigne", {})
     contributeurs = []
     for login in sorted(logins):
         v = voyant_revue(revues_donnees.get(login, []))
+        # Features touchees = union des issues assignees (prefixe [feature]) et des
+        # titres de PR (prefixe [feature]), reordonnees selon la chaine pipeline.
+        feats = set(feats_issues.get(login, [])) | feats_pr.get(login, set())
         contributeurs.append({
             "login": login,
             "commits": commits.get(login, 0),
             "branch_commits": wip.get(login, 0),
             "prs_open": prs_open.get(login, 0),
             "prs_merged": prs_merged.get(login, 0),
+            "lines_added": lignes_ajout.get(login, 0),
+            "lines_deleted": lignes_suppr.get(login, 0),
             "reviews_given": v["reviews_total"],
             "reviews_received": revues_recues.get(login, 0),
             "issues_assigned": issues_data["_assignes"].get(login, 0),
             "issues_closed": issues_data["_fermees_par"].get(login, 0),
             "tests_validated": 0,   # rempli apres coup (delta de tests par PR mergee)
+            "features": [f for f in CHAINE if f in feats],
+            "prs": sorted(pr_liste.get(login, []), key=lambda p: -p["number"]),
             **v,
         })
 
@@ -916,6 +953,14 @@ def synthetiser_reference(specs, teams_reels, now, plafond_tv=None):
                              "tests_validated": tv_act[i],
                              "reviews_total": rg, "inline_comments": inl, "changes_requested": chg,
                              "empty_approvals": 0, "review_quality": qual})
+
+        # Champs detail (vue etudiant) : valeurs plausibles pour les leurres. Lignes
+        # derivees des commits ; pas de liste de PR cliquable ni de feature reelles.
+        for c in contribs:
+            c.setdefault("lines_added", c["commits"] * (12 + _h(c["login"] + "la") % 40))
+            c.setdefault("lines_deleted", c["commits"] * (3 + _h(c["login"] + "ld") % 12))
+            c.setdefault("features", [])
+            c.setdefault("prs", [])
 
         bandes = {"must": {"done": 0, "total": 20}, "should": {"done": 0, "total": 14},
                   "could": {"done": 0, "total": 4}}
