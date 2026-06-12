@@ -1047,8 +1047,13 @@ def main():
 
     # Tendances des vraies equipes : on connait maintenant le plancher de la promo
     # (= version etudiante de depart) pour backfiller les courbes depuis le debut.
+    # Plancher = la plus petite valeur JAMAIS vue (courante + tout l'historique),
+    # pas le min courant entre equipes : sinon, des que la derniere equipe progresse,
+    # le baseline remonte au-dessus du vrai depart et la sparkline plonge artificiellement
+    # (backfill trop haut -> faux creux uniforme) et les deltas sont sous-estimes.
     passes = [t["tests"]["passed"] for t in teams if t["tests"]["passed"] is not None]
-    baseline = min(passes) if passes else None
+    hist_passes = [h["tests_passed"] for h in hist if h.get("tests_passed") is not None]
+    baseline = min(passes + hist_passes) if (passes or hist_passes) else None
     for t in teams:
         t["trend"] = tendance(hist, t["slug"], t["tests"]["passed"],
                               t["issues"]["done"], now, baseline)
