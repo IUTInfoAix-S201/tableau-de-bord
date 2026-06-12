@@ -365,10 +365,20 @@
       "passed": 232,
       "sha": "35d4fc019c052c7d68c23f56842126e200f741c8"
     },
+    "108": {
+      "author": "YasmineBestDev",
+      "passed": 275,
+      "sha": "b1cf8cae7ac06c3284e66e97e5e3625aac69bd34"
+    },
     "109": {
       "author": "lochlann-fabbi",
       "passed": 250,
       "sha": "76d0ac9775228e30e94b9ab2b7e2feedbbfe071d"
+    },
+    "167": {
+      "author": "Timeo-84",
+      "passed": 286,
+      "sha": "b0866eaca5350c7d8ab43a28aabe155a066f523d"
     },
     "60": {
       "author": "lochlann-fabbi",
@@ -1031,6 +1041,21 @@
       "author": "Willow84120",
       "passed": 586,
       "sha": "501f2f30e96be54cc319fe1711b596d746225c6e"
+    },
+    "117": {
+      "author": "robertcocosila0",
+      "passed": 589,
+      "sha": "9b394feccf8c58252142d86ca6380150a7ffed29"
+    },
+    "119": {
+      "author": "robertcocosila0",
+      "passed": 594,
+      "sha": "b31943368bbdb069ff6ebda6889ac025537a0b3c"
+    },
+    "120": {
+      "author": "JimmyLefebvre",
+      "passed": 628,
+      "sha": "7ea126762645933afb56e42e5135d6677cd6682e"
     },
     "56": {
       "author": "Renethan",
@@ -1767,6 +1792,16 @@
       "author": "GKMat",
       "passed": 326,
       "sha": "a6b0ce02c549854e3259b4e315b72521bd43e76e"
+    },
+    "96": {
+      "author": "GKMat",
+      "passed": 327,
+      "sha": "57c153bdb6211d85228c1c1cea98fb74a665805a"
+    },
+    "98": {
+      "author": "JolanRAMBEAUX",
+      "passed": 343,
+      "sha": "5465014e3c02d38e535be9d92a86894343238d78"
     }
   },
   "vigiechiro-tommy-manal-yannick-tasnim": {
