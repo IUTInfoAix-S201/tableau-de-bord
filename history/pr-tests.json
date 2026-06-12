@@ -39,6 +39,16 @@
       "author": "7ept",
       "passed": 267,
       "sha": "f951d68944eee7d0673c9ae9506c1f129fe5066c"
+    },
+    "84": {
+      "author": "thomas-serra",
+      "passed": 277,
+      "sha": "939260f948a6d2c9c53b04c31e2ee306f79439f1"
+    },
+    "85": {
+      "author": "Gaelbty",
+      "passed": null,
+      "sha": "49ce451f63878a719084633072ee9562dd34811c"
     }
   },
   "gapple": {
@@ -136,6 +146,11 @@
       "author": "Aurele879",
       "passed": 455,
       "sha": "e6ad766ef710f7eeff069ac32a4d8cd49ea80348"
+    },
+    "95": {
+      "author": "OmbelineChaud",
+      "passed": 457,
+      "sha": "27b29296a3d937d1a3fb5e97692863072fb429c9"
     }
   },
   "giteam": {
@@ -203,6 +218,11 @@
       "author": "MORSILLI-Timeo-25002755",
       "passed": 239,
       "sha": "623a397ce5de68a0b488e18d29ddce5a382f3b4e"
+    },
+    "80": {
+      "author": "EAR-Francois-25017332",
+      "passed": 275,
+      "sha": "4b2598db94c6601298d7b31ec4415297fe5e4fb3"
     },
     "81": {
       "author": "MORSILLI-Timeo-25002755",
@@ -1024,6 +1044,11 @@
       "author": "SalahEdine-bou",
       "passed": 530,
       "sha": "49ba2a48860f4e1ea72d67f4b1369f8ef73e8896"
+    },
+    "93": {
+      "author": "SalahEdine-bou",
+      "passed": 530,
+      "sha": "3db5d114f2dbe74257f619c84d01ae86cad2f40e"
     }
   },
   "td2-g1": {
@@ -1641,6 +1666,11 @@
       "author": "RUIZ-Enrique-25002136",
       "passed": 217,
       "sha": "bc357b2abcb3d97d6de3e837d897edbac521501c"
+    },
+    "99": {
+      "author": "RUIZ-Enrique-25002136",
+      "passed": 369,
+      "sha": "7be4c803b50058d75a5fe9a080016fc7e155a34d"
     }
   },
   "td4_g5": {
