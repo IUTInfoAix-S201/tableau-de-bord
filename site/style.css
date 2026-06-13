@@ -59,6 +59,9 @@ td.num { text-align: center; }
 .rang-badge { font-weight: 700; color: var(--bleu); }
 .nom-equipe { font-weight: 600; }
 .nom-equipe .chevron { color: var(--gris); font-size: .75rem; margin-right: .3rem; }
+.lien-repo { font-size: .72rem; font-weight: 600; color: var(--bleu-clair); text-decoration: none;
+  margin-left: .5rem; padding: .05rem .4rem; border: 1px solid var(--bord); border-radius: 999px; white-space: nowrap; }
+.lien-repo:hover { background: #eef4fb; text-decoration: underline; }
 .spark { display: block; margin-top: .2rem; }
 
 /* ---- barres de progression ---- */

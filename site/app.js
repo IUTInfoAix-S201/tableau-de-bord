@@ -136,7 +136,7 @@ function renderTable(data) {
     const deltaHtml = delta ? `<span class="delta pos" title="progression récente des tests verts">+${delta}</span>` : "";
     tr.innerHTML = `
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
-      <td class="nom-equipe"><span class="chevron">▶</span>${podium[t.slug] ? `<span class="medaille" title="${esc(podium[t.slug][1])}">${podium[t.slug][0]}</span> ` : ""}${esc(t.name)}${sparkline(t.trend && t.trend.tests_series)}</td>
+      <td class="nom-equipe"><span class="chevron">▶</span>${podium[t.slug] ? `<span class="medaille" title="${esc(podium[t.slug][1])}">${podium[t.slug][0]}</span> ` : ""}${esc(t.name)}${t.repo_url ? ` <a class="lien-repo" href="${esc(t.repo_url)}" target="_blank" rel="noopener" title="Ouvrir le dépôt GitHub de l'équipe">↗ dépôt</a>` : ""}${sparkline(t.trend && t.trend.tests_series)}</td>
       <td class="num">
         ${bar(t.tests.passed || 0, t.tests.total || data.totals.tests_total, "tests", med.median_tests_pct)}
         <span class="barre-label">${t.tests.passed == null ? "n/d" : t.tests.passed + "/" + t.tests.total} (${pct(t.tests.pct)})${deltaHtml}</span>
@@ -158,7 +158,8 @@ function renderTable(data) {
     detail.className = "detail";
     detail.hidden = true;
     detail.innerHTML = `<td colspan="8">${detailPanneau(t)}</td>`;
-    tr.addEventListener("click", () => {
+    tr.addEventListener("click", e => {
+      if (e.target.closest("a")) return;   // ne pas replier en cliquant le lien dépôt
       detail.hidden = !detail.hidden;
       tr.querySelector(".chevron").textContent = detail.hidden ? "▶" : "▼";
     });
