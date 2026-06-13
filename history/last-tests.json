@@ -675,13 +675,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 41.6,
+      "coverage_pct": 42.6,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 218,
-      "pct": 33.5,
+      "passed": 223,
+      "pct": 34.3,
       "total": 650
     },
     "tests_by_feature": {
@@ -710,7 +710,7 @@
         "total": 111
       },
       "qualification": {
-        "passed": 7,
+        "passed": 12,
         "total": 73
       },
       "validation": {

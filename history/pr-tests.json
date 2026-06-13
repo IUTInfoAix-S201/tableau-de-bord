@@ -161,6 +161,11 @@
       "author": "OmbelineChaud",
       "passed": 457,
       "sha": "27b29296a3d937d1a3fb5e97692863072fb429c9"
+    },
+    "96": {
+      "author": "OmbelineChaud",
+      "passed": null,
+      "sha": "55fff2c290a34c49dd1a4eaa88ea2aab30f7541a"
     }
   },
   "giteam": {
@@ -1467,6 +1472,11 @@
       "author": "Alam-Aguilar",
       "passed": 174,
       "sha": "1769df0c1bd0f3fb358680fa23e01596fd345e7d"
+    },
+    "92": {
+      "author": "Alam-Aguilar",
+      "passed": 223,
+      "sha": "d1f3962c36b9e515b80398a5ecbad2824ba683fe"
     }
   },
   "td4-g1_heja": {
