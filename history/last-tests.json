@@ -816,21 +816,21 @@
     }
   },
   "td4_g5": {
-    "ci_status": "success",
+    "ci_status": "failure",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 47.7,
-      "pmd_violations": 7,
+      "coverage_pct": null,
+      "pmd_violations": null,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 195,
-      "pct": 30.0,
+      "passed": 199,
+      "pct": 30.6,
       "total": 650
     },
     "tests_by_feature": {
       "bibliotheque": {
-        "passed": 0,
+        "passed": 6,
         "total": 22
       },
       "diagnostic": {
