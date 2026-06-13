@@ -208,12 +208,17 @@ function friseFeatures(t) {
     </div>`;
 }
 
+// Id DOM stable d'une ligne etudiant (ancre du lien depuis le panneau equipe).
+function idEtudiant(login) {
+  return "etu-" + String(login).replace(/[^a-zA-Z0-9_-]/g, "_");
+}
+
 function detailPanneau(t) {
   const q = t.quality, b = t.bus_factor, r = t.review;
   const bal = (b.balance != null) ? b.balance : null;
   const contribs = t.contributors.map(c => `
     <tr>
-      <td class="login">${esc(c.login)}</td>
+      <td class="login"><a class="lien-etudiant" href="#${idEtudiant(c.login)}" data-login="${esc(c.login)}" title="Voir ${esc(c.login)} dans le classement par étudiant">${esc(c.login)}</a></td>
       <td class="num"><strong>${c.tests_validated ?? 0}</strong></td>
       <td class="num">${c.branch_commits ?? 0}</td>
       <td class="num">${c.prs_open}/${c.prs_merged}</td>
@@ -395,6 +400,7 @@ function renderStudents(data) {
       .map(([e, t]) => `<span class="badge-emoji" title="${esc(t)}">${e}</span>`).join(" ");
     const tr = document.createElement("tr");
     tr.className = "etudiant";
+    tr.id = idEtudiant(s.login);
     tr.innerHTML = `
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
       <td class="login"><span class="chevron">▶</span>${esc(s.login)}</td>
@@ -435,9 +441,32 @@ function bindTri() {
   });
 }
 
+// Clic sur un login dans un panneau equipe -> deplie et met en avant la ligne
+// correspondante du classement par etudiant. Delegation (les lignes sont
+// re-rendues a chaque tri, l' id reste valable). Une seule direction : equipe -> etudiant.
+function bindLiensEtudiant() {
+  document.addEventListener("click", e => {
+    const a = e.target.closest(".lien-etudiant");
+    if (!a) return;
+    e.preventDefault();
+    const row = document.getElementById(idEtudiant(a.dataset.login));
+    if (!row) return;
+    const detail = row.nextElementSibling;
+    if (detail && detail.classList.contains("detail") && detail.hidden) {
+      detail.hidden = false;
+      const ch = row.querySelector(".chevron");
+      if (ch) ch.textContent = "▼";
+    }
+    row.scrollIntoView({ behavior: "smooth", block: "center" });
+    row.classList.remove("cible");
+    void row.offsetWidth;            // relance l'animation si deja ciblee
+    row.classList.add("cible");
+  });
+}
+
 fetch("data.json", { cache: "no-store" })
   .then(r => r.json())
-  .then(data => { window.__data = data; render(data); bindTri(); })
+  .then(data => { window.__data = data; render(data); bindTri(); bindLiensEtudiant(); })
   .catch(e => {
     document.getElementById("meta").textContent =
       "Erreur de chargement de data.json : " + e;
