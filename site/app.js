@@ -159,79 +159,49 @@ function renderStats(data) {
     skpi(`${partSoir} %`, "en soirée / nuit (20 h–7 h)", `${horsJour} commits hors 7 h–20 h ; ${weMax} le week-end`),
   ].join("");
 
-  // Sélecteur d'échelle (Tout / par équipe / par personne) -> redessine les 3
-  // diagrammes. Les KPI ci-dessus restent collectifs (ampleur du projet).
-  bindScope();
-  dessinerChartsScope();
+  // Diagrammes collectifs. La déclinaison par équipe / par personne vit
+  // désormais dans les panneaux détaillés respectifs (detailPanneau / detailEtudiant).
+  document.getElementById("stats-charts").innerHTML = blocCharts(a);
 }
 
-// Dessine les 3 diagrammes a partir d'une source {by_day, by_weekday, by_hour}.
-// L'axe des jours est fixe sur la plage du projet (a.first_day..last_day) pour
-// que les echelles soient comparables (les jours sans commit restent visibles).
-function dessinerCharts(src) {
+// --- diagrammes d'activite (reutilisables : collectif, equipe, personne) ----
+// Diagramme par jour sur la plage DENSE du projet (jours sans commit visibles)
+// pour que collectif, equipe et personne partagent le meme axe temporel.
+function chartJour(src) {
   const a = (window.__data && window.__data.activity) || {};
-  const byDay = src.by_day || {}, byWd = src.by_weekday || [], byHr = src.by_hour || [];
+  const byDay = src.by_day || {};
   const jours = (a.first_day && a.last_day) ? plageJours(a.first_day, a.last_day)
     : Object.keys(byDay).sort();
-  const itemsJour = jours.map(d => {
+  return barChart(jours.map(d => {
     const wd = (new Date(d + "T00:00:00Z").getUTCDay() + 6) % 7;   // 0=Lun
     const [, mm, dd] = d.split("-");
     return { label: `${dd}/${mm}`, value: byDay[d] || 0, cls: wd >= 5 ? "we" : "",
              title: `${d} (${JOURS_SEM[wd]}) : ${byDay[d] || 0} commits` };
-  });
-  document.getElementById("chart-day").innerHTML = barChart(itemsJour);
-  document.getElementById("chart-weekday").innerHTML = barChart(
-    JOURS_SEM.map((lbl, i) => ({ label: lbl, value: byWd[i] || 0, cls: i >= 5 ? "we" : "" })));
-  document.getElementById("chart-hour").innerHTML = barChart(
-    Array.from({ length: 24 }, (_, h) => ({ label: String(h), value: byHr[h] || 0,
-      cls: (h < 7 || h >= 20) ? "nuit" : "", title: `${h} h–${h + 1} h : ${byHr[h] || 0} commits` })));
+  }));
 }
 
-// Source d'activite selon l'echelle choisie : {src, label}.
-function sourceScope() {
-  const a = (window.__data && window.__data.activity) || {};
-  const kind = (document.getElementById("scope-kind") || {}).value || "all";
-  const val = (document.getElementById("scope-pick") || {}).value;
-  if (kind === "team" && a.by_team && a.by_team[val])
-    return { src: a.by_team[val], label: `équipe ${val}` };
-  if (kind === "student" && a.by_student && a.by_student[val])
-    return { src: a.by_student[val], label: `${val} (${a.by_student[val].team})` };
-  return { src: a, label: "tout le projet" };
+function chartSemaine(src) {
+  const byWd = src.by_weekday || [];
+  return barChart(JOURS_SEM.map((lbl, i) =>
+    ({ label: lbl, value: byWd[i] || 0, cls: i >= 5 ? "we" : "" })));
 }
 
-// Remplit le 2e menu (equipe/personne) trie par activite decroissante, puis dessine.
-function majScopePick() {
-  const a = (window.__data && window.__data.activity) || {};
-  const kind = document.getElementById("scope-kind").value;
-  const pick = document.getElementById("scope-pick");
-  if (kind === "all") {
-    pick.hidden = true;
-    pick.innerHTML = "";
-  } else {
-    const map = kind === "team" ? (a.by_team || {}) : (a.by_student || {});
-    const cles = Object.keys(map).sort((x, y) => (map[y].total || 0) - (map[x].total || 0));
-    pick.innerHTML = cles.map(k =>
-      `<option value="${esc(k)}">${esc(k)}${kind === "student" ? ` — ${esc(map[k].team)}` : ""} (${map[k].total || 0})</option>`).join("");
-    pick.hidden = false;
-  }
-  dessinerChartsScope();
+function chartHeure(src) {
+  const byHr = src.by_hour || [];
+  return barChart(Array.from({ length: 24 }, (_, h) =>
+    ({ label: String(h), value: byHr[h] || 0, cls: (h < 7 || h >= 20) ? "nuit" : "",
+       title: `${h} h–${h + 1} h : ${byHr[h] || 0} commits` })));
 }
 
-function dessinerChartsScope() {
-  const { src, label } = sourceScope();
-  dessinerCharts(src);
-  const info = document.getElementById("scope-info");
-  if (info) info.textContent = `${label} — ${(src && src.total) || 0} commits`;
-}
-
-let scopeBound = false;
-function bindScope() {
-  if (scopeBound) return;            // les selects ne sont crees qu'une fois
-  scopeBound = true;
-  const kind = document.getElementById("scope-kind");
-  const pick = document.getElementById("scope-pick");
-  if (kind) kind.addEventListener("change", majScopePick);
-  if (pick) pick.addEventListener("change", dessinerChartsScope);
+// Bloc des 3 diagrammes pour une source {total, by_day, by_weekday, by_hour}.
+function blocCharts(src) {
+  if (!src || !src.total)
+    return `<p class="aide">Aucune activité (commit) enregistrée sur la période.</p>`;
+  return `<div class="charts">
+    <div class="chart"><h3>Contributions par jour du projet</h3><div class="barchart">${chartJour(src)}</div></div>
+    <div class="chart"><h3>Par jour de la semaine</h3><div class="barchart">${chartSemaine(src)}</div></div>
+    <div class="chart"><h3>Par heure du jour</h3><div class="barchart">${chartHeure(src)}</div></div>
+  </div>`;
 }
 
 function renderAlertes(data) {
@@ -402,7 +372,17 @@ function detailPanneau(t) {
       </tr></thead>
       <tbody>${contribs || '<tr><td colspan="8">Aucun contributeur détecté.</td></tr>'}</tbody>
     </table>
+    ${blocActivite((window.__data && window.__data.activity && window.__data.activity.by_team || {})[t.slug],
+      "Activité de l'équipe (commits)")}
   </div>`;
+}
+
+// Bloc activite (titre + 3 diagrammes) pour un panneau detaille, ou rien si
+// aucune donnee d'activite (ex. equipe de reference synthetique).
+function blocActivite(src, titre) {
+  if (!src || !src.total) return "";
+  return `<div class="frise-titre" style="margin-top:1rem">${esc(titre)} <small>${src.total} commits</small></div>`
+    + blocCharts(src);
 }
 
 // --- classement par etudiant (toutes equipes confondues) ------------------
@@ -614,6 +594,8 @@ function detailEtudiant(s, tot) {
     ${featuresEtudiant(s)}
     <div class="frise-titre" style="margin-top:.9rem">Pull requests <small>${(s.prs || []).length}</small></div>
     ${prListEtudiant(s)}
+    ${blocActivite((window.__data && window.__data.activity && window.__data.activity.by_student || {})[s.login],
+      "Activité individuelle (commits)")}
   </div>`;
 }
 

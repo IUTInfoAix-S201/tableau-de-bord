@@ -23,22 +23,8 @@
       <h2>Statistiques générales</h2>
       <p class="aide">L'ampleur du travail collectif depuis le début du projet. Une <strong>contribution</strong> = un commit (toutes branches, dédoublonné). Les heures et jours sont exprimés en <strong>heure de Paris</strong>.</p>
       <div id="stats-kpi" class="stats-kpi"></div>
-      <div class="stats-scope">
-        <label>Échelle des diagrammes :
-          <select id="scope-kind">
-            <option value="all">Tout le projet</option>
-            <option value="team">Par équipe</option>
-            <option value="student">Par personne</option>
-          </select>
-        </label>
-        <select id="scope-pick" hidden></select>
-        <span id="scope-info" class="aide"></span>
-      </div>
-      <div class="charts">
-        <div class="chart"><h3>Contributions par jour du projet</h3><div id="chart-day" class="barchart"></div></div>
-        <div class="chart"><h3>Par jour de la semaine</h3><div id="chart-weekday" class="barchart"></div></div>
-        <div class="chart"><h3>Par heure du jour</h3><div id="chart-hour" class="barchart"></div></div>
-      </div>
+      <div id="stats-charts"></div>
+      <p class="aide">Le détail par équipe est dans la vue dépliée de chaque équipe ; le détail par personne, dans la vue dépliée de chaque étudiant.</p>
     </section>
 
     <section>
