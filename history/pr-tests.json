@@ -164,7 +164,7 @@
     },
     "96": {
       "author": "OmbelineChaud",
-      "passed": null,
+      "passed": 538,
       "sha": "55fff2c290a34c49dd1a4eaa88ea2aab30f7541a"
     }
   },
@@ -1651,6 +1651,11 @@
       "author": "RUIZ-Enrique-25002136",
       "passed": 419,
       "sha": "5c208bcb5e9b1c89f99b64842fa852fecb68285e"
+    },
+    "102": {
+      "author": "BOIN-Anna-25007918",
+      "passed": 444,
+      "sha": "6f67c4e9af8b932face26f80fe810c80e7b8bc92"
     },
     "57": {
       "author": "ZOPPI-Nicolas-25003515",
