@@ -672,16 +672,16 @@
     }
   },
   "td2-vigiegroupe3": {
-    "ci_status": "success",
+    "ci_status": "failure",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 42.6,
-      "pmd_violations": 3,
+      "coverage_pct": null,
+      "pmd_violations": null,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 223,
-      "pct": 34.3,
+      "passed": 240,
+      "pct": 36.9,
       "total": 650
     },
     "tests_by_feature": {
@@ -694,7 +694,7 @@
         "total": 24
       },
       "importation": {
-        "passed": 0,
+        "passed": 19,
         "total": 83
       },
       "lot": {
