@@ -19,6 +19,17 @@
       <div id="alertes-contenu"></div>
     </section>
 
+    <section id="stats" hidden>
+      <h2>Statistiques générales</h2>
+      <p class="aide">L'ampleur du travail collectif depuis le début du projet. Une <strong>contribution</strong> = un commit (toutes branches, dédoublonné). Les heures et jours sont exprimés en <strong>heure de Paris</strong>.</p>
+      <div id="stats-kpi" class="stats-kpi"></div>
+      <div class="charts">
+        <div class="chart"><h3>Contributions par jour du projet</h3><div id="chart-day" class="barchart"></div></div>
+        <div class="chart"><h3>Par jour de la semaine</h3><div id="chart-weekday" class="barchart"></div></div>
+        <div class="chart"><h3>Par heure du jour</h3><div id="chart-hour" class="barchart"></div></div>
+      </div>
+    </section>
+
     <section>
       <h2>Classement des équipes</h2>
       <p class="aide">Cliquez sur l'en-tête d'une colonne pour trier, ou sur une ligne pour déplier le détail de l'équipe. La barre fine grise marque la <strong>médiane de la promo</strong>.</p>

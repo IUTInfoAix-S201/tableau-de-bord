@@ -42,6 +42,30 @@ h2 { font-size: 1.15rem; color: var(--bleu); border-bottom: 2px solid var(--bord
   border-radius: 999px; font-size: .8rem; background: #fdeceb; color: #a33027; border: 1px solid #f5c6c2; }
 .alerte.warn { background: #fff8e6; color: #7a5b00; border-color: #f0dca0; }
 
+/* ---- statistiques generales ---- */
+.stats-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; margin: .8rem 0 1.4rem; }
+.skpi { background: #fff; border: 1px solid var(--bord); border-radius: 8px; padding: .6rem .8rem; text-align: center; }
+.skpi b { display: block; font-size: 1.5rem; color: var(--bleu); line-height: 1.1; }
+.skpi small { color: var(--gris); font-size: .76rem; }
+
+.charts { display: grid; grid-template-columns: 1fr; gap: 1.2rem; }
+@media (min-width: 900px) { .charts { grid-template-columns: 1.4fr 1fr; }
+  .charts .chart:first-child { grid-column: 1 / -1; } }
+.chart { background: #fff; border: 1px solid var(--bord); border-radius: 8px; padding: .8rem 1rem 1rem; }
+.chart h3 { margin: 0 0 .6rem; font-size: .9rem; color: var(--ardoise); }
+
+.barchart { overflow-x: auto; }
+.bc-bars { display: flex; align-items: flex-end; gap: 3px; }
+.bc-col { flex: 1 1 0; min-width: 10px; display: flex; flex-direction: column;
+  justify-content: flex-end; align-items: center; height: 100%; }
+.bc-v { font-size: .62rem; color: var(--gris); line-height: 1; margin-bottom: 2px; min-height: .7rem; }
+.bc-bar { width: 78%; min-width: 6px; background: var(--bleu-clair); border-radius: 3px 3px 0 0; }
+.bc-col.we .bc-bar, .bc-col.nuit .bc-bar { background: var(--jaune); }
+.bc-labels { display: flex; gap: 3px; margin-top: 3px; }
+.bc-l { flex: 1 1 0; min-width: 10px; text-align: center; font-size: .62rem; color: var(--gris);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bc-l.we, .bc-l.nuit { color: var(--jaune); font-weight: 600; }
+
 /* ---- tableau ---- */
 table { width: 100%; border-collapse: collapse; background: #fff;
   border: 1px solid var(--bord); border-radius: 8px; overflow: hidden; }

@@ -34,6 +34,7 @@ import unicodedata
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
+from zoneinfo import ZoneInfo
 
 ORG = "IUTInfoAix-S201-2026"
 REPO_PREFIX = "vigiechiro-pr-companion-"
@@ -42,6 +43,10 @@ REPO_PREFIX = "vigiechiro-pr-companion-"
 # longueur des courbes des equipes de reference (lievres) : elles ne doivent pas
 # afficher d'historique anterieur au projet.
 PROJET_DEBUT = "2026-06-04"
+
+# Fuseau des etudiants : les diagrammes d'activite « par heure / par jour » sont
+# exprimes en heure locale francaise (heure d'ete geree par la base tz).
+PARIS = ZoneInfo("Europe/Paris")
 
 # Repertoires (relatifs a la racine du repo tableau-de-bord)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -387,6 +392,66 @@ query($owner:String!,$name:String!,$cursor:String){
   }
 }
 """
+
+
+# ------------------------------------------------------------------------------
+# Activite : commits horodates (diagrammes par jour / jour de semaine / heure)
+# ------------------------------------------------------------------------------
+def collecter_activite(repo):
+    """Commits horodates, toutes branches, dedoublonnes par SHA, bots exclus.
+
+    Source : commits de `main` depuis le debut du projet + commits EN AVANCE des
+    branches non mergees (compare main...branche), pour capter aussi le travail
+    pas encore integre. Les dates REST (`commit.author.date`) portent l'offset de
+    l'auteur ; l'agregation les convertit en Europe/Paris. Un commit sans auteur
+    GitHub rattache (`login` vide, email mal configure) est garde pour le total
+    collectif mais non attribuable a une personne. -> liste {sha, date, login|None}.
+    """
+    jq = '{sha, date: .commit.author.date, login: (.author.login // "")}'
+    sources = gh_json(
+        f"repos/{ORG}/{repo}/commits?sha=main&since={PROJET_DEBUT}T00:00:00Z&per_page=100",
+        jq=f".[] | {jq}", paginate=True,
+    )
+    sources = sources if isinstance(sources, list) else ([sources] if sources else [])
+    noms = gh_json(f"repos/{ORG}/{repo}/branches?per_page=100", jq=".[].name", paginate=True)
+    if isinstance(noms, str):
+        noms = [noms]
+    for b in [x for x in (noms or []) if x not in ("main", "master")]:
+        data = gh_json(
+            f"repos/{ORG}/{repo}/compare/main...{quote(b, safe='')}",
+            jq=f"[.commits[] | {jq}]",
+        )
+        if isinstance(data, list):
+            sources.extend(data)
+        elif isinstance(data, dict):
+            sources.append(data)
+    events, vus = [], set()
+    for c in sources:
+        if not isinstance(c, dict):
+            continue
+        sha, date = c.get("sha"), c.get("date")
+        login = c.get("login") or None
+        if not sha or not date or sha in vus:
+            continue
+        if login and not is_human(login):     # commit de bot (capture auto, etc.)
+            continue
+        vus.add(sha)
+        events.append({"sha": sha, "date": date, "login": login})
+    return events
+
+
+def agreger_activite(events):
+    """events -> {total, by_day{date:n}, by_weekday[7 Lun..Dim], by_hour[24]} (Paris)."""
+    by_day = defaultdict(int)
+    by_weekday = [0] * 7
+    by_hour = [0] * 24
+    for ev in events:
+        dt = datetime.fromisoformat(ev["date"].replace("Z", "+00:00")).astimezone(PARIS)
+        by_day[dt.date().isoformat()] += 1
+        by_weekday[dt.weekday()] += 1     # 0 = lundi
+        by_hour[dt.hour] += 1
+    return {"total": len(events), "by_day": dict(by_day),
+            "by_weekday": by_weekday, "by_hour": by_hour}
 
 
 def collecter_branches(repo, membres=None):
@@ -1025,6 +1090,8 @@ def main():
     ap.add_argument("--teams", help="liste de slugs separes par des virgules")
     ap.add_argument("--no-tests", action="store_true", help="saute tests/qualite (dev front)")
     ap.add_argument("--no-history", action="store_true", help="ne pas ecrire l'historique")
+    ap.add_argument("--no-activity", action="store_true",
+                    help="saute la collecte des commits horodates (diagrammes d'activite)")
     args = ap.parse_args()
     filtre = set(args.teams.split(",")) if args.teams else None
 
@@ -1039,10 +1106,12 @@ def main():
 
     teams = []
     snapshots = []
+    activite_par_equipe = {}   # slug -> [events] (commits horodates) ; vide si --no-activity
     for e in equipes:
         repo, slug = e["repo"], e["slug"]
         print(f"  - {slug} ...", file=sys.stderr)
         issues_data = collecter_issues(repo)
+        activite_par_equipe[slug] = [] if args.no_activity else collecter_activite(repo)
         contributeurs, bus, review, merged_info, open_branches = \
             collecter_contributeurs(repo, slug, issues_data)
         if args.no_tests:
@@ -1150,12 +1219,34 @@ def main():
     students.sort(key=lambda c: (-c["tests_validated"], -c["prs_merged"], -c["issues_closed"],
                                  -c["branch_commits"], -c["commits"], c["login"]))
 
+    # Activite : agregats des commits horodates, en collectif + par equipe + par
+    # personne (la declinaison par equipe/personne est « gratuite » une fois les
+    # evenements collectes ; le front l'exploitera par phases).
+    tous_events, par_login, team_de_login = [], defaultdict(list), {}
+    for slug, evs in activite_par_equipe.items():
+        tous_events.extend(evs)
+        for ev in evs:
+            if ev["login"]:
+                par_login[ev["login"]].append(ev)
+                team_de_login[ev["login"]] = slug
+    collectif = agreger_activite(tous_events)
+    jours = sorted(collectif["by_day"])
+    activity = {
+        **collectif,
+        "first_day": jours[0] if jours else None,
+        "last_day": jours[-1] if jours else None,
+        "by_team": {slug: agreger_activite(evs) for slug, evs in activite_par_equipe.items()},
+        "by_student": {login: {**agreger_activite(evs), "team": team_de_login[login]}
+                       for login, evs in par_login.items()},
+    }
+
     data = {
         "generated_at": now.isoformat(),
         "totals": {"tests_total": tests_total, "issues_total": 54},
         "promo": promo,
         "teams": teams,
         "students": students,
+        "activity": activity,
     }
     os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
     with open(DATA_PATH, "w") as f:

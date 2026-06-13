@@ -85,9 +85,101 @@ function render(data) {
     + `${data.totals.issues_total} tâches.`;
 
   badgeCtx = contexteBadges(data.students);
+  renderStats(data);
   renderAlertes(data);
   renderTable(data);
   renderStudents(data);
+}
+
+// --- statistiques generales (activite collective) -------------------------
+const JOURS_SEM = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+
+// Diagramme baton en CSS pur. items: [{label, value, title?, cls?}].
+function barChart(items, maxH = 120) {
+  const max = Math.max(1, ...items.map(it => it.value || 0));
+  const bars = items.map(it => {
+    const v = it.value || 0;
+    const h = v ? Math.max(2, Math.round(v / max * maxH)) : 0;
+    return `<div class="bc-col ${it.cls || ""}" title="${esc(it.title || (it.label + " : " + v))}">`
+      + `<span class="bc-v">${v || ""}</span>`
+      + `<span class="bc-bar" style="height:${h}px"></span></div>`;
+  }).join("");
+  const labels = items.map(it => `<span class="bc-l ${it.cls || ""}">${esc(it.label)}</span>`).join("");
+  return `<div class="bc-bars" style="height:${maxH + 18}px">${bars}</div>`
+    + `<div class="bc-labels">${labels}</div>`;
+}
+
+// Liste dense des jours (AAAA-MM-JJ) de d1 a d2 inclus.
+function plageJours(d1, d2) {
+  const out = [];
+  for (let d = new Date(d1 + "T00:00:00Z"), fin = new Date(d2 + "T00:00:00Z");
+       d <= fin; d.setUTCDate(d.getUTCDate() + 1)) {
+    out.push(d.toISOString().slice(0, 10));
+  }
+  return out;
+}
+
+function argmax(arr) {           // indice du max d'un tableau
+  let bi = 0;
+  arr.forEach((v, i) => { if (v > arr[bi]) bi = i; });
+  return bi;
+}
+
+function skpi(val, label, title) {
+  return `<div class="skpi"${title ? ` title="${esc(title)}"` : ""}><b>${val}</b><small>${esc(label)}</small></div>`;
+}
+
+function renderStats(data) {
+  const sec = document.getElementById("stats");
+  const a = data.activity;
+  if (!sec) return;
+  if (!a || !a.total) { sec.hidden = true; return; }
+  sec.hidden = false;
+
+  // KPI : ampleur du travail collectif.
+  const prMerg = (data.teams || []).reduce((s, t) => s + ((t.review && t.review.merged_total) || 0), 0);
+  const issDone = (data.teams || []).reduce((s, t) => s + ((t.issues && t.issues.done) || 0), 0);
+  const contribs = Object.keys(a.by_student || {}).length;
+  const equipesActives = Object.values(a.by_team || {}).filter(t => t.total > 0).length;
+  const jourMaxKey = Object.keys(a.by_day).reduce((m, k) => a.by_day[k] > (a.by_day[m] || 0) ? k : m,
+    Object.keys(a.by_day)[0]);
+  const [jy, jm, jd] = jourMaxKey.split("-");
+  const hMax = argmax(a.by_hour);
+  const horsJour = a.by_hour.reduce((s, v, h) => s + ((h < 7 || h >= 20) ? v : 0), 0);
+  const partSoir = Math.round(100 * horsJour / a.total);
+  const weMax = a.by_weekday[5] + a.by_weekday[6];
+  document.getElementById("stats-kpi").innerHTML = [
+    skpi(a.total, "commits", "Total des commits horodatés (toutes branches, dédoublonnés)"),
+    skpi(contribs, "contributeurs actifs"),
+    skpi(equipesActives, "équipes"),
+    skpi(prMerg, "PR mergées"),
+    skpi(issDone, "issues fermées"),
+    skpi(`${jd}/${jm}`, "jour le plus actif", `${jourMaxKey} : ${a.by_day[jourMaxKey]} commits`),
+    skpi(`${hMax} h`, "heure de pointe", `${a.by_hour[hMax]} commits entre ${hMax} h et ${hMax + 1} h`),
+    skpi(`${partSoir} %`, "en soirée / nuit (20 h–7 h)", `${horsJour} commits hors 7 h–20 h ; ${weMax} le week-end`),
+  ].join("");
+
+  // Diagramme par jour du projet (plage dense, week-ends teintes).
+  const jours = (a.first_day && a.last_day) ? plageJours(a.first_day, a.last_day)
+    : Object.keys(a.by_day).sort();
+  const itemsJour = jours.map(d => {
+    const dt = new Date(d + "T00:00:00Z"), wd = (dt.getUTCDay() + 6) % 7;   // 0=Lun
+    const [, mm, dd] = d.split("-");
+    return { label: `${dd}/${mm}`, value: a.by_day[d] || 0, cls: wd >= 5 ? "we" : "",
+             title: `${d} (${JOURS_SEM[wd]}) : ${a.by_day[d] || 0} commits` };
+  });
+  document.getElementById("chart-day").innerHTML = barChart(itemsJour);
+
+  // Par jour de la semaine (Lun..Dim, week-end teinte).
+  const itemsSem = a.by_weekday.map((v, i) =>
+    ({ label: JOURS_SEM[i], value: v, cls: i >= 5 ? "we" : "" }));
+  document.getElementById("chart-weekday").innerHTML = barChart(itemsSem);
+
+  // Par heure du jour (0..23, soiree/nuit teintee).
+  const itemsHeure = a.by_hour.map((v, h) =>
+    ({ label: String(h), value: v, cls: (h < 7 || h >= 20) ? "nuit" : "",
+       title: `${h} h–${h + 1} h : ${v} commits` }));
+  document.getElementById("chart-hour").innerHTML = barChart(itemsHeure);
 }
 
 function renderAlertes(data) {
