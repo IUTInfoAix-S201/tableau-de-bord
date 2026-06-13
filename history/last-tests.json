@@ -51,14 +51,14 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 73.3,
-      "pmd_violations": 2,
+      "coverage_pct": 80.6,
+      "pmd_violations": 1,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 457,
-      "pct": 70.3,
-      "total": 650
+      "passed": 535,
+      "pct": 85.6,
+      "total": 625
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -90,8 +90,8 @@
         "total": 73
       },
       "validation": {
-        "passed": 0,
-        "total": 103
+        "passed": 78,
+        "total": 78
       }
     }
   },
