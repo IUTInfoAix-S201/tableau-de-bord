@@ -1,15 +1,15 @@
 {
   "gael_matteo_kenzi_thomas_g3": {
-    "ci_status": "success",
+    "ci_status": "failure",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 67.9,
-      "pmd_violations": 1,
+      "coverage_pct": null,
+      "pmd_violations": null,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 388,
-      "pct": 59.7,
+      "passed": 443,
+      "pct": 68.2,
       "total": 650
     },
     "tests_by_feature": {
@@ -26,7 +26,7 @@
         "total": 83
       },
       "lot": {
-        "passed": 27,
+        "passed": 24,
         "total": 27
       },
       "multisite": {
@@ -38,7 +38,7 @@
         "total": 111
       },
       "qualification": {
-        "passed": 12,
+        "passed": 72,
         "total": 73
       },
       "validation": {
