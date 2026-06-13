@@ -164,6 +164,23 @@ tbody tr.etudiant.cible { animation: surligne-cible 2s ease-out; }
   100% { background: transparent; box-shadow: none; }
 }
 
+/* ---- facteur d'effort (badge gradue) ---- */
+.facteur { display: inline-flex; align-items: center; gap: .35rem; font-weight: 700; font-size: .82rem; }
+.facteur.plein { color: #1d7a44; }
+.facteur.partiel { color: #a36a00; }
+.facteur-jauge { display: inline-block; width: 38px; height: 8px; background: #eceff1; border-radius: 4px; overflow: hidden; }
+.facteur-jauge > span { display: block; height: 100%; background: var(--jaune); }
+.facteur.plein .facteur-jauge > span { background: var(--vert); }
+
+/* ---- bandeau de synthese du detail etudiant ---- */
+.contrib-synth { display: flex; flex-wrap: wrap; gap: .8rem; margin-bottom: 1rem; }
+.cs-bloc { background: #fff; border: 1px solid var(--bord); border-radius: 8px;
+  padding: .6rem .9rem; min-width: 220px; flex: 1 1 220px; }
+.cs-titre { font-size: .78rem; font-weight: 600; color: var(--bleu); margin-bottom: .25rem; }
+.cs-val { font-size: 1.35rem; font-weight: 700; color: var(--ardoise); margin-bottom: .3rem; }
+.cs-bloc .barre { height: 10px; }
+.cs-bloc .aide { display: block; margin-top: .25rem; }
+
 /* ---- detail etudiant ---- */
 .kpi.part { min-width: 132px; }
 .kpi.part .barre.part-barre { height: 8px; min-width: 0; margin-top: .3rem; }

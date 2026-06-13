@@ -317,9 +317,13 @@ function totauxEquipes(data) {
     m[t.slug] = {
       lines: som(c => (c.lines_added || 0) + (c.lines_deleted || 0)),
       prs: som(c => (c.prs_open || 0) + (c.prs_merged || 0)),
+      prs_merged: som(c => c.prs_merged),
       issues_closed: som(c => c.issues_closed),
       commits: som(c => c.commits),
       tests_validated: som(c => c.tests_validated),
+      reviews_given: som(c => c.reviews_given),
+      branch_commits: som(c => c.branch_commits),
+      members: (t.bus_factor && t.bus_factor.members) || cs.length,
     };
   });
   return m;
@@ -335,6 +339,64 @@ function kpiPart(label, valHtml, val, total) {
     <div class="barre part-barre"><span style="width:${p}%"></span></div>
     <small class="part-lbl">${total ? p + " % de l'équipe" : "n/d"}</small>
   </div>`;
+}
+
+// --- taux de contribution + facteur d'effort -----------------------------
+// Taux = moyenne ponderee des PARTS d'equipe de l'etudiant sur 6 dimensions.
+// « Sortie ponderee » : valorise la Definition of Done (tests verts) sans
+// ignorer revues et travail en cours. Commits bruts exclus (non fiables sans
+// squash). Chaque part etant valeur/total_equipe, les taux d'une equipe
+// somment a 100 % -> la moyenne d'une equipe de N est 1/N.
+const CONTRIB_DIMS = [
+  { cle: "tests", label: "tests validés", poids: 0.30, tot: "tests_validated", val: s => s.tests_validated || 0 },
+  { cle: "prm", label: "PR mergées", poids: 0.25, tot: "prs_merged", val: s => s.prs_merged || 0 },
+  { cle: "iss", label: "issues fermées", poids: 0.15, tot: "issues_closed", val: s => s.issues_closed || 0 },
+  { cle: "lines", label: "lignes modifiées", poids: 0.15, tot: "lines", val: s => (s.lines_added || 0) + (s.lines_deleted || 0) },
+  { cle: "rev", label: "revues données", poids: 0.10, tot: "reviews_given", val: s => s.reviews_given || 0 },
+  { cle: "wip", label: "travail en cours", poids: 0.05, tot: "branch_commits", val: s => s.branch_commits || 0 },
+];
+
+// Renvoie {taux: 0..1 | null, parts: [{label, poids, part, apport}]}. On ne garde
+// que les dimensions dont le total d'equipe > 0 et on RENORMALISE leurs poids
+// (somme ramenee a 1) -> la somme par equipe reste 100 % meme si une dimension
+// est absente (ex. aucune revue, ou lievres sans lignes). null si rien de mesurable.
+function tauxContribution(s, tot) {
+  if (!tot) return { taux: null, parts: [] };
+  const actives = CONTRIB_DIMS.filter(d => (tot[d.tot] || 0) > 0);
+  const sommePoids = actives.reduce((a, d) => a + d.poids, 0);
+  if (!sommePoids) return { taux: null, parts: [] };
+  let taux = 0;
+  const parts = actives.map(d => {
+    const poids = d.poids / sommePoids;          // renormalise
+    const part = d.val(s) / tot[d.tot];          // part de l'etudiant dans l'equipe
+    const apport = poids * part;
+    taux += apport;
+    return { label: d.label, poids, part, apport };
+  });
+  return { taux, parts };
+}
+
+// Facteur d'effort : ideal = 1/N (N = membres) ; min(1, taux / ideal).
+function facteurEffort(taux, n) {
+  if (taux == null || !n) return null;
+  return Math.min(1, taux * n);                  // taux / (1/n) = taux * n
+}
+
+// Badge gradue : vert plein a 1, ambre en dessous.
+function badgeFacteur(f) {
+  if (f == null) return `<span class="badge nd">n/d</span>`;
+  const cls = f >= 0.999 ? "plein" : "partiel";
+  return `<span class="facteur ${cls}" title="Facteur d'effort appliqué à la note">`
+    + `<span class="facteur-jauge"><span style="width:${Math.round(f * 100)}%"></span></span>`
+    + `${f.toFixed(2)}</span>`;
+}
+
+// Infobulle de ventilation du taux (dimension : poids renormalise x part).
+function tauxTip(parts) {
+  if (!parts.length) return "Aucune dimension mesurable dans l'équipe.";
+  return parts.map(p =>
+    `${p.label} : ${Math.round(p.poids * 100)}% × ${Math.round(p.part * 100)}% = ${Math.round(p.apport * 100)}%`
+  ).join(" | ");
 }
 
 function featuresEtudiant(s) {
@@ -369,7 +431,27 @@ function detailEtudiant(s, tot) {
   const lignes = add + del;
   const prCount = (s.prs_open || 0) + (s.prs_merged || 0);
   const lignesHtml = `<span class="add">+${add}</span> <span class="del">−${del}</span>`;
+  const { taux, parts } = tauxContribution(s, tot);
+  const n = tot.members || 0;
+  const f = facteurEffort(taux, n);
+  const ideal = n ? Math.round(100 / n) : null;
+  const tauxPct = taux == null ? "n/d" : Math.round(taux * 100) + " %";
+  const synthese = `<div class="contrib-synth">
+    <div class="cs-bloc">
+      <div class="cs-titre">Taux de contribution</div>
+      <div class="cs-val" title="${esc(tauxTip(parts))}">${tauxPct}</div>
+      <div class="barre"><span style="width:${taux == null ? 0 : Math.round(taux * 100)}%"></span></div>
+      <small class="aide">part du travail de l'équipe (survol = détail)</small>
+    </div>
+    <div class="cs-bloc">
+      <div class="cs-titre">Facteur d'effort</div>
+      <div class="cs-val">${badgeFacteur(f)}</div>
+      <small class="aide">${ideal == null ? "effectif inconnu"
+        : `idéal ${ideal} % pour ${n} membres · min(1, taux ÷ idéal)`}</small>
+    </div>
+  </div>`;
   return `<div class="panneau">
+    ${synthese}
     <div class="qualite">
       ${kpiPart("lignes modifiées (PR)", lignesHtml, lignes, tot.lines)}
       ${kpiPart("PR ouvertes + mergées", String(prCount), prCount, tot.prs)}
@@ -390,9 +472,15 @@ function renderStudents(data) {
   const totaux = totauxEquipes(data);
   const students = [...(data.students || [])].sort(compareStudents);
   const ctx = badgeCtx || contexteBadges(students);
+  // taux de contribution + facteur d'effort, attaches pour permettre le tri.
+  students.forEach(s => {
+    const t = totaux[s.team];
+    s.taux = tauxContribution(s, t).taux;
+    s.facteur = facteurEffort(s.taux, t && t.members);
+  });
   corps.innerHTML = "";
   if (!students.length) {
-    corps.innerHTML = '<tr><td colspan="10">Aucun étudiant détecté.</td></tr>';
+    corps.innerHTML = '<tr><td colspan="12">Aucun étudiant détecté.</td></tr>';
     return;
   }
   students.forEach((s, i) => {
@@ -405,6 +493,8 @@ function renderStudents(data) {
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
       <td class="login"><span class="chevron">▶</span>${esc(s.login)}</td>
       <td>${esc(s.team)}</td>
+      <td class="num">${s.taux == null ? '<span class="badge nd">n/d</span>' : Math.round(s.taux * 100) + " %"}</td>
+      <td class="num">${badgeFacteur(s.facteur)}</td>
       <td class="num"><strong>${s.tests_validated}</strong></td>
       <td class="num">${s.branch_commits ?? 0}</td>
       <td class="num">${s.prs_open}</td>
@@ -415,7 +505,7 @@ function renderStudents(data) {
     const detail = document.createElement("tr");
     detail.className = "detail";
     detail.hidden = true;
-    detail.innerHTML = `<td colspan="10">${detailEtudiant(s, totaux[s.team])}</td>`;
+    detail.innerHTML = `<td colspan="12">${detailEtudiant(s, totaux[s.team])}</td>`;
     tr.addEventListener("click", e => {
       if (e.target.closest("a")) return;   // ne pas replier en cliquant un lien de PR
       detail.hidden = !detail.hidden;
