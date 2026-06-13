@@ -672,16 +672,16 @@
     }
   },
   "td2-vigiegroupe3": {
-    "ci_status": "success",
+    "ci_status": "failure",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 48.1,
-      "pmd_violations": 2,
+      "coverage_pct": null,
+      "pmd_violations": null,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 242,
-      "pct": 37.2,
+      "passed": 240,
+      "pct": 36.9,
       "total": 650
     },
     "tests_by_feature": {
@@ -816,16 +816,16 @@
     }
   },
   "td4_g5": {
-    "ci_status": "failure",
+    "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": null,
-      "pmd_violations": null,
+      "coverage_pct": 48.8,
+      "pmd_violations": 7,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 199,
-      "pct": 30.6,
+      "passed": 201,
+      "pct": 30.9,
       "total": 650
     },
     "tests_by_feature": {
