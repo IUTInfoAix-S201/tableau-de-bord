@@ -57,8 +57,8 @@
     },
     "tests": {
       "passed": 538,
-      "pct": 86.1,
-      "total": 625
+      "pct": 82.8,
+      "total": 650
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -91,7 +91,7 @@
       },
       "validation": {
         "passed": 78,
-        "total": 78
+        "total": 103
       }
     }
   },
@@ -344,8 +344,8 @@
       "spotless_ok": false
     },
     "tests": {
-      "passed": 265,
-      "pct": 40.8,
+      "passed": 272,
+      "pct": 41.8,
       "total": 650
     },
     "tests_by_feature": {
@@ -374,7 +374,7 @@
         "total": 111
       },
       "qualification": {
-        "passed": 0,
+        "passed": 7,
         "total": 73
       },
       "validation": {
