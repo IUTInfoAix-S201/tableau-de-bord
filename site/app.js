@@ -132,6 +132,7 @@ function renderTable(data) {
   teams.forEach((t, i) => {
     const tr = document.createElement("tr");
     tr.className = "equipe";
+    tr.id = idEquipe(t.slug);
     const delta = t.trend && t.trend.delta_7d;
     const deltaHtml = delta ? `<span class="delta pos" title="progression récente des tests verts">+${delta}</span>` : "";
     tr.innerHTML = `
@@ -212,6 +213,11 @@ function friseFeatures(t) {
 // Id DOM stable d'une ligne etudiant (ancre du lien depuis le panneau equipe).
 function idEtudiant(login) {
   return "etu-" + String(login).replace(/[^a-zA-Z0-9_-]/g, "_");
+}
+
+// Id DOM stable d'une ligne equipe (ancre du lien depuis la table etudiant).
+function idEquipe(slug) {
+  return "eq-" + String(slug).replace(/[^a-zA-Z0-9_-]/g, "_");
 }
 
 function detailPanneau(t) {
@@ -493,7 +499,7 @@ function renderStudents(data) {
     tr.innerHTML = `
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
       <td class="login"><span class="chevron">▶</span>${esc(s.login)}</td>
-      <td>${esc(s.team)}</td>
+      <td><a class="lien-equipe" href="#${idEquipe(s.team)}" data-slug="${esc(s.team)}" title="Voir l'équipe ${esc(s.team)} dans le classement">${esc(s.team)}</a></td>
       <td class="num">${s.taux == null ? '<span class="badge nd">n/d</span>' : Math.round(s.taux * 100) + " %"}</td>
       <td class="num">${badgeFacteur(s.facteur)}</td>
       <td class="num"><strong>${s.tests_validated}</strong></td>
@@ -532,32 +538,44 @@ function bindTri() {
   });
 }
 
-// Clic sur un login dans un panneau equipe -> deplie et met en avant la ligne
-// correspondante du classement par etudiant. Delegation (les lignes sont
-// re-rendues a chaque tri, l' id reste valable). Une seule direction : equipe -> etudiant.
-function bindLiensEtudiant() {
+// Deplie (si replie) une ligne, y fait defiler la page et la met en avant.
+function activerLigne(row) {
+  if (!row) return;
+  const detail = row.nextElementSibling;
+  if (detail && detail.classList.contains("detail") && detail.hidden) {
+    detail.hidden = false;
+    const ch = row.querySelector(".chevron");
+    if (ch) ch.textContent = "▼";
+  }
+  row.scrollIntoView({ behavior: "smooth", block: "center" });
+  row.classList.remove("cible");
+  void row.offsetWidth;              // relance l'animation si deja ciblee
+  row.classList.add("cible");
+}
+
+// Navigation croisee entre les deux classements (delegation : les lignes sont
+// re-rendues a chaque tri, les id restent valables).
+//   .lien-etudiant (panneau equipe) -> ligne du classement par etudiant
+//   .lien-equipe   (table etudiant)  -> ligne du classement des equipes
+function bindLiensNavigation() {
   document.addEventListener("click", e => {
-    const a = e.target.closest(".lien-etudiant");
-    if (!a) return;
-    e.preventDefault();
-    const row = document.getElementById(idEtudiant(a.dataset.login));
-    if (!row) return;
-    const detail = row.nextElementSibling;
-    if (detail && detail.classList.contains("detail") && detail.hidden) {
-      detail.hidden = false;
-      const ch = row.querySelector(".chevron");
-      if (ch) ch.textContent = "▼";
+    const aEtu = e.target.closest(".lien-etudiant");
+    if (aEtu) {
+      e.preventDefault();
+      activerLigne(document.getElementById(idEtudiant(aEtu.dataset.login)));
+      return;
     }
-    row.scrollIntoView({ behavior: "smooth", block: "center" });
-    row.classList.remove("cible");
-    void row.offsetWidth;            // relance l'animation si deja ciblee
-    row.classList.add("cible");
+    const aEq = e.target.closest(".lien-equipe");
+    if (aEq) {
+      e.preventDefault();
+      activerLigne(document.getElementById(idEquipe(aEq.dataset.slug)));
+    }
   });
 }
 
 fetch("data.json", { cache: "no-store" })
   .then(r => r.json())
-  .then(data => { window.__data = data; render(data); bindTri(); bindLiensEtudiant(); })
+  .then(data => { window.__data = data; render(data); bindTri(); bindLiensNavigation(); })
   .catch(e => {
     document.getElementById("meta").textContent =
       "Erreur de chargement de data.json : " + e;

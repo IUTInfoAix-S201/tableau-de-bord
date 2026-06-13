@@ -156,12 +156,12 @@ tbody tr.etudiant { border-top: 1px solid var(--bord); cursor: pointer; }
 tbody tr.etudiant:hover { background: #eef4fb; }
 #etudiants td.login .chevron { color: var(--gris); font-size: .75rem; margin-right: .35rem; font-family: system-ui, sans-serif; }
 
-/* lien login (panneau equipe) -> ligne du classement par etudiant */
-a.lien-etudiant { color: var(--bleu-clair); text-decoration: none; }
-a.lien-etudiant:hover { text-decoration: underline; }
+/* liens de navigation croisee entre les deux classements */
+a.lien-etudiant, a.lien-equipe { color: var(--bleu-clair); text-decoration: none; }
+a.lien-etudiant:hover, a.lien-equipe:hover { text-decoration: underline; }
 
-/* mise en avant transitoire de la ligne etudiant ciblee par un lien */
-tbody tr.etudiant.cible { animation: surligne-cible 2s ease-out; }
+/* mise en avant transitoire de la ligne ciblee par un lien (etudiant ou equipe) */
+tbody tr.cible { animation: surligne-cible 2s ease-out; }
 @keyframes surligne-cible {
   0%, 30% { background: #fff3cd; box-shadow: inset 3px 0 0 var(--jaune); }
   100% { background: transparent; box-shadow: none; }
