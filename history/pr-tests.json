@@ -664,6 +664,11 @@
     }
   },
   "linkedin_ou_interpol": {
+    "101": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": 416,
+      "sha": "8d15b6f346fe1698ead52e80cda0e65f194eeafe"
+    },
     "56": {
       "author": "DUMONT-Vladislav-25009525",
       "passed": 106,
@@ -791,7 +796,7 @@
     },
     "99": {
       "author": "DUMONT-Vladislav-25009525",
-      "passed": null,
+      "passed": 357,
       "sha": "04b4aef7851d8b2152c8d38b21ceddf935d447bf"
     }
   },
