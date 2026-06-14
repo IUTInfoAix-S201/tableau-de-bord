@@ -217,14 +217,18 @@ function renderStats(data) {
   const partWe = Math.round(100 * weCommits / a.total);
   const ciFailPct = ci.runs ? Math.round(100 * (ci.runs_failed || 0) / ci.runs) : null;
   document.getElementById("stats-kpi").innerHTML = [
-    skpi(nf(a.total), "commits", "Total des commits horodatés (toutes branches, dédoublonnés)"),
+    // Équipe & production
     skpi(nf(Object.keys(a.by_student || {}).length), "contributeurs actifs"),
-    skpi(nf(mergedTotal), "PR mergées"),
-    skpi(`${joursActifs} / ${nbJours}`, "jours actifs", "jours du projet avec au moins un commit"),
-    skpi(`${partWe} %`, "le week-end", `${weCommits} commits le samedi ou le dimanche`),
+    skpi(nf(a.total), "commits", "Total des commits horodatés (toutes branches, dédoublonnés)"),
     skpi(nf(lignes), "lignes écrites", "lignes ajoutées + supprimées (sur les PR)"),
+    skpi(nf(mergedTotal), "PR mergées"),
+    // Collaboration
     skpi(nf(revues), "revues de code", "revues de pull request données"),
     skpi(pctRelues == null ? "n/d" : pctRelues + " %", "PR relues", "PR mergées relues par un pair (promo)"),
+    // Rythme
+    skpi(`${joursActifs} / ${nbJours}`, "jours actifs", "jours du projet avec au moins un commit"),
+    skpi(`${partWe} %`, "le week-end", `${weCommits} commits le samedi ou le dimanche`),
+    // Intégration continue
     skpi(nf(ci.minutes), "minutes de CI", `≈ ${nf(Math.round((ci.minutes || 0) / 60))} h cumulées de runs GitHub Actions`),
     skpi(nf(ci.runs), "runs CI", "exécutions de workflows depuis le début du projet"),
     skpi(ciFailPct == null ? "n/d" : ciFailPct + " %", "runs CI en échec", `${nf(ci.runs_failed)} runs en échec sur ${nf(ci.runs)}`),
@@ -549,6 +553,7 @@ function totauxEquipes(data) {
     const som = f => cs.reduce((a, c) => a + (f(c) || 0), 0);
     m[t.slug] = {
       lines: som(c => (c.lines_added || 0) + (c.lines_deleted || 0)),
+      lines_added: som(c => c.lines_added),
       prs: som(c => (c.prs_open || 0) + (c.prs_merged || 0)),
       prs_merged: som(c => c.prs_merged),
       issues_closed: som(c => c.issues_closed),
@@ -580,11 +585,14 @@ function kpiPart(label, valHtml, val, total) {
 // ignorer revues et travail en cours. Commits bruts exclus (non fiables sans
 // squash). Chaque part etant valeur/total_equipe, les taux d'une equipe
 // somment a 100 % -> la moyenne d'une equipe de N est 1/N.
+// Lignes AJOUTÉES en 1er signal (proxy du code réellement produit), tests réduits
+// à 15 % : leur delta est biaisé par les « tests gratuits » (backend déjà écrit,
+// écran Passage...) qui virent au vert pour peu de travail.
 const CONTRIB_DIMS = [
-  { cle: "tests", label: "tests validés", poids: 0.30, tot: "tests_validated", val: s => s.tests_validated || 0 },
+  { cle: "lines", label: "lignes ajoutées", poids: 0.30, tot: "lines_added", val: s => s.lines_added || 0 },
   { cle: "prm", label: "PR mergées", poids: 0.25, tot: "prs_merged", val: s => s.prs_merged || 0 },
+  { cle: "tests", label: "tests validés", poids: 0.15, tot: "tests_validated", val: s => s.tests_validated || 0 },
   { cle: "iss", label: "issues fermées", poids: 0.15, tot: "issues_closed", val: s => s.issues_closed || 0 },
-  { cle: "lines", label: "lignes modifiées", poids: 0.15, tot: "lines", val: s => (s.lines_added || 0) + (s.lines_deleted || 0) },
   { cle: "rev", label: "revues données", poids: 0.10, tot: "reviews_given", val: s => s.reviews_given || 0 },
   { cle: "wip", label: "travail en cours", poids: 0.05, tot: "branch_commits", val: s => s.branch_commits || 0 },
 ];
