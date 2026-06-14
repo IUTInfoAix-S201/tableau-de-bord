@@ -392,13 +392,13 @@
       "spotless_ok": true
     },
     "tests": {
-      "passed": 315,
-      "pct": 48.5,
+      "passed": 328,
+      "pct": 50.5,
       "total": 650
     },
     "tests_by_feature": {
       "bibliotheque": {
-        "passed": 9,
+        "passed": 22,
         "total": 22
       },
       "diagnostic": {
