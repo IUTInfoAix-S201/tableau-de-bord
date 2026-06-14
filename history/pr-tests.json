@@ -679,6 +679,11 @@
       "passed": 416,
       "sha": "8d15b6f346fe1698ead52e80cda0e65f194eeafe"
     },
+    "103": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": 421,
+      "sha": "218ab879a3153c63d5d73f0e0c955ab5a5cba868"
+    },
     "56": {
       "author": "DUMONT-Vladislav-25009525",
       "passed": 106,
@@ -1418,6 +1423,11 @@
       "author": "CoIib",
       "passed": 218,
       "sha": "53e9b3dccf34921ca5785ca1a5bcef9c01176fad"
+    },
+    "79": {
+      "author": "ChevremontLilian",
+      "passed": 278,
+      "sha": "dc7d8242f5b96a0ca9c6d5a8833dcce7d62111ce"
     }
   },
   "td2-g6": {
