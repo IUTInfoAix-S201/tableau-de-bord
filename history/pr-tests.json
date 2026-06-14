@@ -758,6 +758,11 @@
       "author": "FRANCESCHI-PINSON-Lucas-25008772",
       "passed": 272,
       "sha": "41d2e7e5506a24fe88436b28be688f7b37380bd1"
+    },
+    "95": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": 280,
+      "sha": "8b5268dcdefc13c1549bdcb0c966f3d04489fcdf"
     }
   },
   "mathieu_kyle_lenny_diego": {
@@ -840,6 +845,11 @@
       "author": "chkyle07",
       "passed": 328,
       "sha": "208c1076b5f9a8181ac18618e49c8794585e77d8"
+    },
+    "92": {
+      "author": "chkyle07",
+      "passed": 329,
+      "sha": "8705703f2cef0b9ef87ac544b83f67e75284ef11"
     }
   },
   "riplasemaine": {
