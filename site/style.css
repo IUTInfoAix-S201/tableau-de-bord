@@ -48,6 +48,12 @@ h2 { font-size: 1.15rem; color: var(--bleu); border-bottom: 2px solid var(--bord
 .skpi b { display: block; font-size: 1.5rem; color: var(--bleu); line-height: 1.1; }
 .skpi small { color: var(--gris); font-size: .76rem; }
 
+.disclosure { display: inline-flex; align-items: center; gap: .4rem; margin-bottom: 1rem;
+  font: inherit; font-size: .9rem; font-weight: 600; color: var(--bleu); cursor: pointer;
+  background: #fff; border: 1px solid var(--bord); border-radius: 8px; padding: .5rem .8rem; }
+.disclosure:hover { background: #eef4fb; }
+.disclosure .chevron { color: var(--gris); font-size: .8rem; }
+
 .charts { display: grid; grid-template-columns: 1fr; gap: 1.2rem; }
 @media (min-width: 900px) { .charts { grid-template-columns: 1.4fr 1fr; }
   .charts .chart:first-child { grid-column: 1 / -1; } }

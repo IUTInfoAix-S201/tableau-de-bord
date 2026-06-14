@@ -159,9 +159,27 @@ function renderStats(data) {
     skpi(`${partSoir} %`, "en soirée / nuit (20 h–7 h)", `${horsJour} commits hors 7 h–20 h ; ${weMax} le week-end`),
   ].join("");
 
-  // Diagrammes collectifs. La déclinaison par équipe / par personne vit
-  // désormais dans les panneaux détaillés respectifs (detailPanneau / detailEtudiant).
+  // Diagrammes collectifs, masqués par défaut derrière un bouton dépliable (comme
+  // les vues détaillées équipe/étudiant). La déclinaison par équipe / par personne
+  // vit dans les panneaux détaillés respectifs (detailPanneau / detailEtudiant).
   document.getElementById("stats-charts").innerHTML = blocCharts(a);
+  bindStatsToggle();
+}
+
+let statsToggleBound = false;
+function bindStatsToggle() {
+  if (statsToggleBound) return;
+  statsToggleBound = true;
+  const btn = document.getElementById("stats-toggle");
+  const charts = document.getElementById("stats-charts");
+  if (!btn || !charts) return;
+  btn.hidden = false;
+  btn.addEventListener("click", () => {
+    charts.hidden = !charts.hidden;
+    btn.setAttribute("aria-expanded", String(!charts.hidden));
+    const ch = btn.querySelector(".chevron");
+    if (ch) ch.textContent = charts.hidden ? "▶" : "▼";
+  });
 }
 
 // --- diagrammes d'activite (reutilisables : collectif, equipe, personne) ----

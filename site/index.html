@@ -23,7 +23,10 @@
       <h2>Statistiques générales</h2>
       <p class="aide">L'ampleur du travail collectif depuis le début du projet. Une <strong>contribution</strong> = un commit (toutes branches, dédoublonné). Les heures et jours sont exprimés en <strong>heure de Paris</strong>.</p>
       <div id="stats-kpi" class="stats-kpi"></div>
-      <div id="stats-charts"></div>
+      <button type="button" id="stats-toggle" class="disclosure" aria-expanded="false" hidden>
+        <span class="chevron">▶</span> Diagrammes d'activité (par jour, jour de semaine, heure)
+      </button>
+      <div id="stats-charts" hidden></div>
       <p class="aide">Le détail par équipe est dans la vue dépliée de chaque équipe ; le détail par personne, dans la vue dépliée de chaque étudiant.</p>
     </section>
 
