@@ -649,12 +649,14 @@ function badgeFacteur(f) {
     + `${f.toFixed(2)}</span>`;
 }
 
-// Infobulle de ventilation du taux (dimension : poids renormalise x part).
+// Infobulle de ventilation du taux : pour chaque dimension, la part de l'étudiant
+// dans l'équipe × le poids de la dimension = points apportés (leur somme = le taux).
 function tauxTip(parts) {
   if (!parts.length) return "Aucune dimension mesurable dans l'équipe.";
-  return parts.map(p =>
-    `${p.label} : ${Math.round(p.poids * 100)}% × ${Math.round(p.part * 100)}% = ${Math.round(p.apport * 100)}%`
-  ).join(" | ");
+  const lignes = parts.map(p =>
+    `• ${p.label} : ${Math.round(p.part * 100)} % de l'équipe × poids ${Math.round(p.poids * 100)} % = ${Math.round(p.apport * 100)} pts`
+  ).join("\n");
+  return "D'où vient ce taux (la somme des points = le taux) :\n" + lignes;
 }
 
 function featuresEtudiant(s) {
