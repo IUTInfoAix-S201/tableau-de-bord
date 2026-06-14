@@ -705,7 +705,7 @@ function detailEtudiant(s, tot) {
       <div class="cs-titre">Facteur d'effort</div>
       <div class="cs-val">${badgeFacteur(f)}</div>
       <small class="aide">${ideal == null ? "effectif inconnu"
-        : `idéal ${ideal} % pour ${n} membres · min(1, taux ÷ idéal)`}</small>
+        : `part attendue ${ideal} % (équipe de ${n}) : atteinte → facteur 1, sinon proportionnel`}</small>
     </div>
   </div>`;
   return `<div class="panneau">
