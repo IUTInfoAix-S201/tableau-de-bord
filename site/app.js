@@ -136,7 +136,10 @@ function startCountdown() {
     let haut, bouquet = "";
     if (fini) {
       haut = `<span class="cd-fini">🎆 Projet terminé — bravo à toutes les équipes ! 🦇</span>`;
-      if (ms <= 0 && cptRebours) { clearInterval(cptRebours); cptRebours = null; }
+      // En état « terminé » (vrai ou aperçu), on rend UNE fois et on stoppe le
+      // tick : sinon le réécriture du bandeau chaque seconde recrée le <video>
+      // -> il recharge en boucle sans jamais démarrer (clignotement).
+      if (cptRebours) { clearInterval(cptRebours); cptRebours = null; }
       // Bouquet final : la visualisation Gource de l'évolution du code, révélée
       // à l'instant où le compte à rebours atteint zéro.
       bouquet = `<div class="bouquet">
@@ -160,9 +163,11 @@ function startCountdown() {
       + `</div>${bouquet}`;
     el.hidden = false;
   };
-  tick();
+  // Intervalle créé AVANT le 1er tick : si on est déjà « terminé » (ou aperçu),
+  // ce 1er tick le coupe immédiatement -> un seul rendu, pas de clignotement.
   if (cptRebours) clearInterval(cptRebours);
   cptRebours = setInterval(tick, 1000);
+  tick();
 }
 
 // --- statistiques generales (activite collective) -------------------------
