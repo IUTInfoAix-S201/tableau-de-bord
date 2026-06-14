@@ -384,16 +384,16 @@
     }
   },
   "mathieu_kyle_lenny_diego": {
-    "ci_status": "success",
+    "ci_status": "failure",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 52.5,
-      "pmd_violations": 4,
+      "coverage_pct": null,
+      "pmd_violations": null,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 297,
-      "pct": 45.7,
+      "passed": 315,
+      "pct": 48.5,
       "total": 650
     },
     "tests_by_feature": {
@@ -406,7 +406,7 @@
         "total": 24
       },
       "importation": {
-        "passed": 0,
+        "passed": 18,
         "total": 83
       },
       "lot": {
