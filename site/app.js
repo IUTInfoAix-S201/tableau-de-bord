@@ -106,6 +106,14 @@ function pctTestsPromo() {
   return t ? Math.round(100 * p / t) : 0;
 }
 
+// % d'issues terminées sur l'ensemble de la promo (Σ fermées / Σ total).
+function pctIssuesPromo() {
+  const ts = (window.__data && window.__data.teams) || [];
+  let d = 0, t = 0;
+  ts.forEach(x => { d += (x.issues && x.issues.done) || 0; t += (x.issues && x.issues.total) || 0; });
+  return t ? Math.round(100 * d / t) : 0;
+}
+
 function startCountdown() {
   const el = document.getElementById("countdown");
   if (!el) return;
@@ -134,6 +142,7 @@ function startCountdown() {
       + `<div class="cd-progress">`
       + barre("Temps écoulé", pctTemps, "temps")
       + barre("Tests validés", pctTests, "tests")
+      + barre("Issues terminées", pctIssuesPromo(), "issues")
       + `</div>`;
     el.hidden = false;
   };

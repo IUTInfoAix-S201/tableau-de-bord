@@ -53,12 +53,13 @@ h2 { font-size: 1.15rem; color: var(--bleu); border-bottom: 2px solid var(--bord
 .cd-box b { display: block; font-size: 1.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
 .cd-box small { font-size: .66rem; opacity: .85; text-transform: uppercase; letter-spacing: .03em; }
 .cd-fini { font-weight: 700; font-size: 1.05rem; }
-.cd-progress { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem 1.2rem; }
-@media (max-width: 560px) { .cd-progress { grid-template-columns: 1fr; } }
+.cd-progress { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem 1.2rem; }
+@media (max-width: 720px) { .cd-progress { grid-template-columns: 1fr; } }
 .cd-bar-lbl { font-size: .8rem; opacity: .95; }
 .cd-bar .barre { height: 12px; margin-top: .25rem; background: rgba(255, 255, 255, .15); }
 .cd-bar .barre.temps > span { background: var(--bleu-clair); }
 .cd-bar .barre.tests > span { background: var(--vert); }
+.cd-bar .barre.issues > span { background: var(--jaune); }
 
 /* ---- statistiques generales ---- */
 .stats-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; margin: .8rem 0 1.4rem; }
