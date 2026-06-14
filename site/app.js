@@ -85,10 +85,61 @@ function render(data) {
     + `${data.totals.issues_total} tâches.`;
 
   badgeCtx = contexteBadges(data.students);
+  startCountdown();
   renderStats(data);
   renderAlertes(data);
   renderTable(data);
   renderStudents(data);
+}
+
+// --- compte a rebours vers la fin du projet -------------------------------
+// Bornes du projet, heure de Paris (UTC+2 en juin) : du 04/06 au 18/06 a 8 h 15.
+const DEBUT_PROJET = new Date("2026-06-04T00:00:00+02:00").getTime();
+const FIN_PROJET = new Date("2026-06-18T08:15:00+02:00").getTime();
+let cptRebours = null;
+
+// % de tests d'acceptation verts sur l'ensemble de la promo (Σ passés / Σ total).
+function pctTestsPromo() {
+  const ts = (window.__data && window.__data.teams) || [];
+  let p = 0, t = 0;
+  ts.forEach(x => { p += (x.tests && x.tests.passed) || 0; t += (x.tests && x.tests.total) || 0; });
+  return t ? Math.round(100 * p / t) : 0;
+}
+
+function startCountdown() {
+  const el = document.getElementById("countdown");
+  if (!el) return;
+  const boite = (v, l) => `<span class="cd-box"><b>${String(v).padStart(2, "0")}</b><small>${l}</small></span>`;
+  const barre = (lbl, pct, cls) =>
+    `<div class="cd-bar"><span class="cd-bar-lbl">${lbl} : <b>${pct} %</b></span>`
+    + `<div class="barre ${cls}"><span style="width:${pct}%"></span></div></div>`;
+  const tick = () => {
+    const ms = FIN_PROJET - Date.now();
+    const pctTemps = Math.max(0, Math.min(100,
+      Math.round(100 * (Date.now() - DEBUT_PROJET) / (FIN_PROJET - DEBUT_PROJET))));
+    const pctTests = pctTestsPromo();
+    let haut;
+    if (ms <= 0) {
+      haut = `<span class="cd-fini">⏱️ Projet terminé — rendu clôturé le 18/06 à 8 h 15</span>`;
+      if (cptRebours) { clearInterval(cptRebours); cptRebours = null; }
+    } else {
+      const s = Math.floor(ms / 1000);
+      haut = `<span class="cd-lbl">⏳ Temps restant avant la fin du projet <small>(18/06 à 8 h 15)</small></span>`
+        + `<span class="cd-boites">`
+        + boite(Math.floor(s / 86400), "jours") + boite(Math.floor(s % 86400 / 3600), "heures")
+        + boite(Math.floor(s % 3600 / 60), "min") + boite(s % 60, "s")
+        + `</span>`;
+    }
+    el.innerHTML = `<div class="cd-haut">${haut}</div>`
+      + `<div class="cd-progress">`
+      + barre("Temps écoulé", pctTemps, "temps")
+      + barre("Tests validés", pctTests, "tests")
+      + `</div>`;
+    el.hidden = false;
+  };
+  tick();
+  if (cptRebours) clearInterval(cptRebours);
+  cptRebours = setInterval(tick, 1000);
 }
 
 // --- statistiques generales (activite collective) -------------------------

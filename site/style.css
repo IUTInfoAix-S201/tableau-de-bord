@@ -42,6 +42,24 @@ h2 { font-size: 1.15rem; color: var(--bleu); border-bottom: 2px solid var(--bord
   border-radius: 999px; font-size: .8rem; background: #fdeceb; color: #a33027; border: 1px solid #f5c6c2; }
 .alerte.warn { background: #fff8e6; color: #7a5b00; border-color: #f0dca0; }
 
+/* ---- compte a rebours fin de projet ---- */
+.countdown { background: var(--ardoise); color: #fff; border-radius: 10px; padding: .9rem 1.1rem;
+  margin: .6rem 0 1.2rem; display: flex; flex-direction: column; gap: .8rem; }
+.cd-haut { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem; }
+.cd-lbl { font-weight: 600; font-size: .95rem; }
+.cd-lbl small { opacity: .8; font-weight: 400; }
+.cd-boites { display: flex; gap: .5rem; }
+.cd-box { background: rgba(255, 255, 255, .12); border-radius: 8px; padding: .35rem .6rem; text-align: center; min-width: 56px; }
+.cd-box b { display: block; font-size: 1.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.cd-box small { font-size: .66rem; opacity: .85; text-transform: uppercase; letter-spacing: .03em; }
+.cd-fini { font-weight: 700; font-size: 1.05rem; }
+.cd-progress { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem 1.2rem; }
+@media (max-width: 560px) { .cd-progress { grid-template-columns: 1fr; } }
+.cd-bar-lbl { font-size: .8rem; opacity: .95; }
+.cd-bar .barre { height: 12px; margin-top: .25rem; background: rgba(255, 255, 255, .15); }
+.cd-bar .barre.temps > span { background: var(--bleu-clair); }
+.cd-bar .barre.tests > span { background: var(--vert); }
+
 /* ---- statistiques generales ---- */
 .stats-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; margin: .8rem 0 1.4rem; }
 .skpi { background: #fff; border: 1px solid var(--bord); border-radius: 8px; padding: .6rem .8rem; text-align: center; }
