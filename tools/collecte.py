@@ -656,6 +656,10 @@ def collecter_contributeurs(repo, slug, issues_data):
 
     logins = set(commits) | set(prs_open) | set(prs_merged) | set(revues_donnees) \
         | set(membres) | set(issues_data["_assignes"]) | set(wip)
+    # Garde-fou global : on ne garde que des etudiants. is_human exclut bots ET
+    # encadrants (COMPTES_EXCLUS, ex. nedseb) qui pouvaient se glisser via les
+    # assignations d'issues (non filtrees a la collecte des issues).
+    logins = {l for l in logins if is_human(l)}
     feats_issues = issues_data.get("_features_assigne", {})
     contributeurs = []
     for login in sorted(logins):
