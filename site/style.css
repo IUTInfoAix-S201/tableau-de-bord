@@ -52,7 +52,12 @@ h2 { font-size: 1.15rem; color: var(--bleu); border-bottom: 2px solid var(--bord
 .cd-box { background: rgba(255, 255, 255, .12); border-radius: 8px; padding: .35rem .6rem; text-align: center; min-width: 56px; }
 .cd-box b { display: block; font-size: 1.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
 .cd-box small { font-size: .66rem; opacity: .85; text-transform: uppercase; letter-spacing: .03em; }
-.cd-fini { font-weight: 700; font-size: 1.05rem; }
+.cd-fini { font-weight: 700; font-size: 1.15rem; }
+.bouquet { margin-top: .4rem; display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+.bouquet-titre { font-weight: 600; font-size: .95rem; opacity: .95; text-align: center; }
+.bouquet-video { width: 100%; max-width: 960px; border-radius: 10px; background: #000; display: block; }
+.bouquet-lien { color: var(--bleu-clair); text-decoration: none; font-size: .85rem; }
+.bouquet-lien:hover { text-decoration: underline; }
 .cd-progress { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem 1.2rem; }
 @media (max-width: 720px) { .cd-progress { grid-template-columns: 1fr; } }
 .cd-bar-lbl { font-size: .8rem; opacity: .95; }

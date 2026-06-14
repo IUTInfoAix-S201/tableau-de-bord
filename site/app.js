@@ -96,6 +96,9 @@ function render(data) {
 // Bornes du projet, heure de Paris (UTC+2 en juin) : du 04/06 au 18/06 a 8 h 15.
 const DEBUT_PROJET = new Date("2026-06-04T00:00:00+02:00").getTime();
 const FIN_PROJET = new Date("2026-06-18T08:15:00+02:00").getTime();
+// Bouquet final : vidéo Gource publiée en asset de release (tag « bouquet »),
+// révélée quand le compte à rebours atteint zéro.
+const BOUQUET_URL = "https://github.com/IUTInfoAix-S201/tableau-de-bord/releases/download/bouquet/bouquet-final.mp4";
 let cptRebours = null;
 
 // % de tests d'acceptation verts sur l'ensemble de la promo (Σ passés / Σ total).
@@ -126,10 +129,18 @@ function startCountdown() {
     const pctTemps = Math.max(0, Math.min(100,
       Math.round(100 * (Date.now() - DEBUT_PROJET) / (FIN_PROJET - DEBUT_PROJET))));
     const pctTests = pctTestsPromo();
-    let haut;
-    if (ms <= 0) {
-      haut = `<span class="cd-fini">⏱️ Projet terminé — rendu clôturé le 18/06 à 8 h 15</span>`;
+    const fini = ms <= 0;
+    let haut, bouquet = "";
+    if (fini) {
+      haut = `<span class="cd-fini">🎆 Projet terminé — bravo à toutes les équipes ! 🦇</span>`;
       if (cptRebours) { clearInterval(cptRebours); cptRebours = null; }
+      // Bouquet final : la visualisation Gource de l'évolution du code, révélée
+      // à l'instant où le compte à rebours atteint zéro.
+      bouquet = `<div class="bouquet">
+        <div class="bouquet-titre">🎬 Le bouquet final : l'évolution du code de toutes les équipes</div>
+        <video class="bouquet-video" controls playsinline preload="metadata" src="${BOUQUET_URL}"></video>
+        <a class="bouquet-lien" href="${BOUQUET_URL}" target="_blank" rel="noopener">Ouvrir la vidéo en plein écran ↗</a>
+      </div>`;
     } else {
       const s = Math.floor(ms / 1000);
       haut = `<span class="cd-lbl">⏳ Temps restant avant la fin du projet <small>(18/06 à 8 h 15)</small></span>`
@@ -143,7 +154,7 @@ function startCountdown() {
       + barre("Temps écoulé", pctTemps, "temps")
       + barre("Tests validés", pctTests, "tests")
       + barre("Issues terminées", pctIssuesPromo(), "issues")
-      + `</div>`;
+      + `</div>${bouquet}`;
     el.hidden = false;
   };
   tick();
