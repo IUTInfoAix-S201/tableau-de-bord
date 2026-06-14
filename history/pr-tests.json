@@ -490,6 +490,11 @@
       "passed": 299,
       "sha": "31d395ecd4143375ffc57d3eea3096459fbc9333"
     },
+    "176": {
+      "author": "Timeo-84",
+      "passed": 300,
+      "sha": "6e2e914c4b413e98877b3964d67c52f6d74a84d7"
+    },
     "177": {
       "author": "lochlann-fabbi",
       "passed": 300,
@@ -2139,6 +2144,11 @@
       "author": "tommylehli",
       "passed": 338,
       "sha": "992af9cce19bfdb12d3a44672bb8e5bee10022eb"
+    },
+    "82": {
+      "author": "YannickAit",
+      "passed": 347,
+      "sha": "d73d5a6d8dfb1627f8fef97fd84d8b6ea2ec50f6"
     },
     "83": {
       "author": "manalbartal",
