@@ -50,9 +50,18 @@ for repo in "${REPOS[@]}"; do
   while IFS=$'\t' read -r name login; do
     [[ -z "$name" || -z "$login" || "$login" == "null" ]] && continue
     [[ -n "${AV_DONE["$name"]:-}" ]] && continue
-    if curl -fsSL "https://github.com/$login.png?size=128" -o "$WORK/avatars/$name.png" 2>/dev/null; then
+    img="$WORK/avatars/$name.png"; raw="$WORK/avatars/.raw"
+    # Telecharge PUIS re-encode en PNG RGB 128x128 propre. Gource (SDL_image)
+    # refuse certains avatars GitHub (profil colorimetrique, APNG, page d'erreur
+    # HTML recue sous rate-limit...) et PLANTE le rendu sur une ressource invalide.
+    # ffmpeg decode (donc valide) et normalise tout en un PNG sur lequel il ne cale pas.
+    if curl -fsSL "https://github.com/$login.png?size=128" -o "$raw" 2>/dev/null && [[ -s "$raw" ]] \
+       && ffmpeg -y -loglevel error -i "$raw" -vf scale=128:128:flags=lanczos -pix_fmt rgb24 "$img" 2>/dev/null; then
       AV_DONE["$name"]=1
+    else
+      rm -f "$img"
     fi
+    rm -f "$raw"
   done < <(gh api "repos/$ORG/$repo/commits" --paginate \
             --jq '.[] | select(.author and .commit.author) | (.commit.author.name)+"\t"+(.author.login)' \
             2>/dev/null | sort -u)
