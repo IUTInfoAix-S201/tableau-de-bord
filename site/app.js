@@ -379,6 +379,7 @@ function detailPanneau(t) {
       <div class="kpi"><b>${r.merged_total}</b><small>PR mergées (${r.self_merges} sans revue)</small></div>
       <div class="kpi"><b title="Équilibre du travail (entropie normalisée des commits) : 100% = parfaitement réparti entre les membres, bas = concentré sur quelques-uns. Bus factor (Wikipédia) : ${b.factor}.">${bal != null ? `<span class="busbar"><span style="width:${bal}%"></span></span> ${bal} %` : "n/d"}</b>
         <small>équilibre du travail (${b.active_members}/${b.members} actifs)</small></div>
+      ${ciKpisEquipe(t.slug)}
     </div>
     <table class="contribs">
       <thead><tr>
@@ -393,6 +394,18 @@ function detailPanneau(t) {
     ${blocActivite((window.__data && window.__data.activity && window.__data.activity.by_team || {})[t.slug],
       "Activité de l'équipe (commits)")}
   </div>`;
+}
+
+// Tuiles CI d'une equipe (minutes cumulees, runs, taux d'echec), ou rien si
+// aucune donnee CI (ex. equipe de reference synthetique).
+function ciKpisEquipe(slug) {
+  const c = (window.__data && window.__data.ci && window.__data.ci.by_team || {})[slug];
+  if (!c || !c.runs) return "";
+  const nf = n => (n || 0).toLocaleString("fr-FR");
+  const failPct = Math.round(100 * (c.runs_failed || 0) / c.runs);
+  return `<div class="kpi"><b title="≈ ${nf(Math.round((c.minutes || 0) / 60))} h cumulées de runs">${nf(c.minutes)}</b><small>minutes de CI</small></div>`
+    + `<div class="kpi"><b>${nf(c.runs)}</b><small>runs CI</small></div>`
+    + `<div class="kpi"><b>${failPct} %</b><small>runs CI en échec</small></div>`;
 }
 
 // Bloc activite (titre + 3 diagrammes) pour un panneau detaille, ou rien si
