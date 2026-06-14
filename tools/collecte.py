@@ -720,7 +720,10 @@ def lire_ci_summary(repo, run_id):
     arts = gh_json(f"repos/{ORG}/{repo}/actions/runs/{run_id}/artifacts",
                    jq=".artifacts[] | {name, id}")
     arts = arts if isinstance(arts, list) else ([arts] if arts else [])
-    cible = next((a for a in arts if a["name"] == "ci-summary"), None)
+    # Robustesse : sous rate-limit / hoquet API, gh_json peut renvoyer une chaine
+    # (message d'erreur non-JSON) au lieu de dicts -> on filtre les non-dicts pour
+    # ne pas planter tout le build sur un `a["name"]`.
+    cible = next((a for a in arts if isinstance(a, dict) and a.get("name") == "ci-summary"), None)
     if not cible:
         return None
     with tempfile.TemporaryDirectory() as d:
@@ -801,6 +804,8 @@ def compte_tests_sha(repo, sha):
     )
     runs = runs if isinstance(runs, list) else ([runs] if runs else [])
     for r in runs:
+        if not isinstance(r, dict) or "id" not in r:   # hoquet API -> non-dict
+            continue
         summary = lire_ci_summary(repo, r["id"])
         if summary and summary.get("tests") and summary["tests"].get("passed") is not None:
             return summary["tests"]["passed"]
