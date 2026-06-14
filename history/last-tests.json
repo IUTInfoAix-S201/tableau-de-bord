@@ -912,16 +912,16 @@
     }
   },
   "thebatdevs": {
-    "ci_status": "failure",
+    "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": null,
-      "pmd_violations": null,
+      "coverage_pct": 61.4,
+      "pmd_violations": 4,
       "spotless_ok": false
     },
     "tests": {
-      "passed": 343,
-      "pct": 52.8,
+      "passed": 342,
+      "pct": 52.6,
       "total": 650
     },
     "tests_by_feature": {
@@ -950,7 +950,7 @@
         "total": 111
       },
       "qualification": {
-        "passed": 13,
+        "passed": 12,
         "total": 73
       },
       "validation": {
