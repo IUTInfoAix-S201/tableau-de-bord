@@ -218,6 +218,8 @@ function renderStats(data) {
   const joursActifs = Object.keys(a.by_day).filter(k => a.by_day[k] > 0).length;
   const weCommits = (a.by_weekday[5] || 0) + (a.by_weekday[6] || 0);
   const partWe = Math.round(100 * weCommits / a.total);
+  const nuitCommits = a.by_hour.reduce((s, v, h) => s + ((h >= 22 || h < 6) ? v : 0), 0);
+  const partNuit = Math.round(100 * nuitCommits / a.total);
   const ciFailPct = ci.runs ? Math.round(100 * (ci.runs_failed || 0) / ci.runs) : null;
   document.getElementById("stats-kpi").innerHTML = [
     // Équipe & production
@@ -231,6 +233,7 @@ function renderStats(data) {
     // Rythme
     skpi(`${joursActifs} / ${nbJours}`, "jours actifs", "jours du projet avec au moins un commit"),
     skpi(`${partWe} %`, "le week-end", `${weCommits} commits le samedi ou le dimanche`),
+    skpi(`${partNuit} %`, "la nuit", `${nuitCommits} commits entre 22 h et 6 h`),
     // Intégration continue
     skpi(nf(ci.minutes), "minutes de CI", `≈ ${nf(Math.round((ci.minutes || 0) / 60))} h cumulées de runs GitHub Actions`),
     skpi(nf(ci.runs), "runs CI", "exécutions de workflows depuis le début du projet"),
