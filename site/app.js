@@ -119,12 +119,6 @@ function plageJours(d1, d2) {
   return out;
 }
 
-function argmax(arr) {           // indice du max d'un tableau
-  let bi = 0;
-  arr.forEach((v, i) => { if (v > arr[bi]) bi = i; });
-  return bi;
-}
-
 function skpi(val, label, title) {
   return `<div class="skpi"${title ? ` title="${esc(title)}"` : ""}><b>${val}</b><small>${esc(label)}</small></div>`;
 }
@@ -137,26 +131,32 @@ function renderStats(data) {
   sec.hidden = false;
 
   // KPI : ampleur du travail collectif.
-  const prMerg = (data.teams || []).reduce((s, t) => s + ((t.review && t.review.merged_total) || 0), 0);
-  const issDone = (data.teams || []).reduce((s, t) => s + ((t.issues && t.issues.done) || 0), 0);
-  const contribs = Object.keys(a.by_student || {}).length;
-  const equipesActives = Object.values(a.by_team || {}).filter(t => t.total > 0).length;
-  const jourMaxKey = Object.keys(a.by_day).reduce((m, k) => a.by_day[k] > (a.by_day[m] || 0) ? k : m,
-    Object.keys(a.by_day)[0]);
-  const [jy, jm, jd] = jourMaxKey.split("-");
-  const hMax = argmax(a.by_hour);
-  const horsJour = a.by_hour.reduce((s, v, h) => s + ((h < 7 || h >= 20) ? v : 0), 0);
-  const partSoir = Math.round(100 * horsJour / a.total);
-  const weMax = a.by_weekday[5] + a.by_weekday[6];
+  const nf = n => (n || 0).toLocaleString("fr-FR");
+  const ci = data.ci || {};
+  const students = data.students || [];
+  const mergedTotal = (data.teams || []).reduce((s, t) => s + ((t.review && t.review.merged_total) || 0), 0);
+  const selfMerges = (data.teams || []).reduce((s, t) => s + ((t.review && t.review.self_merges) || 0), 0);
+  const pctRelues = mergedTotal ? Math.round(100 * (mergedTotal - selfMerges) / mergedTotal) : null;
+  const lignes = students.reduce((s, st) => s + (st.lines_added || 0) + (st.lines_deleted || 0), 0);
+  const revues = students.reduce((s, st) => s + (st.reviews_given || 0), 0);
+  const nbJours = (a.first_day && a.last_day) ? plageJours(a.first_day, a.last_day).length
+    : Object.keys(a.by_day).length;
+  const joursActifs = Object.keys(a.by_day).filter(k => a.by_day[k] > 0).length;
+  const weCommits = (a.by_weekday[5] || 0) + (a.by_weekday[6] || 0);
+  const partWe = Math.round(100 * weCommits / a.total);
+  const ciFailPct = ci.runs ? Math.round(100 * (ci.runs_failed || 0) / ci.runs) : null;
   document.getElementById("stats-kpi").innerHTML = [
-    skpi(a.total, "commits", "Total des commits horodatés (toutes branches, dédoublonnés)"),
-    skpi(contribs, "contributeurs actifs"),
-    skpi(equipesActives, "équipes"),
-    skpi(prMerg, "PR mergées"),
-    skpi(issDone, "issues fermées"),
-    skpi(`${jd}/${jm}`, "jour le plus actif", `${jourMaxKey} : ${a.by_day[jourMaxKey]} commits`),
-    skpi(`${hMax} h`, "heure de pointe", `${a.by_hour[hMax]} commits entre ${hMax} h et ${hMax + 1} h`),
-    skpi(`${partSoir} %`, "en soirée / nuit (20 h–7 h)", `${horsJour} commits hors 7 h–20 h ; ${weMax} le week-end`),
+    skpi(nf(a.total), "commits", "Total des commits horodatés (toutes branches, dédoublonnés)"),
+    skpi(nf(Object.keys(a.by_student || {}).length), "contributeurs actifs"),
+    skpi(nf(mergedTotal), "PR mergées"),
+    skpi(`${joursActifs} / ${nbJours}`, "jours actifs", "jours du projet avec au moins un commit"),
+    skpi(`${partWe} %`, "le week-end", `${weCommits} commits le samedi ou le dimanche`),
+    skpi(nf(lignes), "lignes écrites", "lignes ajoutées + supprimées (sur les PR)"),
+    skpi(nf(revues), "revues de code", "revues de pull request données"),
+    skpi(pctRelues == null ? "n/d" : pctRelues + " %", "PR relues", "PR mergées relues par un pair (promo)"),
+    skpi(nf(ci.minutes), "minutes de CI", `≈ ${nf(Math.round((ci.minutes || 0) / 60))} h cumulées de runs GitHub Actions`),
+    skpi(nf(ci.runs), "runs CI", "exécutions de workflows depuis le début du projet"),
+    skpi(ciFailPct == null ? "n/d" : ciFailPct + " %", "runs CI en échec", `${nf(ci.runs_failed)} runs en échec sur ${nf(ci.runs)}`),
   ].join("");
 
   // Diagrammes collectifs, masqués par défaut derrière un bouton dépliable (comme

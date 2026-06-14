@@ -454,6 +454,41 @@ def agreger_activite(events):
             "by_weekday": by_weekday, "by_hour": by_hour}
 
 
+# ------------------------------------------------------------------------------
+# CI : temps cumule, nombre de runs, taux d'echec (API actions/runs)
+# ------------------------------------------------------------------------------
+CI_ECHEC = {"failure", "timed_out", "startup_failure"}
+
+
+def collecter_ci(repo):
+    """Runs GitHub Actions depuis le debut du projet -> {minutes, runs, runs_failed}.
+
+    `minutes` = somme des durees de run (updated_at - run_started_at), juste meme
+    sur runner self-hosted (les « minutes facturees » y valent 0). `runs` = runs
+    TERMINES (avec conclusion) ; `runs_failed` = conclusions d'echec (hors annule).
+    """
+    runs = gh_json(
+        f"repos/{ORG}/{repo}/actions/runs?created=%3E%3D{PROJET_DEBUT}&per_page=100",
+        jq=".workflow_runs[] | {conclusion, run_started_at, updated_at, created_at}",
+        paginate=True,
+    )
+    runs = runs if isinstance(runs, list) else ([runs] if runs else [])
+    secs = total = failed = 0
+    for r in runs:
+        if not isinstance(r, dict) or r.get("conclusion") is None:
+            continue                      # en cours / en file : pas encore comptabilise
+        total += 1
+        if r["conclusion"] in CI_ECHEC:
+            failed += 1
+        deb, fin = r.get("run_started_at") or r.get("created_at"), r.get("updated_at")
+        if deb and fin:
+            d = (datetime.fromisoformat(fin.replace("Z", "+00:00"))
+                 - datetime.fromisoformat(deb.replace("Z", "+00:00"))).total_seconds()
+            if d > 0:
+                secs += d
+    return {"minutes": round(secs / 60), "runs": total, "runs_failed": failed}
+
+
 def collecter_branches(repo, membres=None):
     """Travail EN COURS dans les branches non mergees.
 
@@ -1107,11 +1142,13 @@ def main():
     teams = []
     snapshots = []
     activite_par_equipe = {}   # slug -> [events] (commits horodates) ; vide si --no-activity
+    ci_par_equipe = {}         # slug -> {minutes, runs, runs_failed} ; vide si --no-activity
     for e in equipes:
         repo, slug = e["repo"], e["slug"]
         print(f"  - {slug} ...", file=sys.stderr)
         issues_data = collecter_issues(repo)
         activite_par_equipe[slug] = [] if args.no_activity else collecter_activite(repo)
+        ci_par_equipe[slug] = {} if args.no_activity else collecter_ci(repo)
         contributeurs, bus, review, merged_info, open_branches = \
             collecter_contributeurs(repo, slug, issues_data)
         if args.no_tests:
@@ -1240,6 +1277,14 @@ def main():
                        for login, evs in par_login.items()},
     }
 
+    # CI : agregats collectifs + par equipe (somme des durees de runs, etc.).
+    ci = {
+        "minutes": sum(c.get("minutes", 0) for c in ci_par_equipe.values()),
+        "runs": sum(c.get("runs", 0) for c in ci_par_equipe.values()),
+        "runs_failed": sum(c.get("runs_failed", 0) for c in ci_par_equipe.values()),
+        "by_team": ci_par_equipe,
+    }
+
     data = {
         "generated_at": now.isoformat(),
         "totals": {"tests_total": tests_total, "issues_total": 54},
@@ -1247,6 +1292,7 @@ def main():
         "teams": teams,
         "students": students,
         "activity": activity,
+        "ci": ci,
     }
     os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
     with open(DATA_PATH, "w") as f:
