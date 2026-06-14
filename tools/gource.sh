@@ -14,7 +14,7 @@ set -euo pipefail
 ORG="${ORG:-IUTInfoAix-S201-2026}"
 PREFIX="vigiechiro-pr-companion-"
 OUT="${1:-bouquet-final.mp4}"
-SECONDS_PER_DAY="${SECONDS_PER_DAY:-8}"
+SECONDS_PER_DAY="${SECONDS_PER_DAY:-16}"
 RES="${RES:-1280x720}"
 FPS="${FPS:-60}"
 TOKEN="${GH_TOKEN:-$(gh auth token)}"
