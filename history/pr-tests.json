@@ -470,6 +470,11 @@
       "passed": 286,
       "sha": "b0866eaca5350c7d8ab43a28aabe155a066f523d"
     },
+    "168": {
+      "author": "Timeo-84",
+      "passed": 300,
+      "sha": "2e43c12fcdd8098d62e5fd60562564314152458e"
+    },
     "169": {
       "author": "YasmineBestDev",
       "passed": 296,
@@ -484,6 +489,11 @@
       "author": "lochlann-fabbi",
       "passed": 299,
       "sha": "31d395ecd4143375ffc57d3eea3096459fbc9333"
+    },
+    "177": {
+      "author": "lochlann-fabbi",
+      "passed": 300,
+      "sha": "d070fab6d6c21964d0e7f1b09bf2b2cce8fe2bd6"
     },
     "60": {
       "author": "lochlann-fabbi",
@@ -773,6 +783,16 @@
       "author": "DUMONT-Vladislav-25009525",
       "passed": 352,
       "sha": "a428e9224acc74ce53d383cb4d2bf480dee809ef"
+    },
+    "98": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": 350,
+      "sha": "00efd82348f28a08822d5835fe9bd0f50735abfc"
+    },
+    "99": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": null,
+      "sha": "04b4aef7851d8b2152c8d38b21ceddf935d447bf"
     }
   },
   "mathieu_kyle_lenny_diego": {
