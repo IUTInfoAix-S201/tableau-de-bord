@@ -684,6 +684,11 @@
       "passed": 421,
       "sha": "218ab879a3153c63d5d73f0e0c955ab5a5cba868"
     },
+    "104": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": 421,
+      "sha": "619427ff96bc705c9d9b9fbb457b675a55df7adc"
+    },
     "56": {
       "author": "DUMONT-Vladislav-25009525",
       "passed": 106,
@@ -1428,6 +1433,11 @@
       "author": "ChevremontLilian",
       "passed": 278,
       "sha": "dc7d8242f5b96a0ca9c6d5a8833dcce7d62111ce"
+    },
+    "81": {
+      "author": "ChevremontLilian",
+      "passed": null,
+      "sha": "e22d80b8228854edabd3e18d1984e1c8f1f39fe8"
     }
   },
   "td2-g6": {
@@ -1958,6 +1968,11 @@
       "author": "BULUT-Melissa-25006748",
       "passed": 201,
       "sha": "de7ded073cb6699a123424c5291cae95870f5489"
+    },
+    "89": {
+      "author": "SAID-BOUTABOUZI-Wanis-25003650",
+      "passed": 205,
+      "sha": "79b4fd49c72d36b8b4584bfa1213c6e2c07d280d"
     }
   },
   "team-rocket": {
