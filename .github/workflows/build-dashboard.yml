@@ -63,6 +63,17 @@ jobs:
           echo "::error::Echec du push apres 5 tentatives (course persistante sur main)."
           exit 1
 
+      - name: Recupere la video du bouquet (si publiee) pour la servir via Pages
+        # La video est stockee en asset de release (pas de gonflement git) mais
+        # Pages la sert en video/mp4 inline (lecteur <video>), contrairement a
+        # l'asset brut (octet-stream + nosniff). Ignore si la release n'existe pas encore.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download bouquet --repo "$GITHUB_REPOSITORY" \
+            --pattern bouquet-final.mp4 --dir site --clobber \
+            || echo "Pas encore de bouquet a servir."
+
       - name: Prepare l'artefact Pages
         uses: actions/upload-pages-artifact@v5
         with:

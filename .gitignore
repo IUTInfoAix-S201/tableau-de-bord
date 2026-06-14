@@ -1,6 +1,9 @@
 # data.json est genere a chaque run (deploye comme artefact Pages, pas versionne)
 site/data.json
 
+# video du bouquet : stockee en asset de release, recuperee dans site/ au build
+site/bouquet-final.mp4
+
 # artefacts de travail
 __pycache__/
 *.pyc
