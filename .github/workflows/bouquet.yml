@@ -1,0 +1,48 @@
+# Bouquet final : genere la visualisation Gource de TOUTES les equipes (un seul
+# arbre, un sous-dossier par equipe, avatars GitHub) et la publie en asset de la
+# release « bouquet ». Le tableau de bord revele cette video quand le compte a
+# rebours atteint zero (18/06 a 8 h 15, heure de Paris).
+name: Bouquet final (Gource)
+
+on:
+  workflow_dispatch: {}     # bouton « Run workflow » pour tester / regenerer a la demande
+  schedule:
+    - cron: "0 4 18 6 *"    # 18/06 04:00 UTC (06:00 Paris) : prete avant l'echeance 8 h 15
+
+# Une seule generation a la fois.
+concurrency:
+  group: bouquet
+  cancel-in-progress: false
+
+permissions:
+  contents: write           # publier / mettre a jour l'asset de release
+
+jobs:
+  bouquet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Installer gource, ffmpeg, xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gource ffmpeg xvfb
+
+      - name: Generer la visualisation Gource
+        env:
+          # PAT lecture sur l'org IUTInfoAix-S201-2026 (listing + clone des forks).
+          GH_TOKEN: ${{ secrets.DASHBOARD_TOKEN }}
+        run: bash tools/gource.sh bouquet-final.mp4
+
+      - name: Publier l'asset de release « bouquet »
+        env:
+          # GITHUB_TOKEN : ecriture (release) sur CE depot.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view bouquet >/dev/null 2>&1; then
+            gh release upload bouquet bouquet-final.mp4 --clobber
+          else
+            gh release create bouquet bouquet-final.mp4 \
+              --title "Bouquet final SAE 2.01 VigieChiro" \
+              --notes "Visualisation Gource de l'evolution du code de toutes les equipes."
+          fi
