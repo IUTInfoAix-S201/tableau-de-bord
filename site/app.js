@@ -436,7 +436,12 @@ function idEquipe(slug) {
 function detailPanneau(t) {
   const q = t.quality, b = t.bus_factor, r = t.review;
   const bal = (b.balance != null) ? b.balance : null;
-  const contribs = t.contributors.map(c => `
+  const tot = (window.__data ? totauxEquipes(window.__data) : {})[t.slug] || null;
+  const contribs = t.contributors.map(c => {
+    const { taux, parts } = tauxContribution(c, tot);
+    const tauxCell = taux == null ? '<span class="badge nd">n/d</span>'
+      : `<strong>${Math.round(taux * 100)} %</strong>`;
+    return `
     <tr>
       <td class="login"><a class="lien-etudiant" href="#${idEtudiant(c.login)}" data-login="${esc(c.login)}" title="Voir ${esc(c.login)} dans le classement par étudiant">${esc(c.login)}</a></td>
       <td class="num"><strong>${c.tests_validated ?? 0}</strong></td>
@@ -445,9 +450,9 @@ function detailPanneau(t) {
       <td class="num">${c.reviews_given}/${c.reviews_received}</td>
       <td class="num">${c.issues_closed}/${c.issues_assigned}</td>
       <td class="num"><span class="pastille ${c.review_quality}" title="${esc(voyantTip(c))}"></span></td>
-      <td class="badges">${(badgeCtx ? badgesEtudiant({ ...c, team: t.slug }, badgeCtx) : [])
-        .map(([e, tt]) => `<span class="badge-emoji" title="${esc(tt)}">${e}</span>`).join(" ") || "—"}</td>
-    </tr>`).join("");
+      <td class="num" title="${esc(tauxTip(parts))}">${tauxCell}</td>
+    </tr>`;
+  }).join("");
 
   return `<div class="panneau">
     ${friseFeatures(t)}
@@ -468,7 +473,8 @@ function detailPanneau(t) {
         <th class="num" title="Tests verts apportés par les PR mergées de l'étudiant">Tests validés</th>
         <th class="num" title="Commits dans des branches non encore mergées (travail en cours)">Travail en cours</th>
         <th class="num" title="PR actuellement ouvertes (en cours) / PR mergées">PR en cours/merg.</th><th class="num">Revues don./rec.</th>
-        <th class="num">Issues fer./assig.</th><th class="num">Revue</th><th>Badges</th>
+        <th class="num">Issues fer./assig.</th><th class="num">Revue</th>
+        <th class="num" title="Part du travail de l'équipe (lignes ajoutées, PR, tests, issues, revues, travail en cours ; somme = 100 %)">Contribution</th>
       </tr></thead>
       <tbody>${contribs || '<tr><td colspan="8">Aucun contributeur détecté.</td></tr>'}</tbody>
     </table>
