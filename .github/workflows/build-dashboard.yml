@@ -7,6 +7,9 @@ on:
   schedule:
     - cron: "0 * * * *"   # toutes les heures (l'historique reste deduplique a 1 instantane/jour)
   workflow_dispatch: {}    # bouton « Run workflow » pour rafraichir a la demande
+  workflow_run:            # chaine de bout en bout : apres la generation du bouquet,
+    workflows: ["Bouquet final (Gource)"]   # rebuild immediat pour servir la nouvelle video
+    types: [completed]
 
 # Un seul deploiement Pages a la fois.
 concurrency:
