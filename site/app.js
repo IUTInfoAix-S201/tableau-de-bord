@@ -327,19 +327,27 @@ function renderAlertes(data) {
   }
 }
 
+// Classement canonique des equipes (tests verts, puis issues, puis slug). Sert au
+// podium ET de departage au tri du tableau, pour que medailles et rang concordent
+// quand plusieurs equipes sont a egalite (ex. plusieurs a 100 % en fin de projet).
+function classementCanonique(a, b) {
+  return (b.tests.pct || 0) - (a.tests.pct || 0)
+    || b.issues.done - a.issues.done
+    || a.slug.localeCompare(b.slug);
+}
+
 function renderTable(data) {
   const med = data.promo || {};
   const teams = [...data.teams].sort((a, b) => {
     const va = SORTERS[currentSort](a), vb = SORTERS[currentSort](b);
-    if (typeof va === "string") return va.localeCompare(vb);
-    return vb - va;
+    const d = (typeof va === "string") ? va.localeCompare(vb) : (vb - va);
+    return d || classementCanonique(a, b);   // departage = classement canonique
   });
 
   // Podium (sur le classement canonique = tests verts), independant du tri courant.
   const podium = {};
   [...data.teams].filter(t => t.tests.pct != null)
-    .sort((a, b) => b.tests.pct - a.tests.pct || b.issues.done - a.issues.done
-      || a.slug.localeCompare(b.slug))
+    .sort(classementCanonique)
     .slice(0, 3)
     .forEach((t, i) => {
       podium[t.slug] = [["👑", "Équipe en tête"], ["🥈", "2e équipe"], ["🥉", "3e équipe"]][i];
