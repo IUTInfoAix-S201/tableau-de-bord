@@ -248,8 +248,8 @@
       "spotless_ok": true
     },
     "tests": {
-      "passed": 300,
-      "pct": 46.0,
+      "passed": 309,
+      "pct": 47.4,
       "total": 652
     },
     "tests_by_feature": {
@@ -270,7 +270,7 @@
         "total": 27
       },
       "multisite": {
-        "passed": 11,
+        "passed": 14,
         "total": 53
       },
       "passage": {
@@ -282,7 +282,7 @@
         "total": 73
       },
       "validation": {
-        "passed": 25,
+        "passed": 31,
         "total": 103
       }
     }
@@ -339,13 +339,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 83.2,
-      "pmd_violations": 3,
+      "coverage_pct": 83.7,
+      "pmd_violations": 2,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 575,
-      "pct": 88.5,
+      "passed": 586,
+      "pct": 90.2,
       "total": 650
     },
     "tests_by_feature": {
@@ -366,7 +366,7 @@
         "total": 27
       },
       "multisite": {
-        "passed": 0,
+        "passed": 11,
         "total": 53
       },
       "passage": {
@@ -624,16 +624,16 @@
     }
   },
   "td2-g6": {
-    "ci_status": "success",
+    "ci_status": "failure",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 69.5,
-      "pmd_violations": 2,
+      "coverage_pct": null,
+      "pmd_violations": null,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 443,
-      "pct": 68.2,
+      "passed": 499,
+      "pct": 76.8,
       "total": 650
     },
     "tests_by_feature": {
@@ -646,7 +646,7 @@
         "total": 24
       },
       "importation": {
-        "passed": 24,
+        "passed": 83,
         "total": 83
       },
       "lot": {
