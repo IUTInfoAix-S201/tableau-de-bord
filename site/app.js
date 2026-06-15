@@ -651,12 +651,19 @@ function badgeFacteur(f) {
 
 // Infobulle de ventilation du taux : pour chaque dimension, la part de l'étudiant
 // dans l'équipe × le poids de la dimension = points apportés (leur somme = le taux).
+// Le poids affiché est la pondération de référence REMISE À L'ÉCHELLE sur les seules
+// dimensions où l'équipe a de l'activité (pour que le total fasse 100 %), donc il
+// peut différer du barème nominal selon l'équipe (identique pour tous ses membres).
 function tauxTip(parts) {
   if (!parts.length) return "Aucune dimension mesurable dans l'équipe.";
   const lignes = parts.map(p =>
     `• ${p.label} : ${Math.round(p.part * 100)} % de l'équipe × poids ${Math.round(p.poids * 100)} % = ${Math.round(p.apport * 100)} pts`
   ).join("\n");
-  return "D'où vient ce taux (la somme des points = le taux) :\n" + lignes;
+  return "D'où vient ce taux (somme des points = le taux).\n"
+    + "« % de l'équipe » = la part de l'étudiant ; « poids » = barème (lignes 40, PR 25,\n"
+    + "issues 15, revues 10, tests 5, en cours 5) rééquilibré sur les dimensions où\n"
+    + "l'équipe a de l'activité, donc identique pour tous les membres de l'équipe.\n"
+    + lignes;
 }
 
 function featuresEtudiant(s) {
