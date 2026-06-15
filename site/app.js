@@ -85,6 +85,7 @@ function render(data) {
     + `${data.totals.issues_total} tâches.`;
 
   badgeCtx = contexteBadges(data.students);
+  renderPodiums(data);
   startCountdown();
   renderStats(data);
   renderAlertes(data);
@@ -140,6 +141,9 @@ function startCountdown() {
       // tick : sinon le réécriture du bandeau chaque seconde recrée le <video>
       // -> il recharge en boucle sans jamais démarrer (clignotement).
       if (cptRebours) { clearInterval(cptRebours); cptRebours = null; }
+      // Dévoile les podiums en même temps que le bouquet.
+      const pod = document.getElementById("podiums");
+      if (pod) pod.hidden = false;
       // Bouquet final : la visualisation Gource de l'évolution du code, révélée
       // à l'instant où le compte à rebours atteint zéro.
       bouquet = `<div class="bouquet">
@@ -168,6 +172,50 @@ function startCountdown() {
   if (cptRebours) clearInterval(cptRebours);
   cptRebours = setInterval(tick, 1000);
   tick();
+}
+
+// --- podiums « superlatifs » de la promo (dévoilés à countdown 0) ----------
+// Chaque podium classe les étudiants sur une métrique amusante, calculée depuis
+// les champs étudiant (s) et/ou son activité commits (a = activity.by_student[login]).
+const PODIUMS = [
+  { emoji: "🦇", nom: "La chauve-souris", desc: "le plus de commits la nuit (22 h–6 h)", unit: "commits",
+    val: (s, a) => a ? [22, 23, 0, 1, 2, 3, 4, 5].reduce((x, h) => x + (a.by_hour[h] || 0), 0) : 0 },
+  { emoji: "🦫", nom: "Le castor affairé", desc: "le plus de commits (contributions fréquentes)", unit: "commits",
+    val: (s, a) => a ? a.total : 0 },
+  { emoji: "🦉", nom: "Le hibou", desc: "le plus de revues de code données", unit: "revues",
+    val: s => s.reviews_given || 0 },
+  { emoji: "🐓", nom: "Le coq matinal", desc: "le plus de commits tôt le matin (6 h–9 h)", unit: "commits",
+    val: (s, a) => a ? [6, 7, 8].reduce((x, h) => x + (a.by_hour[h] || 0), 0) : 0 },
+  { emoji: "🐗", nom: "Le sanglier du week-end", desc: "le plus de commits le samedi/dimanche", unit: "commits",
+    val: (s, a) => a ? (a.by_weekday[5] || 0) + (a.by_weekday[6] || 0) : 0 },
+  { emoji: "🐜", nom: "La fourmi", desc: "le plus d'issues fermées", unit: "issues",
+    val: s => s.issues_closed || 0 },
+  { emoji: "🐢", nom: "La tortue régulière", desc: "le plus de jours actifs distincts", unit: "jours",
+    val: (s, a) => a ? Object.values(a.by_day).filter(v => v > 0).length : 0 },
+  { emoji: "🧹", nom: "L'élagueur", desc: "le plus de lignes supprimées (nettoyage)", unit: "lignes",
+    val: s => s.lines_deleted || 0 },
+];
+const POD_MEDS = ["🥇", "🥈", "🥉"];
+
+function renderPodiums(data) {
+  const grid = document.getElementById("podiums-grid");
+  if (!grid) return;
+  const acts = (data.activity && data.activity.by_student) || {};
+  const students = data.students || [];
+  grid.innerHTML = PODIUMS.map(p => {
+    const top = students.map(s => ({ s, v: p.val(s, acts[s.login]) }))
+      .filter(o => o.v > 0)
+      .sort((a, b) => b.v - a.v || a.s.login.localeCompare(b.s.login))
+      .slice(0, 3);
+    const lignes = top.length
+      ? top.map((o, i) => `<li><span class="pod-med">${POD_MEDS[i]}</span>`
+          + `<span class="pod-login">${esc(o.s.login)}</span>`
+          + `<span class="pod-val">${o.v} ${esc(p.unit)}</span>`
+          + `<small class="pod-team">${esc(o.s.team)}</small></li>`).join("")
+      : `<li class="pod-vide">Personne pour l'instant</li>`;
+    return `<div class="podium"><div class="pod-titre"><span class="pod-emoji">${p.emoji}</span> ${esc(p.nom)}</div>`
+      + `<div class="pod-desc">${esc(p.desc)}</div><ol class="pod-liste">${lignes}</ol></div>`;
+  }).join("");
 }
 
 // --- statistiques generales (activite collective) -------------------------
@@ -535,6 +583,11 @@ function compareStudents(a, b) {
   return a.login.localeCompare(b.login);
 }
 
+// Helpers badges dérivés des PR / features de l'étudiant.
+function plusGrossePR(s) { return Math.max(0, ...((s.prs || []).map(p => p.additions || 0))); }
+function nbPetitesPR(s) { return (s.prs || []).filter(p => p.merged && (p.additions || 0) <= 30).length; }
+function nbFeatures(s) { return (s.features || []).length; }
+
 // Contexte pour les badges : maxima de la promo + equipes ayant au moins un actif.
 function contexteBadges(students) {
   const max = k => Math.max(0, ...students.map(s => s[k] || 0));
@@ -546,6 +599,10 @@ function contexteBadges(students) {
   return {
     commits: max("commits"), reviews_given: max("reviews_given"),
     prs_merged: max("prs_merged"), inline_comments: max("inline_comments"),
+    reviews_received: max("reviews_received"), changes_requested: max("changes_requested"),
+    features: Math.max(0, ...students.map(nbFeatures)),
+    grossePR: Math.max(0, ...students.map(plusGrossePR)),
+    petitesPR: Math.max(0, ...students.map(nbPetitesPR)),
     actifsParEquipe,
   };
 }
@@ -558,6 +615,11 @@ function badgesEtudiant(s, c) {
   if (s.reviews_given > 0 && s.reviews_given === c.reviews_given) b.push(["🔍", "La loupe : le plus de revues de code"]);
   if (s.prs_merged > 0 && s.prs_merged === c.prs_merged) b.push(["🚀", "Locomotive : le plus de PR mergées"]);
   if (s.inline_comments > 0 && s.inline_comments === c.inline_comments) b.push(["💬", "Bavard utile : le plus de commentaires de revue"]);
+  if (s.reviews_received > 0 && s.reviews_received === c.reviews_received) b.push(["🌟", "La star : le code le plus relu par les autres"]);
+  if (s.changes_requested > 0 && s.changes_requested === c.changes_requested) b.push(["🛡️", "Le gardien : le plus de changements demandés en revue"]);
+  if (nbFeatures(s) > 0 && nbFeatures(s) === c.features) b.push(["🗺️", "L'explorateur : le plus de features différentes touchées"]);
+  { const g = plusGrossePR(s); if (g > 0 && g === c.grossePR) b.push(["🐘", "L'éléphant : la plus grosse PR de la promo"]); }
+  { const p = nbPetitesPR(s); if (p > 0 && p === c.petitesPR) b.push(["🐭", "Le colibri : le plus de toutes petites PR (≤ 30 lignes)"]); }
   // qualitatifs (cumulables)
   if (s.commits > 0 && s.prs_merged > 0 && s.reviews_given > 0) b.push(["🐝", "Couteau suisse : actif sur le code, les PR et les revues"]);
   if (s.reviews_given > 0 && s.reviews_received > 0 && Math.abs(s.reviews_given - s.reviews_received) <= 1)

@@ -69,6 +69,21 @@ h2 { font-size: 1.15rem; color: var(--bleu); border-bottom: 2px solid var(--bord
 .cd-bar .barre.tests > span { background: var(--vert); }
 .cd-bar .barre.issues > span { background: var(--jaune); }
 
+/* ---- podiums superlatifs ---- */
+.podiums-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+.podium { background: #fff; border: 1px solid var(--bord); border-radius: 10px; padding: .8rem 1rem;
+  border-top: 4px solid var(--jaune); }
+.pod-titre { font-size: 1.05rem; font-weight: 700; color: var(--ardoise); }
+.pod-emoji { font-size: 1.2rem; }
+.pod-desc { font-size: .78rem; color: var(--gris); margin: .15rem 0 .5rem; }
+.pod-liste { list-style: none; margin: 0; padding: 0; }
+.pod-liste li { display: flex; align-items: center; gap: .4rem; padding: .2rem 0; font-size: .85rem; flex-wrap: wrap; }
+.pod-med { font-size: 1.1rem; }
+.pod-login { font-family: ui-monospace, monospace; font-size: .78rem; }
+.pod-val { font-weight: 700; color: var(--bleu); margin-left: auto; }
+.pod-team { color: var(--gris); width: 100%; padding-left: 1.6rem; font-size: .7rem; }
+.pod-vide { color: var(--gris); font-style: italic; }
+
 /* ---- statistiques generales ---- */
 .stats-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; margin: .8rem 0 1.4rem; }
 .skpi { background: #fff; border: 1px solid var(--bord); border-radius: 8px; padding: .6rem .8rem; text-align: center; }
