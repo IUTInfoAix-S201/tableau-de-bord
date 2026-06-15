@@ -591,6 +591,11 @@ function nbFeatures(s) { return (s.features || []).length; }
 // Contexte pour les badges : maxima de la promo + equipes ayant au moins un actif.
 function contexteBadges(students) {
   const max = k => Math.max(0, ...students.map(s => s[k] || 0));
+  const mediane = k => {
+    const xs = students.map(s => s[k] || 0).sort((a, b) => a - b);
+    const n = xs.length;
+    return n ? (n % 2 ? xs[(n - 1) / 2] : (xs[n / 2 - 1] + xs[n / 2]) / 2) : 0;
+  };
   const actif = s => (s.commits + s.prs_merged + s.reviews_given + (s.branch_commits || 0)) > 0;
   const actifsParEquipe = {};
   students.filter(actif).forEach(s => {
@@ -603,6 +608,10 @@ function contexteBadges(students) {
     features: Math.max(0, ...students.map(nbFeatures)),
     grossePR: Math.max(0, ...students.map(plusGrossePR)),
     petitesPR: Math.max(0, ...students.map(nbPetitesPR)),
+    med: {
+      commits: mediane("commits"), prs_merged: mediane("prs_merged"),
+      reviews_given: mediane("reviews_given"), issues_closed: mediane("issues_closed"),
+    },
     actifsParEquipe,
   };
 }
@@ -621,7 +630,11 @@ function badgesEtudiant(s, c) {
   { const g = plusGrossePR(s); if (g > 0 && g === c.grossePR) b.push(["🐘", "L'éléphant : la plus grosse PR de la promo"]); }
   { const p = nbPetitesPR(s); if (p > 0 && p === c.petitesPR) b.push(["🐿️", "L'écureuil : le plus de toutes petites PR (≤ 30 lignes)"]); }
   // qualitatifs (cumulables)
-  if (s.commits > 0 && s.prs_merged > 0 && s.reviews_given > 0) b.push(["🐝", "Couteau suisse : actif sur le code, les PR et les revues"]);
+  // Couteau suisse : vraie polyvalence -> au-dessus de la médiane promo sur les 4
+  // dimensions clés (sinon trop courant : 68/87 avec le simple « >0 partout »).
+  if ((s.commits || 0) > c.med.commits && (s.prs_merged || 0) > c.med.prs_merged
+      && (s.reviews_given || 0) > c.med.reviews_given && (s.issues_closed || 0) > c.med.issues_closed)
+    b.push(["🐝", "Couteau suisse : au-dessus de la médiane de la promo sur le code, les PR, les revues et les issues"]);
   if (s.reviews_given > 0 && s.reviews_received > 0 && Math.abs(s.reviews_given - s.reviews_received) <= 1)
     b.push(["🤝", "Fair-play : relit autant qu'il est relu"]);
   if (s.review_quality === "green" && s.changes_requested >= 1) b.push(["🧐", "Œil de lynx : vraies revues, demande des changements"]);
