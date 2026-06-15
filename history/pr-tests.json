@@ -955,6 +955,16 @@
       "author": "chkyle07",
       "passed": 329,
       "sha": "8705703f2cef0b9ef87ac544b83f67e75284ef11"
+    },
+    "94": {
+      "author": "diegomartin102",
+      "passed": 357,
+      "sha": "3ed178591af13d7588df59738c62f29f4e9116cb"
+    },
+    "95": {
+      "author": "diegomartin102",
+      "passed": 347,
+      "sha": "db66b5f873ea2b36136c1cd4e982d7201d03bc77"
     }
   },
   "riplasemaine": {

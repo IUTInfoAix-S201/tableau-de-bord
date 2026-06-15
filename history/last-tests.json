@@ -387,13 +387,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 58.7,
-      "pmd_violations": 4,
+      "coverage_pct": 61.6,
+      "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 329,
-      "pct": 50.6,
+      "passed": 357,
+      "pct": 54.9,
       "total": 650
     },
     "tests_by_feature": {
@@ -410,11 +410,11 @@
         "total": 83
       },
       "lot": {
-        "passed": 9,
+        "passed": 27,
         "total": 27
       },
       "multisite": {
-        "passed": 0,
+        "passed": 10,
         "total": 53
       },
       "passage": {
