@@ -520,6 +520,11 @@
       "passed": 309,
       "sha": "186f721d7fd83526ccd44517193206ddf403880b"
     },
+    "185": {
+      "author": "YasmineBestDev",
+      "passed": 309,
+      "sha": "997fcde06dc77bdda8ac48950fe041b868172c0e"
+    },
     "60": {
       "author": "lochlann-fabbi",
       "passed": 102,
@@ -1515,6 +1520,11 @@
       "author": "AlexandreJ07",
       "passed": 443,
       "sha": "38c592defba54a377f7611e48cd407b11055604b"
+    },
+    "112": {
+      "author": "ikram-aouad",
+      "passed": 551,
+      "sha": "9b763728b64fa66ad59861a4135e701bb8c0ee68"
     },
     "113": {
       "author": "harshbhavesh-shah",
