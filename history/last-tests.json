@@ -531,14 +531,14 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 85.9,
+      "coverage_pct": 89.5,
       "pmd_violations": 6,
       "spotless_ok": false
     },
     "tests": {
-      "passed": 629,
-      "pct": 96.8,
-      "total": 650
+      "passed": 651,
+      "pct": 100.0,
+      "total": 651
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -632,13 +632,13 @@
       "spotless_ok": true
     },
     "tests": {
-      "passed": 551,
-      "pct": 84.8,
+      "passed": 577,
+      "pct": 88.8,
       "total": 650
     },
     "tests_by_feature": {
       "bibliotheque": {
-        "passed": 6,
+        "passed": 22,
         "total": 22
       },
       "diagnostic": {
@@ -662,7 +662,7 @@
         "total": 111
       },
       "qualification": {
-        "passed": 59,
+        "passed": 69,
         "total": 73
       },
       "validation": {
