@@ -182,17 +182,17 @@ const PODIUMS = [
     val: (s, a) => a ? [22, 23, 0, 1, 2, 3, 4, 5].reduce((x, h) => x + (a.by_hour[h] || 0), 0) : 0 },
   { emoji: "🦫", nom: "Le castor affairé", desc: "le plus de commits (contributions fréquentes)", unit: "commits",
     val: (s, a) => a ? a.total : 0 },
-  { emoji: "🦉", nom: "Le hibou", desc: "le plus de revues de code données", unit: "revues",
+  { emoji: "🦉", nom: "Le hibou vigilant", desc: "le plus de revues de code données", unit: "revues",
     val: s => s.reviews_given || 0 },
   { emoji: "🐓", nom: "Le coq matinal", desc: "le plus de commits tôt le matin (6 h–9 h)", unit: "commits",
     val: (s, a) => a ? [6, 7, 8].reduce((x, h) => x + (a.by_hour[h] || 0), 0) : 0 },
   { emoji: "🐗", nom: "Le sanglier du week-end", desc: "le plus de commits le samedi/dimanche", unit: "commits",
     val: (s, a) => a ? (a.by_weekday[5] || 0) + (a.by_weekday[6] || 0) : 0 },
-  { emoji: "🐜", nom: "La fourmi", desc: "le plus d'issues fermées", unit: "issues",
+  { emoji: "🐜", nom: "La fourmi laborieuse", desc: "le plus d'issues fermées", unit: "issues",
     val: s => s.issues_closed || 0 },
   { emoji: "🐢", nom: "La tortue régulière", desc: "le plus de jours actifs distincts", unit: "jours",
     val: (s, a) => a ? Object.values(a.by_day).filter(v => v > 0).length : 0 },
-  { emoji: "🧹", nom: "L'élagueur", desc: "le plus de lignes supprimées (nettoyage)", unit: "lignes",
+  { emoji: "🧹", nom: "L'élagueur impitoyable", desc: "le plus de lignes supprimées (nettoyage)", unit: "lignes",
     val: s => s.lines_deleted || 0 },
 ];
 const POD_MEDS = ["🥇", "🥈", "🥉"];
@@ -619,7 +619,7 @@ function badgesEtudiant(s, c) {
   if (s.changes_requested > 0 && s.changes_requested === c.changes_requested) b.push(["🛡️", "Le gardien : le plus de changements demandés en revue"]);
   if (nbFeatures(s) > 0 && nbFeatures(s) === c.features) b.push(["🗺️", "L'explorateur : le plus de features différentes touchées"]);
   { const g = plusGrossePR(s); if (g > 0 && g === c.grossePR) b.push(["🐘", "L'éléphant : la plus grosse PR de la promo"]); }
-  { const p = nbPetitesPR(s); if (p > 0 && p === c.petitesPR) b.push(["🐭", "Le colibri : le plus de toutes petites PR (≤ 30 lignes)"]); }
+  { const p = nbPetitesPR(s); if (p > 0 && p === c.petitesPR) b.push(["🐿️", "L'écureuil : le plus de toutes petites PR (≤ 30 lignes)"]); }
   // qualitatifs (cumulables)
   if (s.commits > 0 && s.prs_merged > 0 && s.reviews_given > 0) b.push(["🐝", "Couteau suisse : actif sur le code, les PR et les revues"]);
   if (s.reviews_given > 0 && s.reviews_received > 0 && Math.abs(s.reviews_given - s.reviews_received) <= 1)
