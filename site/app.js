@@ -606,9 +606,9 @@ function kpiPart(label, valHtml, val, total) {
 // à 15 % : leur delta est biaisé par les « tests gratuits » (backend déjà écrit,
 // écran Passage...) qui virent au vert pour peu de travail.
 const CONTRIB_DIMS = [
-  { cle: "lines", label: "lignes ajoutées", poids: 0.30, tot: "lines_added", val: s => s.lines_added || 0 },
+  { cle: "lines", label: "lignes ajoutées", poids: 0.40, tot: "lines_added", val: s => s.lines_added || 0 },
   { cle: "prm", label: "PR mergées", poids: 0.25, tot: "prs_merged", val: s => s.prs_merged || 0 },
-  { cle: "tests", label: "tests validés", poids: 0.15, tot: "tests_validated", val: s => s.tests_validated || 0 },
+  { cle: "tests", label: "tests validés", poids: 0.05, tot: "tests_validated", val: s => s.tests_validated || 0 },
   { cle: "iss", label: "issues fermées", poids: 0.15, tot: "issues_closed", val: s => s.issues_closed || 0 },
   { cle: "rev", label: "revues données", poids: 0.10, tot: "reviews_given", val: s => s.reviews_given || 0 },
   { cle: "wip", label: "travail en cours", poids: 0.05, tot: "branch_commits", val: s => s.branch_commits || 0 },
