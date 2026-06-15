@@ -960,16 +960,16 @@
     }
   },
   "vigiechiro-tommy-manal-yannick-tasnim": {
-    "ci_status": "failure",
+    "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": null,
-      "pmd_violations": null,
+      "coverage_pct": 75.5,
+      "pmd_violations": 4,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 397,
-      "pct": 61.1,
+      "passed": 405,
+      "pct": 62.3,
       "total": 650
     },
     "tests_by_feature": {
@@ -1002,7 +1002,7 @@
         "total": 73
       },
       "validation": {
-        "passed": 25,
+        "passed": 31,
         "total": 103
       }
     }
