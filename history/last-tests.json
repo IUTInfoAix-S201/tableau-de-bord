@@ -579,13 +579,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 61.6,
+      "coverage_pct": 64.5,
       "pmd_violations": 2,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 297,
-      "pct": 45.7,
+      "passed": 317,
+      "pct": 48.8,
       "total": 650
     },
     "tests_by_feature": {
@@ -594,7 +594,7 @@
         "total": 22
       },
       "diagnostic": {
-        "passed": 4,
+        "passed": 24,
         "total": 24
       },
       "importation": {
