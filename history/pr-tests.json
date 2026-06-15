@@ -204,6 +204,11 @@
       "passed": 649,
       "sha": "92e47167e258d0f59e9de7b9d8a743ba31fdc284"
     },
+    "108": {
+      "author": "MORSILLI-Timeo-25002755",
+      "passed": 650,
+      "sha": "31d6de32eb0f8c2b4435ff17f36a47201112de02"
+    },
     "55": {
       "author": "MORSILLI-Timeo-25002755",
       "passed": 106,
@@ -698,6 +703,11 @@
       "author": "DURAN-Kalvin-25013186",
       "passed": 512,
       "sha": "998692d3b310f4bdd5cff9b7eb651f1565099816"
+    },
+    "108": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": 575,
+      "sha": "8baba18f454cd2998d4cd2627d7f87f2063bb74b"
     },
     "56": {
       "author": "DUMONT-Vladislav-25009525",
@@ -1715,6 +1725,11 @@
       "passed": 650,
       "sha": "a1ad5e14e13abe3bb6370ba049f5a4c8c26b25e1"
     },
+    "124": {
+      "author": "SISE-Aboubakar-24027352",
+      "passed": 650,
+      "sha": "cd3566768e7e12eb3c37319d2235a2b2ebbe5c79"
+    },
     "58": {
       "author": "BANTI-Hugo-25004176",
       "passed": 102,
@@ -1846,6 +1861,11 @@
       "author": "BOIN-Anna-25007918",
       "passed": 522,
       "sha": "fedac183762d6a44df97ffbebc25d6a4f54c13e3"
+    },
+    "112": {
+      "author": "ZOPPI-Nicolas-25003515",
+      "passed": 522,
+      "sha": "c081a9895db887df651a250f327c47ae5dc5ea80"
     },
     "113": {
       "author": "RUIZ-Enrique-25002136",
