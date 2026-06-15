@@ -307,12 +307,15 @@ def collecter_issues(repo):
                 fermees_par[a] += 1
             if feat in par_feature:
                 features_par_assigne[a].add(feat)
+    # Issues fermées avec leurs assignés (repli quand aucune PR ne les ferme).
+    closed_assignees = {i["number"]: i["assignees"] for i in issues if i["closed"]}
     return {
         "issues": {"done": done, "total": len(issues)},
         "priorities": {**bandes, "mvp_complete": mvp},
         "par_feature": par_feature,
         "_assignes": dict(assignes),
         "_fermees_par": dict(fermees_par),
+        "_closed_assignees": closed_assignees,
         "_features_assigne": {k: sorted(v) for k, v in features_par_assigne.items()},
     }
 
@@ -386,6 +389,7 @@ query($owner:String!,$name:String!,$cursor:String){
         mergeCommit{oid}
         author{login}
         mergedBy{login}
+        closingIssuesReferences(first:20){nodes{number}}
         reviews(first:50){nodes{author{login} state bodyText comments{totalCount}}}
       }
     }
@@ -585,6 +589,7 @@ def collecter_contributeurs(repo, slug, issues_data):
     feats_pr = defaultdict(set)          # login -> {feature, ...} d'apres le prefixe du titre de PR
     revues_donnees = defaultdict(list)   # login -> [revue, ...]
     revues_recues = defaultdict(int)     # login (auteur PR) -> nb revues par pairs
+    closes_par_auteur = defaultdict(set) # login -> {numeros d'issues fermees via « Closes #N »}
     # conformite revue (equipe)
     merged_total = 0
     merged_relues = 0
@@ -621,6 +626,11 @@ def collecter_contributeurs(repo, slug, issues_data):
         if pr.get("merged") and is_human(auteur):
             merged_total += 1
             prs_merged[auteur] += 1
+            # Issues fermees par cette PR (lien « Closes #N » resolu par GitHub) :
+            # on credite l'AUTEUR de la PR, pas l'assigne de l'issue.
+            for ref in ((pr.get("closingIssuesReferences") or {}).get("nodes") or []):
+                if ref and ref.get("number"):
+                    closes_par_auteur[auteur].add(ref["number"])
             sha = (pr.get("mergeCommit") or {}).get("oid")
             if sha:
                 merged_info.append({"number": pr["number"], "sha": sha,
@@ -660,6 +670,23 @@ def collecter_contributeurs(repo, slug, issues_data):
     # encadrants (COMPTES_EXCLUS, ex. nedseb) qui pouvaient se glisser via les
     # assignations d'issues (non filtrees a la collecte des issues).
     logins = {l for l in logins if is_human(l)}
+
+    # Issues fermees : creditees a qui les a fermees via « Closes #N » dans une PR
+    # mergee (closes_par_auteur, l'auteur de la PR) ; pour les issues fermees sans
+    # PR liee (fermeture manuelle), repli sur l'assigne. -> {login: nb distinct}.
+    closed_assignees = issues_data.get("_closed_assignees", {})
+    fermees_via_pr, ferme_par = set(), defaultdict(set)
+    for auteur, nums in closes_par_auteur.items():
+        for n in nums:
+            if n in closed_assignees:           # issue reellement fermee
+                ferme_par[auteur].add(n)
+                fermees_via_pr.add(n)
+    for n, assignees in closed_assignees.items():
+        if n not in fermees_via_pr:             # fermeture manuelle -> assigne(s)
+            for a in assignees:
+                if is_human(a):
+                    ferme_par[a].add(n)
+
     feats_issues = issues_data.get("_features_assigne", {})
     contributeurs = []
     for login in sorted(logins):
@@ -678,7 +705,7 @@ def collecter_contributeurs(repo, slug, issues_data):
             "reviews_given": v["reviews_total"],
             "reviews_received": revues_recues.get(login, 0),
             "issues_assigned": issues_data["_assignes"].get(login, 0),
-            "issues_closed": issues_data["_fermees_par"].get(login, 0),
+            "issues_closed": len(ferme_par.get(login, set())),
             "tests_validated": 0,   # rempli apres coup (delta de tests par PR mergee)
             "features": [f for f in CHAINE if f in feats],
             "prs": sorted(pr_liste.get(login, []), key=lambda p: -p["number"]),
