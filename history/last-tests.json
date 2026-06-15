@@ -243,9 +243,9 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 65.1,
+      "coverage_pct": 65.0,
       "pmd_violations": 7,
-      "spotless_ok": false
+      "spotless_ok": true
     },
     "tests": {
       "passed": 309,
