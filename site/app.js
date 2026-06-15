@@ -610,7 +610,8 @@ function contexteBadges(students) {
     petitesPR: Math.max(0, ...students.map(nbPetitesPR)),
     med: {
       commits: mediane("commits"), prs_merged: mediane("prs_merged"),
-      reviews_given: mediane("reviews_given"), issues_closed: mediane("issues_closed"),
+      reviews_given: mediane("reviews_given"), reviews_received: mediane("reviews_received"),
+      issues_closed: mediane("issues_closed"),
     },
     actifsParEquipe,
   };
@@ -635,12 +636,19 @@ function badgesEtudiant(s, c) {
   if ((s.commits || 0) > c.med.commits && (s.prs_merged || 0) > c.med.prs_merged
       && (s.reviews_given || 0) > c.med.reviews_given && (s.issues_closed || 0) > c.med.issues_closed)
     b.push(["🐝", "Couteau suisse : au-dessus de la médiane de la promo sur le code, les PR, les revues et les issues"]);
-  if (s.reviews_given > 0 && s.reviews_received > 0 && Math.abs(s.reviews_given - s.reviews_received) <= 1)
-    b.push(["🤝", "Fair-play : relit autant qu'il est relu"]);
+  // Fair-play : relit autant qu'il est relu, à un niveau soutenu (au-dessus de
+  // la médiane en revues données ET reçues), sinon trop courant (1 donnée ↔ 1 reçue).
+  if (c.med.reviews_given > 0 && (s.reviews_given || 0) >= c.med.reviews_given
+      && (s.reviews_received || 0) >= c.med.reviews_received
+      && Math.abs((s.reviews_given || 0) - (s.reviews_received || 0)) <= 2)
+    b.push(["🤝", "Fair-play : relit autant qu'il est relu, à un niveau soutenu (au-dessus de la médiane)"]);
   if (s.review_quality === "green" && s.changes_requested >= 1) b.push(["🧐", "Œil de lynx : vraies revues, demande des changements"]);
   if (s.review_quality === "red") b.push(["🦆", "Tampon : approbations à vide"]);
-  if ((s.commits + s.prs_merged + s.reviews_given + (s.branch_commits || 0)) === 0 && (c.actifsParEquipe[s.team] || 0) >= 1)
-    b.push(["👻", "Passager clandestin : aucune contribution (ni mergée, ni en cours dans une branche) alors qu'au moins un coéquipier travaille"]);
+  // Passager clandestin : moins de 5 % du travail de l'équipe (taux de
+  // contribution), alors qu'au moins un coéquipier contribue. Capte aussi les
+  // quasi-inactifs (un commit alibi), pas seulement les zéros absolus.
+  if (s.taux != null && s.taux < 0.05 && (c.actifsParEquipe[s.team] || 0) >= 1)
+    b.push(["👻", "Passager clandestin : moins de 5 % du travail de l'équipe alors qu'au moins un coéquipier contribue"]);
   return b;
 }
 
