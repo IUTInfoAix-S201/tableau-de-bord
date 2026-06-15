@@ -530,6 +530,16 @@
       "passed": 309,
       "sha": "2243bfc38592f026c3a693c3c7fd173a6041c344"
     },
+    "190": {
+      "author": "Timeo-84",
+      "passed": 309,
+      "sha": "ee4341d5a706712762aed177bc50b36728b06ec9"
+    },
+    "191": {
+      "author": "YasmineBestDev",
+      "passed": 309,
+      "sha": "c7d056381f0641040383f20aac2edf846e5a43fb"
+    },
     "60": {
       "author": "lochlann-fabbi",
       "passed": 102,
@@ -699,7 +709,7 @@
     },
     "80": {
       "author": "EwanFRANCOIS",
-      "passed": null,
+      "passed": 446,
       "sha": "0496dee39b7349fe6f1e94d99123c7ee3f0a3ac6"
     }
   },
@@ -1961,6 +1971,16 @@
       "author": "ZOPPI-Nicolas-25003515",
       "passed": 527,
       "sha": "87b9beea5eea8db295ea4278d197fc44f2177025"
+    },
+    "118": {
+      "author": "ZOPPI-Nicolas-25003515",
+      "passed": 527,
+      "sha": "814489670b30ae617c46501797e504e3462a492a"
+    },
+    "119": {
+      "author": "ZOPPI-Nicolas-25003515",
+      "passed": 527,
+      "sha": "261021c3625706d68dee18eaa5cfe8123fb4d3cc"
     },
     "57": {
       "author": "ZOPPI-Nicolas-25003515",
