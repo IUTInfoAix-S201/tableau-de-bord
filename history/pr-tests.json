@@ -696,6 +696,11 @@
       "author": "Matteo-Y07",
       "passed": 380,
       "sha": "b0fc8be78a256006d3ef606f12ecaa753b880cd0"
+    },
+    "80": {
+      "author": "EwanFRANCOIS",
+      "passed": null,
+      "sha": "0496dee39b7349fe6f1e94d99123c7ee3f0a3ac6"
     }
   },
   "linkedin_ou_interpol": {
@@ -1951,6 +1956,11 @@
       "author": "RUIZ-Enrique-25002136",
       "passed": null,
       "sha": "70b3673db16718c6134ebb7d8b202c13a9493902"
+    },
+    "116": {
+      "author": "ZOPPI-Nicolas-25003515",
+      "passed": 527,
+      "sha": "87b9beea5eea8db295ea4278d197fc44f2177025"
     },
     "57": {
       "author": "ZOPPI-Nicolas-25003515",
