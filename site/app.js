@@ -693,15 +693,15 @@ function kpiPart(label, valHtml, val, total) {
 // ignorer revues et travail en cours. Commits bruts exclus (non fiables sans
 // squash). Chaque part etant valeur/total_equipe, les taux d'une equipe
 // somment a 100 % -> la moyenne d'une equipe de N est 1/N.
-// PR mergées en 1er signal (unité de travail livrée et relue, peu manipulable).
-// Lignes en 2e mais limitées à 30 % (le FXML/CSS, verbeux/généré, sur-valorise le
-// volume), et tests à 7 % seulement (leur delta est gonflé par les « tests
-// gratuits » : backend déjà écrit, écran Passage... qui virent au vert sans effort).
+// PR mergées et lignes à poids égal (27,5 % chacune) : unité de travail livrée
+// + volume de code produit. Tests à 20 % (signal d'aboutissement, mais bridé car
+// l'activation « offre » des tests verts). Lignes plafonnées car le FXML/CSS
+// verbeux/généré sur-valorise le volume.
 const CONTRIB_DIMS = [
-  { cle: "lines", label: "lignes ajoutées", poids: 0.30, tot: "lines_added", val: s => s.lines_added || 0 },
-  { cle: "prm", label: "PR mergées", poids: 0.33, tot: "prs_merged", val: s => s.prs_merged || 0 },
-  { cle: "tests", label: "tests validés", poids: 0.07, tot: "tests_validated", val: s => s.tests_validated || 0 },
-  { cle: "iss", label: "issues fermées", poids: 0.15, tot: "issues_closed", val: s => s.issues_closed || 0 },
+  { cle: "lines", label: "lignes ajoutées", poids: 0.275, tot: "lines_added", val: s => s.lines_added || 0 },
+  { cle: "prm", label: "PR mergées", poids: 0.275, tot: "prs_merged", val: s => s.prs_merged || 0 },
+  { cle: "tests", label: "tests validés", poids: 0.20, tot: "tests_validated", val: s => s.tests_validated || 0 },
+  { cle: "iss", label: "issues fermées", poids: 0.10, tot: "issues_closed", val: s => s.issues_closed || 0 },
   { cle: "rev", label: "revues données", poids: 0.10, tot: "reviews_given", val: s => s.reviews_given || 0 },
   { cle: "wip", label: "travail en cours", poids: 0.05, tot: "branch_commits", val: s => s.branch_commits || 0 },
 ];
@@ -752,8 +752,8 @@ function tauxTip(parts) {
     `• ${p.label} : ${Math.round(p.part * 100)} % de l'équipe × poids ${Math.round(p.poids * 100)} % = ${Math.round(p.apport * 100)} pts`
   ).join("\n");
   return "D'où vient ce taux (somme des points = le taux).\n"
-    + "« % de l'équipe » = la part de l'étudiant ; « poids » = barème (PR 33, lignes 30,\n"
-    + "issues 15, revues 10, tests 7, en cours 5) rééquilibré sur les dimensions où\n"
+    + "« % de l'équipe » = la part de l'étudiant ; « poids » = barème (PR 27,5, lignes 27,5,\n"
+    + "tests 20, issues 10, revues 10, en cours 5) rééquilibré sur les dimensions où\n"
     + "l'équipe a de l'activité, donc identique pour tous les membres de l'équipe.\n"
     + lignes;
 }
