@@ -243,13 +243,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 65.0,
-      "pmd_violations": 7,
+      "coverage_pct": 65.2,
+      "pmd_violations": 0,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 309,
-      "pct": 47.4,
+      "passed": 310,
+      "pct": 47.5,
       "total": 652
     },
     "tests_by_feature": {
@@ -258,7 +258,7 @@
         "total": 22
       },
       "diagnostic": {
-        "passed": 19,
+        "passed": 20,
         "total": 24
       },
       "importation": {
@@ -290,17 +290,50 @@
   "le-corbeau-ewan": {
     "ci_status": "success",
     "quality": {
-      "archunit_ok": null,
-      "coverage_pct": null,
-      "pmd_violations": null,
-      "spotless_ok": null
+      "archunit_ok": true,
+      "coverage_pct": 72.9,
+      "pmd_violations": 2,
+      "spotless_ok": true
     },
     "tests": {
       "passed": 446,
       "pct": 68.6,
       "total": 650
     },
-    "tests_by_feature": null
+    "tests_by_feature": {
+      "bibliotheque": {
+        "passed": 19,
+        "total": 22
+      },
+      "diagnostic": {
+        "passed": 20,
+        "total": 24
+      },
+      "importation": {
+        "passed": 56,
+        "total": 83
+      },
+      "lot": {
+        "passed": 27,
+        "total": 27
+      },
+      "multisite": {
+        "passed": 15,
+        "total": 53
+      },
+      "passage": {
+        "passed": 111,
+        "total": 111
+      },
+      "qualification": {
+        "passed": 66,
+        "total": 73
+      },
+      "validation": {
+        "passed": 0,
+        "total": 103
+      }
+    }
   },
   "linkedin_ou_interpol": {
     "ci_status": "success",
