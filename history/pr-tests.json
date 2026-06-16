@@ -82,6 +82,11 @@
     }
   },
   "gapple": {
+    "101": {
+      "author": "OmbelineChaud",
+      "passed": 577,
+      "sha": "437dd7f8bc7a5cb5d742f62c77ff54dcf59144e0"
+    },
     "102": {
       "author": "Nguyen-Thomas1",
       "passed": 567,
@@ -580,6 +585,11 @@
       "passed": 568,
       "sha": "e08047a49d8f5b84a8c96754c44d62347e4b66b2"
     },
+    "202": {
+      "author": "Timeo-84",
+      "passed": 570,
+      "sha": "155ff30546798a062e0ffc0c66f32da0f77be142"
+    },
     "60": {
       "author": "lochlann-fabbi",
       "passed": 102,
@@ -818,6 +828,11 @@
       "author": "DUMONT-Vladislav-25009525",
       "passed": 588,
       "sha": "75e92a258cec4c11ed8183cacd07716cab334ace"
+    },
+    "117": {
+      "author": "DUMONT-Vladislav-25009525",
+      "passed": 591,
+      "sha": "1b76b2424e94f20bd7d4978f7267f3a2902bc3bf"
     },
     "56": {
       "author": "DUMONT-Vladislav-25009525",
@@ -1379,6 +1394,11 @@
       "author": "SalahEdine-bou",
       "passed": 530,
       "sha": "3db5d114f2dbe74257f619c84d01ae86cad2f40e"
+    },
+    "95": {
+      "author": "Barny-Rafael",
+      "passed": 535,
+      "sha": "bfeee1c96656a5ea8dee51dbb90b2fcbc318c5c9"
     }
   },
   "td2-g1": {
@@ -1639,6 +1659,16 @@
       "passed": 503,
       "sha": "8c69bdaccda70cd0456448ed2693187b45afbd60"
     },
+    "85": {
+      "author": "ChevremontLilian",
+      "passed": 504,
+      "sha": "5beb897da6b252eaf2e31bd1d9dda99a6ef9c8a6"
+    },
+    "88": {
+      "author": "ChevremontLilian",
+      "passed": 509,
+      "sha": "95bd70b2c0ac5ede622f4d44c07176829eceb84e"
+    },
     "91": {
       "author": "ChevremontLilian",
       "passed": 376,
@@ -1648,6 +1678,11 @@
       "author": "ChevremontLilian",
       "passed": 469,
       "sha": "e5dcb567bae147bd770dea59ceac4abee3e40fb8"
+    },
+    "94": {
+      "author": "CoIib",
+      "passed": 506,
+      "sha": "f6d179b4be0f83643bb2126b38c7787f3e02a67c"
     }
   },
   "td2-g6": {
@@ -1833,10 +1868,20 @@
       "passed": 403,
       "sha": "c72bb4c1fdad9d94a476025328e061514c650f6f"
     },
+    "115": {
+      "author": "Alam-Aguilar",
+      "passed": 487,
+      "sha": "5a654b5de96aab4def5583789c529d2be1d4689c"
+    },
     "116": {
       "author": "nvillard135",
       "passed": 486,
       "sha": "6cd59025d836e1aed789e93d0d5222d69ebf719d"
+    },
+    "119": {
+      "author": "nvillard135",
+      "passed": 498,
+      "sha": "35b23c3a1a3c8dd83c7aa4eb69c95e8604718a8b"
     },
     "58": {
       "author": "Alam-Aguilar",
