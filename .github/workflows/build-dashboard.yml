@@ -5,7 +5,7 @@ name: Build dashboard
 
 on:
   schedule:
-    - cron: "0 * * * *"   # toutes les heures (l'historique reste deduplique a 1 instantane/jour)
+    - cron: "37 * * * *"  # toutes les heures, minute 37 (hors pic GitHub a :00 ou les runs schedule sont souvent retardes/abandonnes ; l'historique reste deduplique a 1 instantane/jour)
   workflow_dispatch: {}    # bouton « Run workflow » pour rafraichir a la demande
   workflow_run:            # chaine de bout en bout : apres la generation du bouquet,
     workflows: ["Bouquet final (Gource)"]   # rebuild immediat pour servir la nouvelle video
