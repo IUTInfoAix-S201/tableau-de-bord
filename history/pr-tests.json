@@ -921,6 +921,11 @@
     }
   },
   "mathieu_kyle_lenny_diego": {
+    "100": {
+      "author": "MathieuGaydon",
+      "passed": 482,
+      "sha": "a80e6f446586de69430f585140b3aa9bccfe1ef5"
+    },
     "56": {
       "author": "chkyle07",
       "passed": 108,
@@ -1025,6 +1030,11 @@
       "author": "chkyle07",
       "passed": 421,
       "sha": "2e7ad8d113fad8ebb8f5b9d5a68a6b7b6127d65d"
+    },
+    "99": {
+      "author": "MathieuGaydon",
+      "passed": 469,
+      "sha": "273b6d38ced0f8a96cb515ae636af59cbb9a54cb"
     }
   },
   "riplasemaine": {
@@ -1588,6 +1598,11 @@
       "author": "ChevremontLilian",
       "passed": 376,
       "sha": "743886eabcc7400e411104ef49cac817e7a403ef"
+    },
+    "93": {
+      "author": "ChevremontLilian",
+      "passed": 469,
+      "sha": "e5dcb567bae147bd770dea59ceac4abee3e40fb8"
     }
   },
   "td2-g6": {
