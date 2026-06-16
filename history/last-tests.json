@@ -290,50 +290,17 @@
   "le-corbeau-ewan": {
     "ci_status": "success",
     "quality": {
-      "archunit_ok": true,
-      "coverage_pct": 72.9,
-      "pmd_violations": 2,
-      "spotless_ok": true
+      "archunit_ok": null,
+      "coverage_pct": null,
+      "pmd_violations": null,
+      "spotless_ok": null
     },
     "tests": {
       "passed": 446,
       "pct": 68.6,
       "total": 650
     },
-    "tests_by_feature": {
-      "bibliotheque": {
-        "passed": 19,
-        "total": 22
-      },
-      "diagnostic": {
-        "passed": 20,
-        "total": 24
-      },
-      "importation": {
-        "passed": 56,
-        "total": 83
-      },
-      "lot": {
-        "passed": 27,
-        "total": 27
-      },
-      "multisite": {
-        "passed": 15,
-        "total": 53
-      },
-      "passage": {
-        "passed": 111,
-        "total": 111
-      },
-      "qualification": {
-        "passed": 66,
-        "total": 73
-      },
-      "validation": {
-        "passed": 0,
-        "total": 103
-      }
-    }
+    "tests_by_feature": null
   },
   "linkedin_ou_interpol": {
     "ci_status": "success",
@@ -632,8 +599,8 @@
       "spotless_ok": true
     },
     "tests": {
-      "passed": 577,
-      "pct": 88.8,
+      "passed": 599,
+      "pct": 92.2,
       "total": 650
     },
     "tests_by_feature": {
@@ -650,7 +617,7 @@
         "total": 83
       },
       "lot": {
-        "passed": 7,
+        "passed": 27,
         "total": 27
       },
       "multisite": {
@@ -675,13 +642,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 48.8,
+      "coverage_pct": 58.2,
       "pmd_violations": 2,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 257,
-      "pct": 39.5,
+      "passed": 316,
+      "pct": 48.6,
       "total": 650
     },
     "tests_by_feature": {
@@ -694,7 +661,7 @@
         "total": 24
       },
       "importation": {
-        "passed": 24,
+        "passed": 83,
         "total": 83
       },
       "lot": {
