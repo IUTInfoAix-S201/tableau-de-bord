@@ -240,11 +240,11 @@
     }
   },
   "la-team": {
-    "ci_status": "failure",
+    "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": null,
-      "pmd_violations": null,
+      "coverage_pct": 82.1,
+      "pmd_violations": 0,
       "spotless_ok": true
     },
     "tests": {
@@ -336,16 +336,16 @@
     }
   },
   "linkedin_ou_interpol": {
-    "ci_status": "success",
+    "ci_status": "failure",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 83.8,
-      "pmd_violations": 2,
+      "coverage_pct": null,
+      "pmd_violations": null,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 591,
-      "pct": 90.9,
+      "passed": 627,
+      "pct": 96.5,
       "total": 650
     },
     "tests_by_feature": {
@@ -366,7 +366,7 @@
         "total": 27
       },
       "multisite": {
-        "passed": 16,
+        "passed": 53,
         "total": 53
       },
       "passage": {
@@ -675,13 +675,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 76.3,
+      "coverage_pct": 76.2,
       "pmd_violations": 1,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 503,
-      "pct": 77.4,
+      "passed": 506,
+      "pct": 77.8,
       "total": 650
     },
     "tests_by_feature": {
@@ -702,7 +702,7 @@
         "total": 27
       },
       "multisite": {
-        "passed": 16,
+        "passed": 19,
         "total": 53
       },
       "passage": {

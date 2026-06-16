@@ -590,6 +590,11 @@
       "passed": 570,
       "sha": "155ff30546798a062e0ffc0c66f32da0f77be142"
     },
+    "206": {
+      "author": "YasmineBestDev",
+      "passed": 570,
+      "sha": "01474adcbae30c7177b69e636fa97c71cf46a782"
+    },
     "60": {
       "author": "lochlann-fabbi",
       "passed": 102,
@@ -841,7 +846,7 @@
     },
     "122": {
       "author": "DUMONT-Vladislav-25009525",
-      "passed": null,
+      "passed": 627,
       "sha": "831917d55afa67af5a61ea83d58ca4874e6ad3b2"
     },
     "56": {
@@ -1693,6 +1698,11 @@
       "author": "CoIib",
       "passed": 506,
       "sha": "f6d179b4be0f83643bb2126b38c7787f3e02a67c"
+    },
+    "98": {
+      "author": "KhadissovaLezina",
+      "passed": null,
+      "sha": "45e4ae1d8648cb07b3a99586b0740d5ba926466f"
     }
   },
   "td2-g6": {
@@ -1883,6 +1893,11 @@
       "passed": 403,
       "sha": "c72bb4c1fdad9d94a476025328e061514c650f6f"
     },
+    "114": {
+      "author": "tristan-bayeux",
+      "passed": 503,
+      "sha": "47c3aeb1020cf7eb0a5be00c53364ddda4e1cf93"
+    },
     "115": {
       "author": "Alam-Aguilar",
       "passed": 487,
@@ -1902,6 +1917,11 @@
       "author": "nvillard135",
       "passed": 503,
       "sha": "0a922460aa745ff2ac83df459a9481cffd5364e9"
+    },
+    "124": {
+      "author": "Alam-Aguilar",
+      "passed": 506,
+      "sha": "c14a9f6c8b04376fa336de71816928321fb1fe52"
     },
     "58": {
       "author": "Alam-Aguilar",
