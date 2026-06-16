@@ -77,6 +77,11 @@
     }
   },
   "gapple": {
+    "102": {
+      "author": "Nguyen-Thomas1",
+      "passed": 567,
+      "sha": "3affc7c6d4bc76fedf2b55b373e94bbf46761133"
+    },
     "57": {
       "author": "Nguyen-Thomas1",
       "passed": 122,
@@ -789,6 +794,11 @@
       "passed": 590,
       "sha": "06b2d287a7690d248ad4b6765f1bb9889762a65f"
     },
+    "115": {
+      "author": "FRANCESCHI-PINSON-Lucas-25008772",
+      "passed": 588,
+      "sha": "99d2ff461031b0990db69a409e41ee01c552746d"
+    },
     "56": {
       "author": "DUMONT-Vladislav-25009525",
       "passed": 106,
@@ -925,6 +935,16 @@
       "author": "MathieuGaydon",
       "passed": 482,
       "sha": "a80e6f446586de69430f585140b3aa9bccfe1ef5"
+    },
+    "102": {
+      "author": "Creeper-Solidaire",
+      "passed": 507,
+      "sha": "d87563c9e6f635e58f57ee63017c64ed6efab54f"
+    },
+    "105": {
+      "author": "Creeper-Solidaire",
+      "passed": 513,
+      "sha": "365ecf60bdcc7b4a2493bde220e5dcf44a507167"
     },
     "56": {
       "author": "chkyle07",
@@ -1778,6 +1798,16 @@
       "passed": 385,
       "sha": "29348ac7398dd0671410ab687157ea5e3f2c4100"
     },
+    "110": {
+      "author": "Alam-Aguilar",
+      "passed": 486,
+      "sha": "036385815978d3ad22eb7408e394b2d6b19b399b"
+    },
+    "112": {
+      "author": "Alam-Aguilar",
+      "passed": 403,
+      "sha": "c72bb4c1fdad9d94a476025328e061514c650f6f"
+    },
     "58": {
       "author": "Alam-Aguilar",
       "passed": null,
@@ -2288,6 +2318,11 @@
       "author": "BULUT-Melissa-25006748",
       "passed": 201,
       "sha": "de7ded073cb6699a123424c5291cae95870f5489"
+    },
+    "88": {
+      "author": "BULUT-Melissa-25006748",
+      "passed": 300,
+      "sha": "02d4473e474c8142205445e3e867435665192d37"
     },
     "89": {
       "author": "SAID-BOUTABOUZI-Wanis-25003650",
