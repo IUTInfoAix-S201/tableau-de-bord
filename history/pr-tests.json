@@ -69,6 +69,11 @@
       "author": "mjgoat07",
       "passed": 448,
       "sha": "cff3867afb0cd3fa10ac6691f915dc7737fd3a32"
+    },
+    "93": {
+      "author": "7ept",
+      "passed": 454,
+      "sha": "fc2d890b5fe802a644f6ba4206c6ac5232f33592"
     }
   },
   "gapple": {
@@ -181,6 +186,11 @@
       "author": "OmbelineChaud",
       "passed": 538,
       "sha": "55fff2c290a34c49dd1a4eaa88ea2aab30f7541a"
+    },
+    "99": {
+      "author": "Nguyen-Thomas1",
+      "passed": 563,
+      "sha": "f958b272cd917a7ab940c36e440efc692d2aef68"
     }
   },
   "giteam": {
@@ -721,6 +731,11 @@
       "author": "EwanFRANCOIS",
       "passed": 446,
       "sha": "0496dee39b7349fe6f1e94d99123c7ee3f0a3ac6"
+    },
+    "82": {
+      "author": "LoisBeeckmans-git",
+      "passed": 548,
+      "sha": "a5e4f1bf58ffddd112993dacdd3c6b37f1a91cff"
     }
   },
   "linkedin_ou_interpol": {
@@ -768,6 +783,11 @@
       "author": "FRANCESCHI-PINSON-Lucas-25008772",
       "passed": 584,
       "sha": "f92898022a9ee2d99a530ad44cb9dd1112607090"
+    },
+    "114": {
+      "author": "FRANCESCHI-PINSON-Lucas-25008772",
+      "passed": 590,
+      "sha": "06b2d287a7690d248ad4b6765f1bb9889762a65f"
     },
     "56": {
       "author": "DUMONT-Vladislav-25009525",
@@ -1000,6 +1020,11 @@
       "author": "chkyle07",
       "passed": 355,
       "sha": "986c6947fd7060a8391019b8936714d0f71283e7"
+    },
+    "97": {
+      "author": "chkyle07",
+      "passed": 421,
+      "sha": "2e7ad8d113fad8ebb8f5b9d5a68a6b7b6127d65d"
     }
   },
   "riplasemaine": {
@@ -1910,6 +1935,21 @@
       "passed": 650,
       "sha": "c0d2ee960785ca4cebb5c58b8d0c4d59fa52bf68"
     },
+    "133": {
+      "author": "SISE-Aboubakar-24027352",
+      "passed": 650,
+      "sha": "0f1b1dc129f5f08411dfe625ca0a3800f8e6a987"
+    },
+    "135": {
+      "author": "BANTI-Hugo-25004176",
+      "passed": 650,
+      "sha": "9006adb8f054d4f2e1103f685d35362b1bed42a3"
+    },
+    "136": {
+      "author": "SISE-Aboubakar-24027352",
+      "passed": 650,
+      "sha": "9d50bae3e182884d19fff092fff0eb0ccb1d927b"
+    },
     "58": {
       "author": "BANTI-Hugo-25004176",
       "passed": 102,
@@ -2079,13 +2119,18 @@
     },
     "122": {
       "author": "BOIN-Anna-25007918",
-      "passed": null,
+      "passed": 543,
       "sha": "bd59041aefdefd3f1c4bcbba151bc576e755c6e9"
     },
     "123": {
       "author": "BOIN-Anna-25007918",
-      "passed": null,
+      "passed": 543,
       "sha": "80dba383dd6446dc1ded31b04c21f810dadca0f4"
+    },
+    "124": {
+      "author": "RUIZ-Enrique-25002136",
+      "passed": null,
+      "sha": "822355532f4a325438e049459b165fb38ce74f12"
     },
     "57": {
       "author": "ZOPPI-Nicolas-25003515",
