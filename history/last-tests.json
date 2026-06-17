@@ -291,18 +291,18 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 80.2,
+      "coverage_pct": 80.1,
       "pmd_violations": 1,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 552,
-      "pct": 84.9,
+      "passed": 557,
+      "pct": 85.7,
       "total": 650
     },
     "tests_by_feature": {
       "bibliotheque": {
-        "passed": 19,
+        "passed": 21,
         "total": 22
       },
       "diagnostic": {
@@ -318,7 +318,7 @@
         "total": 27
       },
       "multisite": {
-        "passed": 15,
+        "passed": 18,
         "total": 53
       },
       "passage": {
@@ -387,13 +387,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 83.2,
+      "coverage_pct": 83.4,
       "pmd_violations": 5,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 584,
-      "pct": 89.8,
+      "passed": 585,
+      "pct": 90.0,
       "total": 650
     },
     "tests_by_feature": {
@@ -426,7 +426,7 @@
         "total": 73
       },
       "validation": {
-        "passed": 102,
+        "passed": 103,
         "total": 103
       }
     }
@@ -440,9 +440,9 @@
       "spotless_ok": true
     },
     "tests": {
-      "passed": 651,
+      "passed": 652,
       "pct": 100.0,
-      "total": 651
+      "total": 652
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -474,8 +474,8 @@
         "total": 73
       },
       "validation": {
-        "passed": 103,
-        "total": 103
+        "passed": 104,
+        "total": 104
       }
     }
   },
@@ -483,7 +483,7 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 86.7,
+      "coverage_pct": 86.9,
       "pmd_violations": 2,
       "spotless_ok": true
     },
@@ -680,9 +680,9 @@
       "spotless_ok": true
     },
     "tests": {
-      "passed": 650,
+      "passed": 651,
       "pct": 100.0,
-      "total": 650
+      "total": 651
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -771,7 +771,7 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 87.0,
+      "coverage_pct": 86.9,
       "pmd_violations": 3,
       "spotless_ok": true
     },
@@ -867,13 +867,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 83.3,
-      "pmd_violations": 2,
+      "coverage_pct": 86.0,
+      "pmd_violations": 1,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 575,
-      "pct": 88.5,
+      "passed": 628,
+      "pct": 96.6,
       "total": 650
     },
     "tests_by_feature": {
@@ -894,7 +894,7 @@
         "total": 27
       },
       "multisite": {
-        "passed": 0,
+        "passed": 53,
         "total": 53
       },
       "passage": {
@@ -912,16 +912,16 @@
     }
   },
   "thebatdevs": {
-    "ci_status": "success",
+    "ci_status": "failure",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 62.6,
-      "pmd_violations": 3,
-      "spotless_ok": false
+      "coverage_pct": null,
+      "pmd_violations": null,
+      "spotless_ok": true
     },
     "tests": {
-      "passed": 357,
-      "pct": 54.9,
+      "passed": 475,
+      "pct": 73.1,
       "total": 650
     },
     "tests_by_feature": {
@@ -942,7 +942,7 @@
         "total": 27
       },
       "multisite": {
-        "passed": 0,
+        "passed": 45,
         "total": 53
       },
       "passage": {
@@ -950,11 +950,11 @@
         "total": 111
       },
       "qualification": {
-        "passed": 12,
+        "passed": 62,
         "total": 73
       },
       "validation": {
-        "passed": 0,
+        "passed": 25,
         "total": 103
       }
     }
@@ -963,18 +963,18 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 85.9,
+      "coverage_pct": 88.4,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 592,
-      "pct": 91.1,
+      "passed": 634,
+      "pct": 97.5,
       "total": 650
     },
     "tests_by_feature": {
       "bibliotheque": {
-        "passed": 19,
+        "passed": 22,
         "total": 22
       },
       "diagnostic": {
@@ -990,7 +990,7 @@
         "total": 27
       },
       "multisite": {
-        "passed": 11,
+        "passed": 50,
         "total": 53
       },
       "passage": {
