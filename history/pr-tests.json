@@ -79,6 +79,11 @@
       "author": "7ept",
       "passed": 454,
       "sha": "4f90ebfb01aaadef7f7e0335ec8cf91dc0822b9e"
+    },
+    "98": {
+      "author": "7ept",
+      "passed": 454,
+      "sha": "d65074e29fddc06009a6c41eeebb14b2b84d115b"
     }
   },
   "gapple": {
@@ -116,6 +121,11 @@
       "author": "OmbelineChaud",
       "passed": 628,
       "sha": "a579a7aa91a9fa46d94f98bcb1b3a1e714d0765b"
+    },
+    "116": {
+      "author": "Nguyen-Thomas1",
+      "passed": 628,
+      "sha": "c2aa847811884035dec9c4d05b3460bae307aee2"
     },
     "57": {
       "author": "Nguyen-Thomas1",
@@ -522,6 +532,11 @@
       "author": "noepetit",
       "passed": 555,
       "sha": "ced6b9ba93660c8ed80436af819a04fb8f0a0729"
+    },
+    "89": {
+      "author": "GabrielGouin1",
+      "passed": 628,
+      "sha": "110c5129e0168bc31be315e159e27e6b26b17ac4"
     }
   },
   "la-team": {
@@ -684,6 +699,11 @@
       "author": "YasmineBestDev",
       "passed": 652,
       "sha": "f79277a0fa5ade706154999de4517bdac4685d92"
+    },
+    "217": {
+      "author": "YasmineBestDev",
+      "passed": 652,
+      "sha": "ad22937335d61c8d0dd98c9f148c0f2bbd8c0d49"
     },
     "60": {
       "author": "lochlann-fabbi",
@@ -943,6 +963,16 @@
       "author": "FRANCESCHI-PINSON-Lucas-25008772",
       "passed": 628,
       "sha": "fab813a87e6469973d9c220348fdda5f2855833a"
+    },
+    "126": {
+      "author": "DURAN-Kalvin-25013186",
+      "passed": 651,
+      "sha": "3053f4c9d2e40c2341e0492a86d82f1f07b0603f"
+    },
+    "127": {
+      "author": "DURAN-Kalvin-25013186",
+      "passed": 651,
+      "sha": "d2b87fbc0bb560a2ac66355cad4c167e3e258186"
     },
     "56": {
       "author": "DUMONT-Vladislav-25009525",
@@ -1602,6 +1632,11 @@
       "passed": 651,
       "sha": "057941ca607a4285b08b12bd45843267a1924095"
     },
+    "127": {
+      "author": "Willow84120",
+      "passed": 651,
+      "sha": "0d9a1d93acd08907b83e411892812ee9d8bd1efb"
+    },
     "56": {
       "author": "Renethan",
       "passed": 106,
@@ -1738,6 +1773,26 @@
       "author": "CoIib",
       "passed": 608,
       "sha": "8d952bf9a35c2f20506fe5eace6f597a81b5e622"
+    },
+    "106": {
+      "author": "CoIib",
+      "passed": 627,
+      "sha": "c12a679f3ec4eff4f69c99ce353b0fdf4a8e0eb7"
+    },
+    "108": {
+      "author": "CoIib",
+      "passed": 634,
+      "sha": "f82fcf51e173356f03c1dd8ae07ce7851097c227"
+    },
+    "111": {
+      "author": "CoIib",
+      "passed": 650,
+      "sha": "018896fcf1feba79cfb078b4354fd18d7e760c45"
+    },
+    "113": {
+      "author": "CoIib",
+      "passed": 650,
+      "sha": "16b0f1c6f2833d6cdf3d74570bf636c28a28292d"
     },
     "58": {
       "author": "CoIib",
@@ -2088,6 +2143,11 @@
       "passed": 556,
       "sha": "96ec93389c77f4ab958552806add0b7d748e1d41"
     },
+    "134": {
+      "author": "nvillard135",
+      "passed": 562,
+      "sha": "1f93337c0c02edde54128a0f3cd348c7a2a86cde"
+    },
     "58": {
       "author": "Alam-Aguilar",
       "passed": null,
@@ -2142,6 +2202,11 @@
       "author": "RINALDI-Antoine-24006744",
       "passed": 218,
       "sha": "904b88dfbcdbbdad80ec15ec3b00d40202859b09"
+    },
+    "82": {
+      "author": "RINALDI-Antoine-24006744",
+      "passed": 556,
+      "sha": "afd0c74905b9e4c5eb14b01adc18fc56b8721177"
     },
     "83": {
       "author": "Alam-Aguilar",
@@ -2624,6 +2689,41 @@
       "passed": 356,
       "sha": "ce28fa093087773c7a8063dc4ae0dfec0c06176a"
     },
+    "111": {
+      "author": "BULUT-Melissa-25006748",
+      "passed": 365,
+      "sha": "b01e05f6df61e511beb73ca0b0bfa02cbcfd304d"
+    },
+    "112": {
+      "author": "SAID-BOUTABOUZI-Wanis-25003650",
+      "passed": 361,
+      "sha": "5437c87880a4d7b57b5140f6469a36e7e1a2e3fd"
+    },
+    "113": {
+      "author": "BEGHIN-Timothee-25011060",
+      "passed": 363,
+      "sha": "5f752bf0f0a43be746d4dc57528fb94599942ccf"
+    },
+    "114": {
+      "author": "BULUT-Melissa-25006748",
+      "passed": 458,
+      "sha": "cb9be332af4cf1fd773b05805933669b9563c1c1"
+    },
+    "115": {
+      "author": "BEGHIN-Timothee-25011060",
+      "passed": 466,
+      "sha": "0e922abd86bd64c5205e92d7e6fc286723c4883c"
+    },
+    "116": {
+      "author": "SAID-BOUTABOUZI-Wanis-25003650",
+      "passed": 504,
+      "sha": "27be6552a11a6859997d1bc6598803b0076279a2"
+    },
+    "118": {
+      "author": "BEGHIN-Timothee-25011060",
+      "passed": 504,
+      "sha": "6b58217db09bc97cbe40216b855e69aedb116222"
+    },
     "56": {
       "author": "BULUT-Melissa-25006748",
       "passed": 109,
@@ -2870,6 +2970,21 @@
     }
   },
   "vigiechiro-tommy-manal-yannick-tasnim": {
+    "100": {
+      "author": "tommylehli",
+      "passed": 531,
+      "sha": "03473d09b8b17237377c253c4e5a361d23a84ba6"
+    },
+    "104": {
+      "author": "tommylehli",
+      "passed": 532,
+      "sha": "33013192e80c7c76bc46cb491e1d59df80bbad05"
+    },
+    "105": {
+      "author": "YannickAit",
+      "passed": 533,
+      "sha": "5109e71c30ad94d27db594db56d555daf820d70f"
+    },
     "56": {
       "author": "tsnm28",
       "passed": 111,
