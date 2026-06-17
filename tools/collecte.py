@@ -114,9 +114,21 @@ COMPTES_EXCLUS = {"nedseb"}
 # l'equipe parait plus petite et son indice d'equilibre (facteur d'effort) n'est
 # PAS penalise pour ce passager clandestin a 0 contribution. Les autres « fantomes »
 # qui se sont connectes apparaissent deja via la team GitHub.
-# slug d'equipe -> [logins a ajouter comme membres a 0 contribution].
+# slug d'equipe -> [logins/identifiants a ajouter comme membres a 0 contribution].
+# Detectes en croisant le roster officiel (92 etudiants affectes a un groupe SAE)
+# avec l'export Classroom SAE (87 inscrits) : 5 inscrits n'ont jamais accepte la
+# SAE sur GitHub (ni membre de team, ni contributeur, ni invitation en attente).
+# Le vrai login GitHub a ete retrouve pour 3 d'entre eux via les notes des TP
+# R202/R203 (ils ont accepte un TP mais pas la SAE) -> on l'utilise. Les 2 autres
+# n'ont accepte AUCUN TP non plus : aucun login connu, on les libelle par leur nom
+# de roster (le front affiche un lien interne au classement, pas un lien github.com
+# -> pas de lien casse).
 MEMBRES_SUPPLEMENTAIRES = {
-    "gapple": ["Younoussa-Hachim"],
+    "gapple": ["Younoussa-Hachim"],            # YOUNOUSSA Hachim (TD1 G6, login reel via TP)
+    "td2-vigiegroupe3": ["thibettn"],          # ETTEN Thibaud (TD2 G3, login reel via TP)
+    "mathieu_kyle_lenny_diego": ["dorian83guinoiseau"],  # GUINOISEAU Dorian (TD3 G4, login reel via TP)
+    "team-rocket": ["MZIOI Noman-Golfe"],      # TD1 G1, aucun login (aucun TP accepte)
+    "td4-g1_heja": ["EL KANIZI Loubna"],       # TD4 G1, aucun login (aucun TP accepte)
 }
 
 
