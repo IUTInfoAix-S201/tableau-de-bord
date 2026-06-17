@@ -35,6 +35,21 @@
       "passed": 454,
       "sha": "c9f56e8ce25a0d20747ca2b539dc6166b45f805c"
     },
+    "114": {
+      "author": "7ept",
+      "passed": 454,
+      "sha": "b1777da7a92de264dfd9a307f5cc487e260f44eb"
+    },
+    "115": {
+      "author": "thomas-serra",
+      "passed": 466,
+      "sha": "4ec2f0d2fb65f4312771c0514ca38f9c5bd20b86"
+    },
+    "117": {
+      "author": "7ept",
+      "passed": null,
+      "sha": "0a5a6be34d5136c68d3b8b768fecce36fe70c31e"
+    },
     "63": {
       "author": "mjgoat07",
       "passed": 109,
@@ -324,6 +339,21 @@
       "passed": 650,
       "sha": "31d6de32eb0f8c2b4435ff17f36a47201112de02"
     },
+    "110": {
+      "author": "MORSILLI-Timeo-25002755",
+      "passed": 650,
+      "sha": "f96f71bff46b4cd2b8dbfcc5369ac23d8d95d92e"
+    },
+    "111": {
+      "author": "MORSILLI-Timeo-25002755",
+      "passed": 650,
+      "sha": "26f285ca305eff425f1e000915f40908187a8c42"
+    },
+    "114": {
+      "author": "MORSILLI-Timeo-25002755",
+      "passed": 650,
+      "sha": "9bfce14ad8c54534809f28f18a46b6182351ed53"
+    },
     "55": {
       "author": "MORSILLI-Timeo-25002755",
       "passed": 106,
@@ -465,6 +495,11 @@
       "author": "eabc2318",
       "passed": 650,
       "sha": "697233859e286981f824637a1fb6eda26501238c"
+    },
+    "108": {
+      "author": "eabc2318",
+      "passed": 650,
+      "sha": "f4dcfca553a4be609b9f08a602a5caff69cc3e9c"
     },
     "55": {
       "author": "kawthar23661-wq",
@@ -637,6 +672,11 @@
       "author": "noepetit",
       "passed": 650,
       "sha": "aaff862bf1c87cdf1f7726a6bb5e23fbf2b8b004"
+    },
+    "92": {
+      "author": "noepetit",
+      "passed": 651,
+      "sha": "dbb4b8aa07a404c18f44af8b47157736bbbf0e06"
     }
   },
   "la-team": {
@@ -2004,6 +2044,11 @@
       "passed": 650,
       "sha": "6567e4eb64cdda54e919e31c3d1d6eb10603a43d"
     },
+    "117": {
+      "author": "ChevremontLilian",
+      "passed": 650,
+      "sha": "45e04a942c65863e0ac815ddad63cb625a6ff2c6"
+    },
     "58": {
       "author": "CoIib",
       "passed": 121,
@@ -2210,6 +2255,11 @@
       "author": "ikram-aouad",
       "passed": 651,
       "sha": "192a1e45916754bc2de56beb775b4654c967c911"
+    },
+    "138": {
+      "author": "ikram-aouad",
+      "passed": 651,
+      "sha": "843905949de270bb02fb26826c1db3c57901cf24"
     },
     "61": {
       "author": "Hafuyo",
@@ -3207,6 +3257,21 @@
       "author": "GKMat",
       "passed": 475,
       "sha": "16a4388d66e28a8e0efd2a00dae5da9472dd41b2"
+    },
+    "107": {
+      "author": "GKMat",
+      "passed": 536,
+      "sha": "e9e3db36b3f2460bf315839ac20871235c52e74e"
+    },
+    "108": {
+      "author": "JolanRAMBEAUX",
+      "passed": null,
+      "sha": "7d4be542386067ea0ffdf07168373580f9cfb895"
+    },
+    "109": {
+      "author": "Lohann-B",
+      "passed": 529,
+      "sha": "83855d0bd6a92fc7f26459b24658e527ae68902b"
     },
     "57": {
       "author": "JolanRAMBEAUX",
