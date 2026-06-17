@@ -393,6 +393,7 @@ query($owner:String!,$name:String!,$cursor:String){
         mergeCommit{oid}
         author{login}
         mergedBy{login}
+        files(first:100){totalCount nodes{path additions deletions}}
         closingIssuesReferences(first:20){nodes{number}}
         reviews(first:50){nodes{author{login} state bodyText comments{totalCount}}}
       }
@@ -592,6 +593,31 @@ def voyant_revue(reviews):
             "changes_requested": changes, "empty_approvals": empty}
 
 
+SRC_RE = re.compile(r"(^|/)src/")     # fichiers de code : src/main + src/test
+
+
+def _pr_src_stats(pr):
+    """(additions, deletions, touches_src) restreints aux fichiers sous src/.
+
+    Le compteur de lignes de contribution = LIGNES DE CODE : on ignore les donnees
+    importees (nuit de capture : .wav -> 0 ligne de toute facon, mais surtout
+    observations.csv / logs qui gonflent le total), les binaires et la doc/pom a la
+    racine. `touches_src` sert aussi a NE PAS créditer de tests une PR sans code
+    (un import de donnees ne peut pas faire monter le nb de tests verts).
+    Si la liste de fichiers est tronquee (PR > 100 fichiers, rarissime ici), on
+    sous-compte legerement plutot que de retomber sur l'agregat (qui ré-inflerait).
+    """
+    nodes = ((pr.get("files") or {}).get("nodes")) or []
+    add = sup = 0
+    touches = False
+    for f in nodes:
+        if SRC_RE.search(f.get("path") or ""):
+            add += f.get("additions") or 0
+            sup += f.get("deletions") or 0
+            touches = True
+    return add, sup, touches
+
+
 def collecter_contributeurs(repo, slug, issues_data):
     """Fusionne commits (contributors API) + PR/revues (GraphQL) + membres team."""
     # commits par login (branche par defaut)
@@ -622,9 +648,8 @@ def collecter_contributeurs(repo, slug, issues_data):
         # PR « visibles » (ouvertes en cours + mergees livrees) : on accumule le
         # detail par auteur (liste cliquable, lignes modifiees, feature du titre).
         # Les PR fermees sans merge (travail jete) sont ignorees.
+        add, sup, touches_src = _pr_src_stats(pr)
         if is_human(auteur) and (pr["state"] == "OPEN" or pr.get("merged")):
-            add = pr.get("additions") or 0
-            sup = pr.get("deletions") or 0
             lignes_ajout[auteur] += add
             lignes_suppr[auteur] += sup
             pr_liste[auteur].append({
@@ -656,7 +681,8 @@ def collecter_contributeurs(repo, slug, issues_data):
             sha = (pr.get("mergeCommit") or {}).get("oid")
             if sha:
                 merged_info.append({"number": pr["number"], "sha": sha,
-                                    "author": auteur, "mergedAt": pr.get("mergedAt")})
+                                    "author": auteur, "mergedAt": pr.get("mergedAt"),
+                                    "touches_src": touches_src})
             revs = [r for r in pr["reviews"]["nodes"]]
             par_pair = [r for r in revs
                         if is_human((r.get("author") or {}).get("login"))
@@ -938,17 +964,26 @@ def attribuer_tests_pr(repo, merged_info, baseline, cache_team, live_total=None)
         else:
             cache_team[key]["author"] = m["author"]
 
+    # Une PR qui ne touche AUCUN fichier sous src/ (import de donnees, doc, pom...)
+    # ne peut pas avoir fait monter le nb de tests verts : on ne la met jamais parmi
+    # les beneficiaires du delta (sinon elle herite du travail d'autres PR mergees
+    # dans la meme rafale, dont le run CI a ete annule -> cas remonte par NinaMATCHA).
+    # Defaut True si l'info manque (filet : ne pas annuler un credit par accident).
+    touche_src = {str(m["number"]): m.get("touches_src", True) for m in merged}
+
     valides = defaultdict(float)
     prev = baseline
-    trou = []                      # auteurs des PR None depuis le dernier point mesure
+    trou = []                      # auteurs (touchant src/) des PR None depuis le dernier point mesure
     for m in merged:
-        info = cache_team[str(m["number"])]
+        num = str(m["number"])
+        info = cache_team[num]
         p, author = info.get("passed"), info.get("author")
+        src = touche_src.get(num, True)
         if p is None:
-            if author:
+            if author and src:
                 trou.append(author)        # en attente d'un point mesure pour crediter
             continue
-        beneficiaires = trou + ([author] if author else [])
+        beneficiaires = trou + ([author] if (author and src) else [])
         if prev is not None:
             repartir(valides, p - prev, beneficiaires)
         prev = p
