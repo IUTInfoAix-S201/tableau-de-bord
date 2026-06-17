@@ -51,13 +51,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 80.9,
+      "coverage_pct": 86.0,
       "pmd_violations": 1,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 577,
-      "pct": 88.8,
+      "passed": 628,
+      "pct": 96.6,
       "total": 650
     },
     "tests_by_feature": {
@@ -86,7 +86,7 @@
         "total": 111
       },
       "qualification": {
-        "passed": 22,
+        "passed": 73,
         "total": 73
       },
       "validation": {
@@ -627,13 +627,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 85.5,
+      "coverage_pct": 85.7,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 601,
-      "pct": 92.5,
+      "passed": 604,
+      "pct": 92.9,
       "total": 650
     },
     "tests_by_feature": {
@@ -662,7 +662,7 @@
         "total": 111
       },
       "qualification": {
-        "passed": 70,
+        "passed": 73,
         "total": 73
       },
       "validation": {
@@ -675,13 +675,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 76.2,
+      "coverage_pct": 78.7,
       "pmd_violations": 1,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 506,
-      "pct": 77.8,
+      "passed": 540,
+      "pct": 83.1,
       "total": 650
     },
     "tests_by_feature": {
@@ -702,7 +702,7 @@
         "total": 27
       },
       "multisite": {
-        "passed": 19,
+        "passed": 53,
         "total": 53
       },
       "passage": {
@@ -963,18 +963,18 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 77.9,
+      "coverage_pct": 78.8,
       "pmd_violations": 4,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 424,
-      "pct": 65.2,
+      "passed": 430,
+      "pct": 66.2,
       "total": 650
     },
     "tests_by_feature": {
       "bibliotheque": {
-        "passed": 0,
+        "passed": 6,
         "total": 22
       },
       "diagnostic": {

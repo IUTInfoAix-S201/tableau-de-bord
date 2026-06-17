@@ -92,6 +92,11 @@
       "passed": 567,
       "sha": "3affc7c6d4bc76fedf2b55b373e94bbf46761133"
     },
+    "104": {
+      "author": "OmbelineChaud",
+      "passed": 628,
+      "sha": "fad804f7d4949a94b8c53ad127fabdb386c05b1d"
+    },
     "57": {
       "author": "Nguyen-Thomas1",
       "passed": 122,
@@ -1796,6 +1801,11 @@
       "passed": 601,
       "sha": "12ebbec79610593e137b2885009c87c2f20badab"
     },
+    "127": {
+      "author": "ikram-aouad",
+      "passed": 604,
+      "sha": "8f7c2d90e029353d8b52316591b76a486c561c91"
+    },
     "61": {
       "author": "Hafuyo",
       "passed": 112,
@@ -1942,6 +1952,11 @@
       "author": "Alam-Aguilar",
       "passed": 506,
       "sha": "c14a9f6c8b04376fa336de71816928321fb1fe52"
+    },
+    "126": {
+      "author": "nvillard135",
+      "passed": 540,
+      "sha": "48e89ebcc7750a17dfa5d3b2223a9ebb91f5643e"
     },
     "58": {
       "author": "Alam-Aguilar",
@@ -2734,6 +2749,11 @@
       "author": "tommylehli",
       "passed": 423,
       "sha": "236692a3d32548490929e87c2dc8e87c3a89218f"
+    },
+    "93": {
+      "author": "manalbartal",
+      "passed": 430,
+      "sha": "d6356a739df9d2d7a10d000d88d3f0da030d1307"
     }
   }
 }
