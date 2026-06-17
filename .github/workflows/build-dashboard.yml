@@ -51,17 +51,23 @@ jobs:
             exit 0
           fi
           git commit -m "chore: instantane + cache tests par PR"
-          # Push robuste : si main a bouge pendant le run (merge/push concurrent, ou un autre build
-          # horaire), un git push simple est rejete en non fast-forward. On rebase sur main distant
-          # et on reessaie. Le commit ne touche que history/ (append + dedup 1 instantane/jour),
-          # donc le rebase se fait sans conflit.
+          # Push robuste face aux runs concurrents (cron + build manuel lances ensemble,
+          # ou tout autre push sur main) : un git push simple est rejete en non
+          # fast-forward. ATTENTION : le commit touche history/ = history.jsonl (append +
+          # dedup 1 instantane/jour) MAIS AUSSI les caches pr-tests.json / last-tests.json,
+          # REECRITS EN ENTIER a chaque run -> un rebase nu peut conflituer dessus (c'est
+          # ce qui faisait echouer le dernier des deux builds a terminer). On rebase donc
+          # en gardant NOTRE version fraiche de ces fichiers (-X theirs : cote rebase,
+          # "theirs" = nos commits rejoues ; ces caches sont de toute facon regeneres au
+          # run suivant), puis on reessaie. La garde `|| git rebase --abort` evite de
+          # rester bloque dans un rebase a moitie applique sur un conflit non resolvable.
           for i in 1 2 3 4 5; do
             if git push; then
               echo "Pousse."
               exit 0
             fi
             echo "Push rejete (main a bouge), rebase + nouvelle tentative ($i/5)..."
-            git pull --rebase --autostash origin main
+            git pull --rebase --autostash -X theirs origin main || git rebase --abort || true
           done
           echo "::error::Echec du push apres 5 tentatives (course persistante sur main)."
           exit 1
