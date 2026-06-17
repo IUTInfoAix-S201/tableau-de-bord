@@ -336,16 +336,16 @@
     }
   },
   "linkedin_ou_interpol": {
-    "ci_status": "failure",
+    "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": null,
-      "pmd_violations": null,
+      "coverage_pct": 86.0,
+      "pmd_violations": 2,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 627,
-      "pct": 96.5,
+      "passed": 628,
+      "pct": 96.6,
       "total": 650
     },
     "tests_by_feature": {
