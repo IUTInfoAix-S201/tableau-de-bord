@@ -488,8 +488,8 @@
       "spotless_ok": true
     },
     "tests": {
-      "passed": 591,
-      "pct": 90.9,
+      "passed": 594,
+      "pct": 91.4,
       "total": 650
     },
     "tests_by_feature": {
@@ -510,7 +510,7 @@
         "total": 27
       },
       "multisite": {
-        "passed": 16,
+        "passed": 19,
         "total": 53
       },
       "passage": {

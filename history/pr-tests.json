@@ -480,6 +480,11 @@
       "author": "eabc2318",
       "passed": 650,
       "sha": "1197ac828f644d9625c7caf67ecff9c91e9266c1"
+    },
+    "99": {
+      "author": "eabc2318",
+      "passed": 650,
+      "sha": "bc84e0b87557c784608924eb219d2c0f0d256fec"
     }
   },
   "jpeuxpasjainedjar": {
@@ -1410,6 +1415,11 @@
       "passed": 591,
       "sha": "542fdf2939ee6c718bdb2c439f5e4d917952eeec"
     },
+    "103": {
+      "author": "SalahEdine-bou",
+      "passed": 594,
+      "sha": "ec2628013eadab277e54fce8cc8d4e4330104d41"
+    },
     "56": {
       "author": "brandonzeabaez",
       "passed": 108,
@@ -1636,6 +1646,11 @@
       "author": "Willow84120",
       "passed": 651,
       "sha": "0d9a1d93acd08907b83e411892812ee9d8bd1efb"
+    },
+    "129": {
+      "author": "JimmyLefebvre",
+      "passed": 651,
+      "sha": "fd36f5f82870cb329e30cea6f5d890dd6f6e3e0b"
     },
     "56": {
       "author": "Renethan",
