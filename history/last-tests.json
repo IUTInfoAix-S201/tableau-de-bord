@@ -576,16 +576,16 @@
     }
   },
   "td2-g5-awoooo": {
-    "ci_status": "failure",
+    "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": null,
-      "pmd_violations": null,
+      "coverage_pct": 78.6,
+      "pmd_violations": 6,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 507,
-      "pct": 78.0,
+      "passed": 509,
+      "pct": 78.3,
       "total": 650
     },
     "tests_by_feature": {
