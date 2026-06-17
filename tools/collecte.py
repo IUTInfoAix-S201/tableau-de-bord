@@ -108,6 +108,17 @@ BOTS = {"github-actions[bot]", "github-actions", "github-classroom[bot]", "githu
 # Comptes a exclure du tableau : encadrants/enseignants (pas des etudiants).
 COMPTES_EXCLUS = {"nedseb"}
 
+# Membres d'equipe a comptabiliser MANUELLEMENT : etudiants bien inscrits dans une
+# equipe mais ABSENTS de la team GitHub (jamais connectes / invitation jamais
+# acceptee), donc invisibles a l'API `teams/{slug}/members`. Sans cet ajout,
+# l'equipe parait plus petite et son indice d'equilibre (facteur d'effort) n'est
+# PAS penalise pour ce passager clandestin a 0 contribution. Les autres « fantomes »
+# qui se sont connectes apparaissent deja via la team GitHub.
+# slug d'equipe -> [logins a ajouter comme membres a 0 contribution].
+MEMBRES_SUPPLEMENTAIRES = {
+    "gapple": ["Younoussa-Hachim"],
+}
+
 
 # ------------------------------------------------------------------------------
 # Helpers gh / GraphQL (calques sur creer-board-equipe.py)
@@ -707,6 +718,11 @@ def collecter_contributeurs(repo, slug, issues_data):
     membres = gh_json(f"orgs/{ORG}/teams/{slug}/members?per_page=100",
                       jq=".[].login", paginate=True)
     membres = [m for m in membres if is_human(m)]
+    # Membres inscrits mais absents de la team GitHub (cf. MEMBRES_SUPPLEMENTAIRES) :
+    # ajoutes ici pour ne pas biaiser la taille d'equipe ni l'indice d'equilibre.
+    for extra in MEMBRES_SUPPLEMENTAIRES.get(slug, []):
+        if extra not in membres and is_human(extra):
+            membres.append(extra)
 
     # Travail EN COURS : commits en avance sur main dans les branches non mergees,
     # attribues aux seuls membres (evite les fantomes dus a un email git mal configure).
