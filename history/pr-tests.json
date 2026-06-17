@@ -112,6 +112,11 @@
       "passed": 628,
       "sha": "9c84f681a6f2b57c574d76ddac75ca978d870d1a"
     },
+    "114": {
+      "author": "OmbelineChaud",
+      "passed": 628,
+      "sha": "a579a7aa91a9fa46d94f98bcb1b3a1e714d0765b"
+    },
     "57": {
       "author": "Nguyen-Thomas1",
       "passed": 122,
@@ -416,6 +421,11 @@
       "passed": 414,
       "sha": "34e94c66effddf0d01d3b682f979e6aed4fb0b3c"
     },
+    "78": {
+      "author": "eabc2318",
+      "passed": null,
+      "sha": "79dfeb053d184297a3936b4d1d55403942b0c944"
+    },
     "80": {
       "author": "Imen-Bengadha20242027",
       "passed": 428,
@@ -440,6 +450,26 @@
       "author": "NinaMATCHA",
       "passed": 548,
       "sha": "7bcee359e030f9393b372825d515ad3daa66af94"
+    },
+    "92": {
+      "author": "kawthar23661-wq",
+      "passed": 628,
+      "sha": "4ed46d3ccf49ed4a2fdae9911f4b8863ece67ee6"
+    },
+    "95": {
+      "author": "NinaMATCHA",
+      "passed": 645,
+      "sha": "12608969c147286b3e222919f21317494ab71a14"
+    },
+    "96": {
+      "author": "eabc2318",
+      "passed": 644,
+      "sha": "befb1af858dec4b33663e7a3dcfa9fb996b89225"
+    },
+    "97": {
+      "author": "eabc2318",
+      "passed": 650,
+      "sha": "1197ac828f644d9625c7caf67ecff9c91e9266c1"
     }
   },
   "jpeuxpasjainedjar": {
@@ -487,6 +517,11 @@
       "author": "Alexandre-SBEGHEN",
       "passed": 452,
       "sha": "72804c6bcf572a45b83fac959ce56a563bb0c0b0"
+    },
+    "86": {
+      "author": "noepetit",
+      "passed": 555,
+      "sha": "ced6b9ba93660c8ed80436af819a04fb8f0a0729"
     }
   },
   "la-team": {
@@ -615,6 +650,11 @@
       "passed": 570,
       "sha": "155ff30546798a062e0ffc0c66f32da0f77be142"
     },
+    "204": {
+      "author": "l-L-E-N-A-l",
+      "passed": 570,
+      "sha": "0aebbc0c9858e1834d1f423c38328d2ad8aad9b8"
+    },
     "205": {
       "author": "Timeo-84",
       "passed": 570,
@@ -634,6 +674,16 @@
       "author": "YasmineBestDev",
       "passed": 570,
       "sha": "886b59e01b758f4e38b2abe47c0735ed7cab0427"
+    },
+    "214": {
+      "author": "Timeo-84",
+      "passed": 652,
+      "sha": "d0d5cb12e107e819724f0e3dceeaa258ece4cd57"
+    },
+    "215": {
+      "author": "YasmineBestDev",
+      "passed": 652,
+      "sha": "f79277a0fa5ade706154999de4517bdac4685d92"
     },
     "60": {
       "author": "lochlann-fabbi",
@@ -889,6 +939,11 @@
       "passed": 627,
       "sha": "831917d55afa67af5a61ea83d58ca4874e6ad3b2"
     },
+    "124": {
+      "author": "FRANCESCHI-PINSON-Lucas-25008772",
+      "passed": 628,
+      "sha": "fab813a87e6469973d9c220348fdda5f2855833a"
+    },
     "56": {
       "author": "DUMONT-Vladislav-25009525",
       "passed": 106,
@@ -1035,6 +1090,11 @@
       "author": "Creeper-Solidaire",
       "passed": 513,
       "sha": "365ecf60bdcc7b4a2493bde220e5dcf44a507167"
+    },
+    "107": {
+      "author": "chkyle07",
+      "passed": 513,
+      "sha": "f25edb14a7f53b5fb1db402008c320b0e41c0b88"
     },
     "56": {
       "author": "chkyle07",
@@ -1659,6 +1719,26 @@
     }
   },
   "td2-g5-awoooo": {
+    "100": {
+      "author": "ChevremontLilian",
+      "passed": 605,
+      "sha": "732ad1e813d508b586e1f405dd7f4fca6d2b5226"
+    },
+    "103": {
+      "author": "CoIib",
+      "passed": 603,
+      "sha": "4446598efab240bc0e0c78ded61c9117fe65b59a"
+    },
+    "104": {
+      "author": "KhadissovaLezina",
+      "passed": 618,
+      "sha": "2432c1ba878c4edad0c403930fb5fd2e6baa5f7d"
+    },
+    "105": {
+      "author": "CoIib",
+      "passed": 608,
+      "sha": "8d952bf9a35c2f20506fe5eace6f597a81b5e622"
+    },
     "58": {
       "author": "CoIib",
       "passed": 121,
@@ -2002,6 +2082,11 @@
       "author": "Alam-Aguilar",
       "passed": 540,
       "sha": "88bdcd2758672326cda16c87ad3d0152af8788c9"
+    },
+    "132": {
+      "author": "Alam-Aguilar",
+      "passed": 556,
+      "sha": "96ec93389c77f4ab958552806add0b7d748e1d41"
     },
     "58": {
       "author": "Alam-Aguilar",
@@ -2392,6 +2477,11 @@
       "passed": 549,
       "sha": "0c14a70a59a16718fdfedf4d4516b2a59f2a6b0a"
     },
+    "129": {
+      "author": "RUIZ-Enrique-25002136",
+      "passed": null,
+      "sha": "225a59c43ac55b06f7924b41b5cd0b54926216a0"
+    },
     "130": {
       "author": "ZOPPI-Nicolas-25003515",
       "passed": 549,
@@ -2494,6 +2584,46 @@
     }
   },
   "td4_g5": {
+    "100": {
+      "author": "BEGHIN-Timothee-25011060",
+      "passed": 310,
+      "sha": "0ec464164e7c75451be324d12bf9847f61ff6567"
+    },
+    "101": {
+      "author": "BULUT-Melissa-25006748",
+      "passed": 308,
+      "sha": "b8eed6abd1014bdb380d6214ff5c8e50208a52ff"
+    },
+    "103": {
+      "author": "BULUT-Melissa-25006748",
+      "passed": 320,
+      "sha": "82366d1218112b7f48f8b33afba724f3546214e6"
+    },
+    "105": {
+      "author": "SAID-BOUTABOUZI-Wanis-25003650",
+      "passed": 331,
+      "sha": "be85973370b50af1a1788a9f1458ab48349fee77"
+    },
+    "106": {
+      "author": "SAID-BOUTABOUZI-Wanis-25003650",
+      "passed": null,
+      "sha": "d56233de3b35b5f24ffcc6476c6826f76241f6ba"
+    },
+    "107": {
+      "author": "SAID-BOUTABOUZI-Wanis-25003650",
+      "passed": 367,
+      "sha": "1a9a6059058df3e847df9a5d5b4a4817884bd0b5"
+    },
+    "108": {
+      "author": "BULUT-Melissa-25006748",
+      "passed": 360,
+      "sha": "a20cbe022dd9369bf492744ac23c9cd46cc94f98"
+    },
+    "109": {
+      "author": "BEGHIN-Timothee-25011060",
+      "passed": 356,
+      "sha": "ce28fa093087773c7a8063dc4ae0dfec0c06176a"
+    },
     "56": {
       "author": "BULUT-Melissa-25006748",
       "passed": 109,
@@ -2653,6 +2783,11 @@
     }
   },
   "thebatdevs": {
+    "102": {
+      "author": "Lohann-B",
+      "passed": 357,
+      "sha": "2b16e3da74ce95603946a5d7f1b29c60d328715c"
+    },
     "57": {
       "author": "JolanRAMBEAUX",
       "passed": 109,
@@ -2839,6 +2974,11 @@
       "author": "tsnm28",
       "passed": 499,
       "sha": "7966c83139d0f967d86163abd24551835a84d7b2"
+    },
+    "96": {
+      "author": "manalbartal",
+      "passed": 530,
+      "sha": "c75b2a32856de30ee69b133156815c09a0be8d16"
     },
     "97": {
       "author": "manalbartal",
