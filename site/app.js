@@ -359,6 +359,12 @@ function blocCharts(src) {
 function renderAlertes(data) {
   const out = [];
   data.teams.forEach(t => {
+    const lc = t.late_commits;
+    if (lc && lc.count > 0) {
+      const qui = (lc.authors && lc.authors.length) ? ` — ${lc.authors.map(esc).join(", ")}` : "";
+      const titre = `${lc.count} commit(s) après l'échéance du 18/06 8 h 15 ; dernier ${relTime(lc.last)}${qui}`;
+      out.push(`<span class="alerte danger" title="${esc(titre)}">⏰ commits après la fin (${lc.count}) : ${esc(t.slug)}</span>`);
+    }
     if (t.ci_status && t.ci_status !== "success")
       out.push(`<span class="alerte">CI rouge : ${esc(t.slug)}</span>`);
     if (staleDays(t.last_activity) > 4)

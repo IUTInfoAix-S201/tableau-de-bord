@@ -43,6 +43,10 @@ REPO_PREFIX = "vigiechiro-pr-companion-"
 # longueur des courbes des equipes de reference (lievres) : elles ne doivent pas
 # afficher d'historique anterieur au projet.
 PROJET_DEBUT = "2026-06-04"
+# Echeance de rendu (heure de Paris, UTC+2 en juin) : DOIT rester synchronisee
+# avec FIN_PROJET dans site/app.js. Sert a reperer les commits postérieurs a la
+# fin du projet (point de vigilance).
+PROJET_FIN = "2026-06-18T08:15:00+02:00"
 
 # Fuseau des etudiants : les diagrammes d'activite « par heure / par jour » sont
 # exprimes en heure locale francaise (heure d'ete geree par la base tz).
@@ -456,6 +460,24 @@ def agreger_activite(events):
         by_hour[dt.hour] += 1
     return {"total": len(events), "by_day": dict(by_day),
             "by_weekday": by_weekday, "by_hour": by_hour}
+
+
+def commits_apres_echeance(events, seuil_iso=PROJET_FIN):
+    """Commits posterieurs a la fin du projet -> {count, last, authors}.
+
+    `events` est deja filtre des bots et de l'enseignant (cf. collecter_activite),
+    donc tout commit restant date d'apres l'echeance est un vrai travail tardif.
+    `count` = nb de commits, `last` = date du plus recent (ISO), `authors` = logins
+    distincts (hors commits sans auteur GitHub rattache). Sert au point de vigilance.
+    """
+    seuil = datetime.fromisoformat(seuil_iso)
+    tardifs = [ev for ev in events
+               if datetime.fromisoformat(ev["date"].replace("Z", "+00:00")) > seuil]
+    if not tardifs:
+        return {"count": 0, "last": None, "authors": []}
+    last = max(ev["date"] for ev in tardifs)
+    authors = sorted({ev["login"] for ev in tardifs if ev["login"]})
+    return {"count": len(tardifs), "last": last, "authors": authors}
 
 
 # ------------------------------------------------------------------------------
@@ -1218,6 +1240,7 @@ def main():
             "priorities": issues_data["priorities"],
             "features": chaine_features(repo, e["url"], issues_data["par_feature"], tbf),
             "open_branches": open_branches,
+            "late_commits": commits_apres_echeance(activite_par_equipe[slug]),
             "tests": tests,
             "quality": quality,
             "review": review,

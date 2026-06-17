@@ -41,6 +41,7 @@ h2 { font-size: 1.15rem; color: var(--bleu); border-bottom: 2px solid var(--bord
 .alerte { display: inline-block; margin: .2rem .4rem .2rem 0; padding: .25rem .6rem;
   border-radius: 999px; font-size: .8rem; background: #fdeceb; color: #a33027; border: 1px solid #f5c6c2; }
 .alerte.warn { background: #fff8e6; color: #7a5b00; border-color: #f0dca0; }
+.alerte.danger { background: #c0392b; color: #fff; border-color: #962d22; font-weight: 600; }
 
 /* ---- compte a rebours fin de projet ---- */
 .countdown { background: var(--ardoise); color: #fff; border-radius: 10px; padding: .9rem 1.1rem;
