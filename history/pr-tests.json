@@ -2114,6 +2114,11 @@
       "passed": 650,
       "sha": "3e54d7a413fe731ad09ce1dbcaf24a25cbba92ee"
     },
+    "123": {
+      "author": "ChevremontLilian",
+      "passed": 650,
+      "sha": "96155afd1a385026053b2a968bc21420a6f0172c"
+    },
     "58": {
       "author": "CoIib",
       "passed": 121,
@@ -3352,6 +3357,16 @@
       "author": "GKMat",
       "passed": 536,
       "sha": "7ee9e25b8b16b88febaa1a0c7f71296c0742f07d"
+    },
+    "113": {
+      "author": "JolanRAMBEAUX",
+      "passed": 614,
+      "sha": "93185173872321cf0817e5d185111db34af5ba49"
+    },
+    "115": {
+      "author": "JolanRAMBEAUX",
+      "passed": 634,
+      "sha": "b6ff7789f7aa986cffd42bb374dce87f6acb7155"
     },
     "57": {
       "author": "JolanRAMBEAUX",
