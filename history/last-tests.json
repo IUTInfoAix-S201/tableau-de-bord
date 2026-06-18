@@ -915,13 +915,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 89.2,
+      "coverage_pct": 89.4,
       "pmd_violations": 2,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 634,
-      "pct": 97.5,
+      "passed": 645,
+      "pct": 99.2,
       "total": 650
     },
     "tests_by_feature": {
@@ -950,7 +950,7 @@
         "total": 111
       },
       "qualification": {
-        "passed": 62,
+        "passed": 73,
         "total": 73
       },
       "validation": {
