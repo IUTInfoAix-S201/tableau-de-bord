@@ -336,49 +336,49 @@
     }
   },
   "linkedin_ou_interpol": {
-    "ci_status": "failure",
+    "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": null,
-      "pmd_violations": null,
+      "coverage_pct": 90.3,
+      "pmd_violations": 0,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 302,
-      "pct": 46.3,
-      "total": 652
+      "passed": 654,
+      "pct": 100.0,
+      "total": 654
     },
     "tests_by_feature": {
       "bibliotheque": {
-        "passed": 16,
+        "passed": 22,
         "total": 22
       },
       "diagnostic": {
-        "passed": 16,
+        "passed": 24,
         "total": 24
       },
       "importation": {
-        "passed": 28,
-        "total": 84
+        "passed": 86,
+        "total": 86
       },
       "lot": {
-        "passed": 10,
+        "passed": 27,
         "total": 27
       },
       "multisite": {
-        "passed": 26,
+        "passed": 53,
         "total": 53
       },
       "passage": {
-        "passed": 40,
+        "passed": 111,
         "total": 111
       },
       "qualification": {
-        "passed": 43,
+        "passed": 73,
         "total": 73
       },
       "validation": {
-        "passed": 59,
+        "passed": 103,
         "total": 103
       }
     }
