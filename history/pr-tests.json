@@ -682,6 +682,16 @@
       "author": "noepetit",
       "passed": 651,
       "sha": "dbb4b8aa07a404c18f44af8b47157736bbbf0e06"
+    },
+    "94": {
+      "author": "noepetit",
+      "passed": 651,
+      "sha": "7fab8b412ae5427c2599cc098715d052e7302300"
+    },
+    "96": {
+      "author": "Alexandre-SBEGHEN",
+      "passed": 651,
+      "sha": "74c87ed55de6471450a29cb551bed6ec9bf9466f"
     }
   },
   "la-team": {
@@ -869,6 +879,11 @@
       "author": "YasmineBestDev",
       "passed": 652,
       "sha": "4c4707bf18bf2e97656b23863f95b8b085bebaac"
+    },
+    "227": {
+      "author": "YasmineBestDev",
+      "passed": 652,
+      "sha": "2b15f720cc09d61c6b0176d082e9b00c48c28e20"
     },
     "60": {
       "author": "lochlann-fabbi",
@@ -1675,6 +1690,16 @@
       "passed": 651,
       "sha": "4263fb4bacc694eccc953b80459db491e2726be9"
     },
+    "119": {
+      "author": "Barny-Rafael",
+      "passed": 651,
+      "sha": "a3703d74baa432f66282430da663d12c95612003"
+    },
+    "120": {
+      "author": "Barny-Rafael",
+      "passed": 651,
+      "sha": "1debb48de384102a9ad67f28f8507cccfc308354"
+    },
     "56": {
       "author": "brandonzeabaez",
       "passed": 108,
@@ -2078,6 +2103,16 @@
       "author": "ChevremontLilian",
       "passed": 650,
       "sha": "45e04a942c65863e0ac815ddad63cb625a6ff2c6"
+    },
+    "119": {
+      "author": "CoIib",
+      "passed": 650,
+      "sha": "a65fe32da3bc5de349d99d9a02b949a27ecae677"
+    },
+    "121": {
+      "author": "ChevremontLilian",
+      "passed": 650,
+      "sha": "3e54d7a413fe731ad09ce1dbcaf24a25cbba92ee"
     },
     "58": {
       "author": "CoIib",
@@ -3104,6 +3139,11 @@
       "passed": 511,
       "sha": "9b61f05328ba9460a0a9f7ca464540a9776f192a"
     },
+    "125": {
+      "author": "BEGHIN-Timothee-25011060",
+      "passed": 650,
+      "sha": "6f941345bf1e5f26176fec06a6ac10a7e80274c4"
+    },
     "56": {
       "author": "BULUT-Melissa-25006748",
       "passed": 109,
@@ -3439,6 +3479,16 @@
       "author": "YannickAit",
       "passed": 637,
       "sha": "befbe2d3321fb784ffe1d577a72d4edb41f5ee55"
+    },
+    "117": {
+      "author": "tommylehli",
+      "passed": 637,
+      "sha": "844cf442456eda94eb6a9ad951036d94a7d9b409"
+    },
+    "119": {
+      "author": "manalbartal",
+      "passed": 644,
+      "sha": "8f941e93a23700f2e12864c1cd05c991c8351855"
     },
     "56": {
       "author": "tsnm28",

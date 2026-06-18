@@ -819,13 +819,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 79.6,
+      "coverage_pct": 89.2,
       "pmd_violations": 4,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 511,
-      "pct": 78.6,
+      "passed": 650,
+      "pct": 100.0,
       "total": 650
     },
     "tests_by_feature": {
@@ -854,11 +854,11 @@
         "total": 111
       },
       "qualification": {
-        "passed": 22,
+        "passed": 73,
         "total": 73
       },
       "validation": {
-        "passed": 31,
+        "passed": 103,
         "total": 103
       }
     }
@@ -963,13 +963,13 @@
     "ci_status": "success",
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 88.4,
+      "coverage_pct": 88.5,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 637,
-      "pct": 98.0,
+      "passed": 644,
+      "pct": 99.1,
       "total": 650
     },
     "tests_by_feature": {
