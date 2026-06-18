@@ -48,6 +48,13 @@ PROJET_DEBUT = "2026-06-04"
 # fin du projet (point de vigilance).
 PROJET_FIN = "2026-06-18T08:15:00+02:00"
 
+# Seuils du voyant « gros apport de derniere journee » (suspicion de finition au LLM) :
+# beaucoup de lignes de CODE (src/, deja hors donnees importees) concentrees sur la
+# derniere journee de merge de l'equipe. Tunables. La date est exposee en infobulle
+# pour que l'enseignant juge (c'est un point de vigilance, pas un verdict).
+SEUIL_LIGNES_DERNIER_JOUR = 1000   # lignes src ajoutees ce jour-la
+SEUIL_PART_DERNIER_JOUR = 0.5      # part du total des lignes src de l'equipe
+
 # Fuseau des etudiants : les diagrammes d'activite « par heure / par jour » sont
 # exprimes en heure locale francaise (heure d'ete geree par la base tz).
 PARIS = ZoneInfo("Europe/Paris")
@@ -657,6 +664,8 @@ def collecter_contributeurs(repo, slug, issues_data):
     pr_liste = defaultdict(list)         # login -> [resume PR visible, ...] (ouvertes + mergees)
     lignes_ajout = defaultdict(int)      # login -> total additions (PR ouvertes + mergees)
     lignes_suppr = defaultdict(int)      # login -> total deletions (PR ouvertes + mergees)
+    lignes_jour = defaultdict(int)       # date Paris -> lignes src ajoutees par PR mergees ce jour
+    prs_jour = defaultdict(int)          # date Paris -> nb de PR de code mergees ce jour
     feats_pr = defaultdict(set)          # login -> {feature, ...} d'apres le prefixe du titre de PR
     revues_donnees = defaultdict(list)   # login -> [revue, ...]
     revues_recues = defaultdict(int)     # login (auteur PR) -> nb revues par pairs
@@ -706,6 +715,15 @@ def collecter_contributeurs(repo, slug, issues_data):
                 merged_info.append({"number": pr["number"], "sha": sha,
                                     "author": auteur, "mergedAt": pr.get("mergedAt"),
                                     "touches_src": touches_src})
+            # Lignes de code (src) par jour de merge -> voyant « apport de derniere
+            # journee ». `add` est deja restreint a src/ (cf. _pr_src_stats), donc un
+            # import de donnees ne gonfle pas le compteur.
+            mdt = pr.get("mergedAt")
+            if mdt and add > 0:
+                jour = (datetime.fromisoformat(mdt.replace("Z", "+00:00"))
+                        .astimezone(PARIS).date().isoformat())
+                lignes_jour[jour] += add
+                prs_jour[jour] += 1
             revs = [r for r in pr["reviews"]["nodes"]]
             par_pair = [r for r in revs
                         if is_human((r.get("author") or {}).get("login"))
@@ -806,7 +824,23 @@ def collecter_contributeurs(repo, slug, issues_data):
         "pct_reviewed": round(merged_relues / merged_total, 2) if merged_total else None,
         "self_merges": self_merges,
     }
-    return contributeurs, bus, review, merged_info, branches_en_cours
+    # Voyant « gros apport de derniere journee » (suspicion de finition au LLM) :
+    # on regarde la DERNIERE journee de merge de l'equipe et la part des lignes src
+    # qui y a atterri. `score_llm` (lignes * part) classe les equipes pour le podium
+    # « Adorateurs de Skynet » ; `suspect` declenche le badge de vigilance.
+    derniere_journee = None
+    if lignes_jour:
+        jour = max(lignes_jour)
+        lignes = lignes_jour[jour]
+        total = sum(lignes_jour.values())
+        part = round(lignes / total, 3) if total else 0.0
+        derniere_journee = {
+            "date": jour, "lignes": lignes, "part": part, "prs": prs_jour[jour],
+            "total_lignes": total, "jours_actifs": len(lignes_jour),
+            "score_llm": round(lignes * part),
+            "suspect": lignes >= SEUIL_LIGNES_DERNIER_JOUR and part >= SEUIL_PART_DERNIER_JOUR,
+        }
+    return contributeurs, bus, review, merged_info, branches_en_cours, derniere_journee
 
 
 # ------------------------------------------------------------------------------
@@ -1270,7 +1304,7 @@ def main():
         issues_data = collecter_issues(repo)
         activite_par_equipe[slug] = [] if args.no_activity else collecter_activite(repo)
         ci_par_equipe[slug] = {} if args.no_activity else collecter_ci(repo)
-        contributeurs, bus, review, merged_info, open_branches = \
+        contributeurs, bus, review, merged_info, open_branches, derniere_journee = \
             collecter_contributeurs(repo, slug, issues_data)
         if args.no_tests:
             tests = {"passed": None, "total": None, "pct": None}
@@ -1304,6 +1338,7 @@ def main():
             "features": chaine_features(repo, e["url"], issues_data["par_feature"], tbf),
             "open_branches": open_branches,
             "late_commits": commits_apres_echeance(activite_par_equipe[slug]),
+            "derniere_journee": derniere_journee,
             "tests": tests,
             "quality": quality,
             "review": review,

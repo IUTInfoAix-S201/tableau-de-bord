@@ -215,7 +215,28 @@ function renderPodiums(data) {
       : `<li class="pod-vide">Personne pour l'instant</li>`;
     return `<div class="podium"><div class="pod-titre"><span class="pod-emoji">${p.emoji}</span> ${esc(p.nom)}</div>`
       + `<div class="pod-desc">${esc(p.desc)}</div><ol class="pod-liste">${lignes}</ol></div>`;
-  }).join("");
+  }).join("") + podiumSkynet(data);
+}
+
+// Podium « Adorateurs de Skynet » : classement par ÉQUIPE (et non par étudiant)
+// des plus forts apports de code concentrés sur la dernière journée — proxy de
+// finition au LLM. score = lignes src du dernier jour × part du total (cf.
+// derniere_journee.score_llm côté collecte).
+function podiumSkynet(data) {
+  const top = (data.teams || [])
+    .map(t => ({ t, dj: t.derniere_journee }))
+    .filter(o => o.dj && o.dj.score_llm > 0)
+    .sort((a, b) => b.dj.score_llm - a.dj.score_llm || a.t.slug.localeCompare(b.t.slug))
+    .slice(0, 3);
+  const lignes = top.length
+    ? top.map((o, i) => `<li><span class="pod-med">${POD_MEDS[i]}</span>`
+        + `<span class="pod-login">${esc(o.t.name)}</span>`
+        + `<span class="pod-val">${o.dj.lignes} l. / ${Math.round(o.dj.part * 100)} %</span>`
+        + `<small class="pod-team" title="le ${esc(o.dj.date)}, sur ${o.dj.prs} PR">${esc(o.dj.date)}</small></li>`).join("")
+    : `<li class="pod-vide">Personne pour l'instant</li>`;
+  return `<div class="podium podium-skynet"><div class="pod-titre"><span class="pod-emoji">🤖</span> Les adorateurs de Skynet</div>`
+    + `<div class="pod-desc">apport de code (src) le plus concentré sur la dernière journée — finition au LLM ?</div>`
+    + `<ol class="pod-liste">${lignes}</ol></div>`;
 }
 
 // --- statistiques generales (activite collective) -------------------------
@@ -364,6 +385,12 @@ function renderAlertes(data) {
       const qui = (lc.authors && lc.authors.length) ? ` — ${lc.authors.map(esc).join(", ")}` : "";
       const titre = `${lc.count} commit(s) après l'échéance du 18/06 8 h 15 ; dernier ${relTime(lc.last)}${qui}`;
       out.push(`<span class="alerte danger" title="${esc(titre)}">⏰ commits après la fin (${lc.count}) : ${esc(t.slug)}</span>`);
+    }
+    const dj = t.derniere_journee;
+    if (dj && dj.suspect) {
+      const pct = Math.round(dj.part * 100);
+      const titre = `${dj.lignes} lignes de code (src) déposées le ${dj.date} = ${pct} % du total de l'équipe, sur ${dj.prs} PR — apport très concentré sur la dernière journée, à vérifier (usage d'un LLM pour finir ?)`;
+      out.push(`<span class="alerte llm" title="${esc(titre)}">🤖 gros apport dernier jour : ${esc(t.slug)} (${dj.lignes} l. / ${pct} %)</span>`);
     }
     if (t.ci_status && t.ci_status !== "success")
       out.push(`<span class="alerte">CI rouge : ${esc(t.slug)}</span>`);
