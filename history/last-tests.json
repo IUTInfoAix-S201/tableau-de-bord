@@ -149,7 +149,7 @@
       "archunit_ok": true,
       "coverage_pct": 90.0,
       "pmd_violations": 1,
-      "spotless_ok": true
+      "spotless_ok": false
     },
     "tests": {
       "passed": 650,
