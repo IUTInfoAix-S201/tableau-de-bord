@@ -344,41 +344,41 @@
       "spotless_ok": true
     },
     "tests": {
-      "passed": 159,
-      "pct": 24.4,
-      "total": 651
+      "passed": 302,
+      "pct": 46.3,
+      "total": 652
     },
     "tests_by_feature": {
       "bibliotheque": {
-        "passed": 4,
+        "passed": 16,
         "total": 22
       },
       "diagnostic": {
-        "passed": 11,
+        "passed": 16,
         "total": 24
       },
       "importation": {
         "passed": 28,
-        "total": 83
+        "total": 84
       },
       "lot": {
-        "passed": 0,
+        "passed": 10,
         "total": 27
       },
       "multisite": {
-        "passed": 6,
+        "passed": 26,
         "total": 53
       },
       "passage": {
-        "passed": 10,
+        "passed": 40,
         "total": 111
       },
       "qualification": {
-        "passed": 18,
+        "passed": 43,
         "total": 73
       },
       "validation": {
-        "passed": 20,
+        "passed": 59,
         "total": 103
       }
     }
