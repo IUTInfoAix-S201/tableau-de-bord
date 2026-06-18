@@ -52,8 +52,8 @@ PROJET_FIN = "2026-06-18T08:15:00+02:00"
 # beaucoup de lignes de CODE (src/, deja hors donnees importees) concentrees sur la
 # derniere journee de merge de l'equipe. Tunables. La date est exposee en infobulle
 # pour que l'enseignant juge (c'est un point de vigilance, pas un verdict).
-SEUIL_LIGNES_DERNIER_JOUR = 1000   # lignes src ajoutees ce jour-la
-SEUIL_PART_DERNIER_JOUR = 0.5      # part du total des lignes src de l'equipe
+SEUIL_LIGNES_DERNIER_JOUR = 700    # lignes src ajoutees ce jour-la
+SEUIL_PART_DERNIER_JOUR = 0.25     # part du total des lignes src de l'equipe
 
 # Fuseau des etudiants : les diagrammes d'activite « par heure / par jour » sont
 # exprimes en heure locale francaise (heure d'ete geree par la base tz).
