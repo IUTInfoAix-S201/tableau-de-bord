@@ -659,16 +659,62 @@
   },
   "linkedin_ou_interpol": {
     "ci_status": "success",
+    "conformite_by_feature": {
+      "bibliotheque": {
+        "passed": 4,
+        "total": 7
+      },
+      "diagnostic": {
+        "passed": 3,
+        "total": 7
+      },
+      "importation": {
+        "passed": 6,
+        "total": 9
+      },
+      "integrite": {
+        "passed": 1,
+        "total": 1
+      },
+      "lot": {
+        "passed": 3,
+        "total": 6
+      },
+      "multisite": {
+        "passed": 6,
+        "total": 6
+      },
+      "parcours": {
+        "passed": 17,
+        "total": 17
+      },
+      "passage": {
+        "passed": 6,
+        "total": 6
+      },
+      "qualification": {
+        "passed": 1,
+        "total": 7
+      },
+      "sites": {
+        "passed": 7,
+        "total": 7
+      },
+      "validation": {
+        "passed": 2,
+        "total": 6
+      }
+    },
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 90.3,
+      "coverage_pct": 90.5,
       "pmd_violations": 0,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 654,
+      "passed": 646,
       "pct": 100.0,
-      "total": 654
+      "total": 646
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -680,8 +726,8 @@
         "total": 24
       },
       "importation": {
-        "passed": 86,
-        "total": 86
+        "passed": 84,
+        "total": 84
       },
       "lot": {
         "passed": 27,
