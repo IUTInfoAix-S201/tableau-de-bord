@@ -382,7 +382,7 @@ def _avancement(key, par_feature, tests_by_feature):
     return iss["done"], iss["total"], "issues"
 
 
-def chaine_features(repo, repo_url, par_feature, tests_by_feature=None):
+def chaine_features(repo, repo_url, par_feature, tests_by_feature=None, conformite_by_feature=None):
     """Frise par feature. Jauge = tests passes/total si dispo, sinon issues (repli).
 
     `complete` (vert + lien) = mesure primaire a 100 %. Le lien capture exige en
@@ -402,11 +402,13 @@ def chaine_features(repo, repo_url, par_feature, tests_by_feature=None):
                if complete and fraiche and png in caps else None)
         iss = par_feature.get(key, {"done": 0, "total": 0})
         tbf = (tests_by_feature or {}).get(key)
+        cf = (conformite_by_feature or {}).get(key)
         frise.append({"key": key, "priority": PRIORITE.get(key),
                       "done": done, "total": total, "source": source,
                       "complete": complete, "capture_url": url,
                       "issues": {"done": iss["done"], "total": iss["total"]},
-                      "tests": ({"passed": tbf["passed"], "total": tbf["total"]} if tbf else None)})
+                      "tests": ({"passed": tbf["passed"], "total": tbf["total"]} if tbf else None),
+                      "conformite": ({"passed": cf["passed"], "total": cf["total"]} if cf else None)})
     return frise
 
 
@@ -924,14 +926,14 @@ def parser_logs(repo, run_id):
 
 
 def collecter_tests(repo, run):
-    """Renvoie (tests_dict, quality_dict, ci_status, source, tests_by_feature)."""
+    """Renvoie (tests, quality, ci_status, source, tests_by_feature, conformite_by_feature)."""
     ci_status = run.get("conclusion")
     run_id = run.get("id")
     quality = {"coverage_pct": None, "pmd_violations": None,
                "spotless_ok": None, "archunit_ok": None}
-    tbf = None
+    tbf = cbf = None
     if not run_id:
-        return ({"passed": None, "total": None, "pct": None}, quality, ci_status, "aucun-run", tbf)
+        return ({"passed": None, "total": None, "pct": None}, quality, ci_status, "aucun-run", tbf, cbf)
 
     summary = lire_ci_summary(repo, run_id)
     if summary and summary.get("tests"):
@@ -945,11 +947,12 @@ def collecter_tests(repo, run):
             "archunit_ok": q.get("archunit_ok"),
         }
         tbf = summary.get("tests_by_feature")
+        cbf = summary.get("conformite_by_feature")
         source = "artefact"
     else:
         parsed = parser_logs(repo, run_id)
         if not parsed:
-            return ({"passed": None, "total": None, "pct": None}, quality, ci_status, "indisponible", tbf)
+            return ({"passed": None, "total": None, "pct": None}, quality, ci_status, "indisponible", tbf, cbf)
         tests = {"passed": parsed["passed"], "total": parsed["total"]}
         source = "logs"
 
@@ -957,7 +960,7 @@ def collecter_tests(repo, run):
         tests["pct"] = round(100 * tests["passed"] / tests["total"], 1)
     else:
         tests["pct"] = None
-    return tests, quality, ci_status, source, tbf
+    return tests, quality, ci_status, source, tbf, cbf
 
 
 # ------------------------------------------------------------------------------
@@ -1336,20 +1339,22 @@ def main():
             tests = {"passed": None, "total": None, "pct": None}
             quality = {"coverage_pct": None, "pmd_violations": None,
                        "spotless_ok": None, "archunit_ok": None}
-            ci_status, source, tbf = None, "saute", None
+            ci_status, source, tbf, cbf = None, "saute", None, None
         else:
             run = dernier_run(repo)
-            tests, quality, ci_status, source, tbf = collecter_tests(repo, run)
+            tests, quality, ci_status, source, tbf, cbf = collecter_tests(repo, run)
             # Filet anti-hoquet : si le fetch echoue, reutiliser la derniere valeur
             # connue (evite un « n/d » transitoire qui casserait tout le tableau).
             if tests["passed"] is None and slug in last_tests:
                 lt = last_tests[slug]
                 tests, quality = lt["tests"], lt["quality"]
                 tbf = lt.get("tests_by_feature")
+                cbf = lt.get("conformite_by_feature")
                 ci_status, source = lt.get("ci_status"), "cache"
             elif tests["passed"] is not None:
                 last_tests[slug] = {"tests": tests, "quality": quality,
-                                    "ci_status": ci_status, "tests_by_feature": tbf}
+                                    "ci_status": ci_status, "tests_by_feature": tbf,
+                                    "conformite_by_feature": cbf}
 
         teams.append({
             "slug": slug,
@@ -1361,7 +1366,8 @@ def main():
             "tests_source": source,
             "issues": issues_data["issues"],
             "priorities": issues_data["priorities"],
-            "features": chaine_features(repo, e["url"], issues_data["par_feature"], tbf),
+            "features": chaine_features(repo, e["url"], issues_data["par_feature"], tbf, cbf),
+            "conformite": cbf,
             "open_branches": open_branches,
             "late_commits": commits_apres_echeance(activite_par_equipe[slug], repo),
             "derniere_journee": derniere_journee,

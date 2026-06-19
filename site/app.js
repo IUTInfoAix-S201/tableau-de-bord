@@ -503,11 +503,19 @@ function friseFeatures(t) {
     const fleche = i < total - 1 ? `<span class="fleche">▸</span>` : "";
     const tTests = f.tests ? `tests ${f.tests.passed}/${f.tests.total}` : "tests n/d";
     const tTaches = f.issues ? ` · tâches ${f.issues.done}/${f.issues.total}` : "";
-    const tip = `${lbl} — ${tTests}${tTaches}` + (f.source === "issues" ? " (jauge : tâches)" : "");
+    const cf = f.conformite;
+    const tConf = cf ? ` · conformité ${cf.passed}/${cf.total}` : "";
+    const tip = `${lbl} — ${tTests}${tTaches}${tConf}` + (f.source === "issues" ? " (jauge : tâches)" : "");
+    // Badge conformité : l'écran passe-t-il NOS tests de référence (lookup fx:id) ?
+    // vert = tout passe, orange = partiel, rouge = aucun. Distinct des tests de l'équipe.
+    const confColor = cf ? (cf.total && cf.passed === cf.total ? "#2e7d32" : (cf.passed > 0 ? "#ef6c00" : "#c62828")) : null;
+    const confBadge = cf
+      ? `<span class="conf-badge" style="color:${confColor};font-size:.8em;white-space:nowrap" title="Tests de référence (conformité) : ${cf.passed}/${cf.total} — distinct des tests de l'équipe">⚑ ${cf.passed}/${cf.total}</span>`
+      : "";
     return `<div class="feat ${etat}" title="${esc(tip)}">
         <span class="feat-tete"><span class="emoji">${FEATURE_EMOJI[f.key] || "•"}</span> ${esc(lbl)} ${mos}</span>
         <span class="jauge"><span style="width:${p}%"></span></span>
-        <span class="cpt">${f.done}/${f.total}</span>
+        <span class="cpt">${f.done}/${f.total} ${confBadge}</span>
         ${lien}
       </div>${fleche}`;
   }).join("");
