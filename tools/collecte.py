@@ -493,22 +493,48 @@ def agreger_activite(events):
             "by_weekday": by_weekday, "by_hour": by_hour}
 
 
-def commits_apres_echeance(events, seuil_iso=PROJET_FIN):
-    """Commits posterieurs a la fin du projet -> {count, last, authors}.
+def _commit_touche_src(repo, sha):
+    """Vrai si le commit modifie au moins un fichier sous src/ (le livrable).
 
-    `events` est deja filtre des bots et de l'enseignant (cf. collecter_activite),
-    donc tout commit restant date d'apres l'echeance est un vrai travail tardif.
-    `count` = nb de commits, `last` = date du plus recent (ISO), `authors` = logins
-    distincts (hors commits sans auteur GitHub rattache). Sert au point de vigilance.
+    Un seul appel REST par sha. Sert a ne garder, parmi les commits tardifs, que
+    ceux qui changent vraiment le code etudiant (et pas une capture, un sync
+    d'infra, un README ou un fichier de config). `SRC_RE` couvre src/main + src/test.
+    """
+    fichiers = gh_json(f"repos/{ORG}/{repo}/commits/{sha}", jq=".files[].filename")
+    if isinstance(fichiers, str):
+        fichiers = [fichiers]
+    return any(SRC_RE.search(f) for f in (fichiers or []) if isinstance(f, str))
+
+
+def commits_apres_echeance(events, repo, seuil_iso=PROJET_FIN):
+    """Commits d'ETUDIANT modifiant le livrable apres la fin du projet.
+
+    `events` est filtre des bots et de l'enseignant en amont (collecter_activite),
+    mais il y reste deux sources de bruit qui faisaient passer TOUTES les equipes
+    au rouge :
+      - des commits non rattaches a un compte GitHub (`login` vide) : email mal
+        configure, mais surtout des bots a email noreply que l'API n'attribue a
+        personne (`classroom-sync-bot`, sync d'infra) et l'enseignant poussant avec
+        une adresse non liee a son compte ;
+      - des commits qui ne touchent pas le code (captures auto, sync, README...).
+    Le point de vigilance ne doit se declencher que pour du VRAI travail tardif sur
+    le livrable. On ne garde donc que les commits posterieurs a l'echeance qui sont
+    (1) attribuables a un etudiant (login humain non vide) ET (2) modifient `src/`.
+    `count` = nb de commits, `last` = date du plus recent (ISO), `authors` = logins.
     """
     seuil = datetime.fromisoformat(seuil_iso)
+    # Garde 1 (gratuite) : etudiant identifie + posterieur a l'echeance. Filtree en
+    # premier pour ne lancer la garde 2 (un appel REST/sha) que sur ces rares commits.
     tardifs = [ev for ev in events
-               if datetime.fromisoformat(ev["date"].replace("Z", "+00:00")) > seuil]
-    if not tardifs:
+               if ev["login"] and is_human(ev["login"])
+               and datetime.fromisoformat(ev["date"].replace("Z", "+00:00")) > seuil]
+    # Garde 2 (contenu) : le commit modifie le code etudiant (src/).
+    sur_livrable = [ev for ev in tardifs if _commit_touche_src(repo, ev["sha"])]
+    if not sur_livrable:
         return {"count": 0, "last": None, "authors": []}
-    last = max(ev["date"] for ev in tardifs)
-    authors = sorted({ev["login"] for ev in tardifs if ev["login"]})
-    return {"count": len(tardifs), "last": last, "authors": authors}
+    last = max(ev["date"] for ev in sur_livrable)
+    authors = sorted({ev["login"] for ev in sur_livrable})
+    return {"count": len(sur_livrable), "last": last, "authors": authors}
 
 
 # ------------------------------------------------------------------------------
@@ -1337,7 +1363,7 @@ def main():
             "priorities": issues_data["priorities"],
             "features": chaine_features(repo, e["url"], issues_data["par_feature"], tbf),
             "open_branches": open_branches,
-            "late_commits": commits_apres_echeance(activite_par_equipe[slug]),
+            "late_commits": commits_apres_echeance(activite_par_equipe[slug], repo),
             "derniere_journee": derniere_journee,
             "tests": tests,
             "quality": quality,

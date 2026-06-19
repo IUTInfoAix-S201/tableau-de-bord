@@ -383,8 +383,8 @@ function renderAlertes(data) {
     const lc = t.late_commits;
     if (lc && lc.count > 0) {
       const qui = (lc.authors && lc.authors.length) ? ` — ${lc.authors.map(esc).join(", ")}` : "";
-      const titre = `${lc.count} commit(s) après l'échéance du 18/06 8 h 15 ; dernier ${relTime(lc.last)}${qui}`;
-      out.push(`<span class="alerte danger" title="${esc(titre)}">⏰ commits après la fin (${lc.count}) : ${esc(t.slug)}</span>`);
+      const titre = `${lc.count} commit(s) de code (src/) d'étudiant après l'échéance du 18/06 8 h 15 ; dernier ${relTime(lc.last)}${qui} — hors captures, sync d'infra et commits sans modification du livrable`;
+      out.push(`<span class="alerte danger" title="${esc(titre)}">⏰ commits de code après la fin (${lc.count}) : ${esc(t.slug)}</span>`);
     }
     const dj = t.derniere_journee;
     if (dj && dj.suspect) {
