@@ -277,6 +277,7 @@ table.contribs.prs td a { color: var(--bleu-clair); text-decoration: none; }
 table.contribs.prs td a:hover { text-decoration: underline; }
 .contribs.prs .diff .add { color: var(--vert); font-weight: 600; }
 .contribs.prs .diff .del { color: var(--rouge); font-weight: 600; }
+.contribs.prs td.alerte-cell { background: #fff8e6; color: #7a5b00; font-weight: 700; }
 
 /* ---- badges (achievements) ---- */
 td.badges { white-space: nowrap; }

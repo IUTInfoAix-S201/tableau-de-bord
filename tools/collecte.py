@@ -1509,7 +1509,7 @@ def main():
         t["trend"] = tendance(hist, t["slug"], t["tests"]["passed"],
                               t["issues"]["done"], now, baseline)
 
-    # Tests valides par contributeur : delta de tests verts par PR mergee (cache).
+    # Tests valides par contributeur : tests actives/ajoutes par PR mergee (cache).
     if not args.no_tests:
         cache = charger_cache_pr()
         for t in teams:
@@ -1517,6 +1517,14 @@ def main():
             tv = attribuer_tests_actives(t["_repo"], t["_merged_prs"], ct)
             for c in t["contributors"]:
                 c["tests_validated"] = tv.get(c["login"], 0)
+                # Annotation par PR (verif manuelle) : nb de tests actives/ajoutes.
+                # Rend visible qu'un gros total vient parfois d'UNE PR qui leve
+                # `@Disabled` en masse (finition « passe-finale ») et non d'un apport
+                # reparti -> l'enseignant juge sur piece.
+                for pr in c.get("prs", []):
+                    e = ct.get(str(pr.get("number")))
+                    if e and e.get("actives") is not None:
+                        pr["actives"] = e["actives"]
         sauver_cache_pr(cache)
         sauver_last_tests(last_tests)
     for t in teams:                       # nettoie les champs temporaires

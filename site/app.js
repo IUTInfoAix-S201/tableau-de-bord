@@ -829,14 +829,21 @@ function prListEtudiant(s) {
   const rows = prs.map(p => {
     const etat = p.merged ? `<span class="badge ok">mergée</span>`
       : (p.state === "OPEN" ? `<span class="badge nd">ouverte</span>` : `<span class="badge ko">fermée</span>`);
+    // Tests activés/ajoutés par CETTE PR (retrait de @Disabled + nouveaux @Test).
+    // ≥100 = surligné : souvent une finition « passe-finale » qui lève le @Disabled
+    // de tout un pan de la suite d'un coup (à juger : apport réel ou uncomment massif).
+    const act = p.actives;
+    const actCell = (act == null) ? `<td class="num"></td>`
+      : `<td class="num${act >= 100 ? " alerte-cell" : ""}" title="tests activés (retrait de @Disabled) ou ajoutés par cette PR">${act}</td>`;
     return `<tr>
       <td><a href="${esc(p.url)}" target="_blank" rel="noopener">#${p.number} ${esc(p.title)} ↗</a></td>
       <td class="num">${etat}</td>
       <td class="num diff"><span class="add">+${p.additions}</span> <span class="del">−${p.deletions}</span></td>
+      ${actCell}
     </tr>`;
   }).join("");
   return `<table class="contribs prs">
-    <thead><tr><th>Pull request</th><th class="num">État</th><th class="num">Lignes</th></tr></thead>
+    <thead><tr><th>Pull request</th><th class="num">État</th><th class="num">Lignes</th><th class="num" title="Tests activés (retrait de @Disabled) ou ajoutés par la PR. Un gros nombre sur une seule PR = activation en masse, à vérifier.">Tests activés</th></tr></thead>
     <tbody>${rows}</tbody></table>`;
 }
 
