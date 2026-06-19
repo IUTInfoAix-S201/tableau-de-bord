@@ -1,16 +1,62 @@
 {
   "gael_matteo_kenzi_thomas_g3": {
     "ci_status": "success",
+    "conformite_by_feature": {
+      "bibliotheque": {
+        "passed": 0,
+        "total": 7
+      },
+      "diagnostic": {
+        "passed": 3,
+        "total": 7
+      },
+      "importation": {
+        "passed": 5,
+        "total": 9
+      },
+      "integrite": {
+        "passed": 1,
+        "total": 1
+      },
+      "lot": {
+        "passed": 3,
+        "total": 6
+      },
+      "multisite": {
+        "passed": 0,
+        "total": 6
+      },
+      "parcours": {
+        "passed": 11,
+        "total": 17
+      },
+      "passage": {
+        "passed": 6,
+        "total": 6
+      },
+      "qualification": {
+        "passed": 2,
+        "total": 7
+      },
+      "sites": {
+        "passed": 7,
+        "total": 7
+      },
+      "validation": {
+        "passed": 0,
+        "total": 6
+      }
+    },
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 74.5,
+      "coverage_pct": 79.7,
       "pmd_violations": 0,
       "spotless_ok": true
     },
     "tests": {
       "passed": 466,
-      "pct": 71.7,
-      "total": 650
+      "pct": 72.4,
+      "total": 644
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -49,16 +95,62 @@
   },
   "gapple": {
     "ci_status": "success",
+    "conformite_by_feature": {
+      "bibliotheque": {
+        "passed": 1,
+        "total": 7
+      },
+      "diagnostic": {
+        "passed": 6,
+        "total": 7
+      },
+      "importation": {
+        "passed": 2,
+        "total": 9
+      },
+      "integrite": {
+        "passed": 1,
+        "total": 1
+      },
+      "lot": {
+        "passed": 2,
+        "total": 6
+      },
+      "multisite": {
+        "passed": 4,
+        "total": 6
+      },
+      "parcours": {
+        "passed": 11,
+        "total": 17
+      },
+      "passage": {
+        "passed": 6,
+        "total": 6
+      },
+      "qualification": {
+        "passed": 3,
+        "total": 7
+      },
+      "sites": {
+        "passed": 7,
+        "total": 7
+      },
+      "validation": {
+        "passed": 2,
+        "total": 6
+      }
+    },
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 85.9,
+      "coverage_pct": 86.2,
       "pmd_violations": 0,
       "spotless_ok": true
     },
     "tests": {
       "passed": 628,
-      "pct": 96.6,
-      "total": 650
+      "pct": 97.5,
+      "total": 644
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -97,16 +189,62 @@
   },
   "giteam": {
     "ci_status": "success",
+    "conformite_by_feature": {
+      "bibliotheque": {
+        "passed": 6,
+        "total": 7
+      },
+      "diagnostic": {
+        "passed": 4,
+        "total": 7
+      },
+      "importation": {
+        "passed": 7,
+        "total": 9
+      },
+      "integrite": {
+        "passed": 1,
+        "total": 1
+      },
+      "lot": {
+        "passed": 0,
+        "total": 6
+      },
+      "multisite": {
+        "passed": 6,
+        "total": 6
+      },
+      "parcours": {
+        "passed": 17,
+        "total": 17
+      },
+      "passage": {
+        "passed": 6,
+        "total": 6
+      },
+      "qualification": {
+        "passed": 1,
+        "total": 7
+      },
+      "sites": {
+        "passed": 7,
+        "total": 7
+      },
+      "validation": {
+        "passed": 2,
+        "total": 6
+      }
+    },
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 89.2,
+      "coverage_pct": 89.8,
       "pmd_violations": 0,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 650,
+      "passed": 644,
       "pct": 100.0,
-      "total": 650
+      "total": 644
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -569,16 +707,62 @@
   },
   "mathieu_kyle_lenny_diego": {
     "ci_status": "success",
+    "conformite_by_feature": {
+      "bibliotheque": {
+        "passed": 2,
+        "total": 7
+      },
+      "diagnostic": {
+        "passed": 4,
+        "total": 7
+      },
+      "importation": {
+        "passed": 3,
+        "total": 9
+      },
+      "integrite": {
+        "passed": 1,
+        "total": 1
+      },
+      "lot": {
+        "passed": 2,
+        "total": 6
+      },
+      "multisite": {
+        "passed": 0,
+        "total": 6
+      },
+      "parcours": {
+        "passed": 11,
+        "total": 17
+      },
+      "passage": {
+        "passed": 6,
+        "total": 6
+      },
+      "qualification": {
+        "passed": 2,
+        "total": 7
+      },
+      "sites": {
+        "passed": 7,
+        "total": 7
+      },
+      "validation": {
+        "passed": 4,
+        "total": 6
+      }
+    },
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 83.4,
+      "coverage_pct": 83.8,
       "pmd_violations": 5,
       "spotless_ok": true
     },
     "tests": {
       "passed": 585,
-      "pct": 90.0,
-      "total": 650
+      "pct": 90.8,
+      "total": 644
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -617,16 +801,62 @@
   },
   "riplasemaine": {
     "ci_status": "success",
+    "conformite_by_feature": {
+      "bibliotheque": {
+        "passed": 2,
+        "total": 7
+      },
+      "diagnostic": {
+        "passed": 2,
+        "total": 7
+      },
+      "importation": {
+        "passed": 4,
+        "total": 9
+      },
+      "integrite": {
+        "passed": 1,
+        "total": 1
+      },
+      "lot": {
+        "passed": 2,
+        "total": 6
+      },
+      "multisite": {
+        "passed": 4,
+        "total": 6
+      },
+      "parcours": {
+        "passed": 17,
+        "total": 17
+      },
+      "passage": {
+        "passed": 6,
+        "total": 6
+      },
+      "qualification": {
+        "passed": 0,
+        "total": 7
+      },
+      "sites": {
+        "passed": 7,
+        "total": 7
+      },
+      "validation": {
+        "passed": 3,
+        "total": 6
+      }
+    },
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 89.9,
+      "coverage_pct": 90.1,
       "pmd_violations": 0,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 652,
+      "passed": 646,
       "pct": 100.0,
-      "total": 652
+      "total": 646
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -901,16 +1131,62 @@
   },
   "td2-g6": {
     "ci_status": "success",
+    "conformite_by_feature": {
+      "bibliotheque": {
+        "passed": 3,
+        "total": 7
+      },
+      "diagnostic": {
+        "passed": 4,
+        "total": 7
+      },
+      "importation": {
+        "passed": 7,
+        "total": 9
+      },
+      "integrite": {
+        "passed": 1,
+        "total": 1
+      },
+      "lot": {
+        "passed": 3,
+        "total": 6
+      },
+      "multisite": {
+        "passed": 3,
+        "total": 6
+      },
+      "parcours": {
+        "passed": 17,
+        "total": 17
+      },
+      "passage": {
+        "passed": 6,
+        "total": 6
+      },
+      "qualification": {
+        "passed": 2,
+        "total": 7
+      },
+      "sites": {
+        "passed": 7,
+        "total": 7
+      },
+      "validation": {
+        "passed": 2,
+        "total": 6
+      }
+    },
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 89.7,
+      "coverage_pct": 90.2,
       "pmd_violations": 5,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 651,
+      "passed": 645,
       "pct": 100.0,
-      "total": 651
+      "total": 645
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -997,16 +1273,62 @@
   },
   "td4-g1_heja": {
     "ci_status": "success",
+    "conformite_by_feature": {
+      "bibliotheque": {
+        "passed": 3,
+        "total": 7
+      },
+      "diagnostic": {
+        "passed": 2,
+        "total": 7
+      },
+      "importation": {
+        "passed": 7,
+        "total": 9
+      },
+      "integrite": {
+        "passed": 1,
+        "total": 1
+      },
+      "lot": {
+        "passed": 2,
+        "total": 6
+      },
+      "multisite": {
+        "passed": 1,
+        "total": 6
+      },
+      "parcours": {
+        "passed": 17,
+        "total": 17
+      },
+      "passage": {
+        "passed": 6,
+        "total": 6
+      },
+      "qualification": {
+        "passed": 0,
+        "total": 7
+      },
+      "sites": {
+        "passed": 7,
+        "total": 7
+      },
+      "validation": {
+        "passed": 2,
+        "total": 6
+      }
+    },
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 89.8,
+      "coverage_pct": 90.3,
       "pmd_violations": 0,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 650,
+      "passed": 644,
       "pct": 100.0,
-      "total": 650
+      "total": 644
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -1045,16 +1367,62 @@
   },
   "td4_g4": {
     "ci_status": "success",
+    "conformite_by_feature": {
+      "bibliotheque": {
+        "passed": 6,
+        "total": 7
+      },
+      "diagnostic": {
+        "passed": 3,
+        "total": 7
+      },
+      "importation": {
+        "passed": 5,
+        "total": 9
+      },
+      "integrite": {
+        "passed": 1,
+        "total": 1
+      },
+      "lot": {
+        "passed": 3,
+        "total": 6
+      },
+      "multisite": {
+        "passed": 1,
+        "total": 6
+      },
+      "parcours": {
+        "passed": 17,
+        "total": 17
+      },
+      "passage": {
+        "passed": 6,
+        "total": 6
+      },
+      "qualification": {
+        "passed": 2,
+        "total": 7
+      },
+      "sites": {
+        "passed": 7,
+        "total": 7
+      },
+      "validation": {
+        "passed": 5,
+        "total": 6
+      }
+    },
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 90.0,
+      "coverage_pct": 90.2,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
-      "passed": 642,
+      "passed": 636,
       "pct": 98.9,
-      "total": 649
+      "total": 643
     },
     "tests_by_feature": {
       "bibliotheque": {
@@ -1329,16 +1697,62 @@
   },
   "vigiechiro-tommy-manal-yannick-tasnim": {
     "ci_status": "success",
+    "conformite_by_feature": {
+      "bibliotheque": {
+        "passed": 3,
+        "total": 7
+      },
+      "diagnostic": {
+        "passed": 4,
+        "total": 7
+      },
+      "importation": {
+        "passed": 4,
+        "total": 9
+      },
+      "integrite": {
+        "passed": 1,
+        "total": 1
+      },
+      "lot": {
+        "passed": 3,
+        "total": 6
+      },
+      "multisite": {
+        "passed": 4,
+        "total": 6
+      },
+      "parcours": {
+        "passed": 11,
+        "total": 17
+      },
+      "passage": {
+        "passed": 6,
+        "total": 6
+      },
+      "qualification": {
+        "passed": 0,
+        "total": 7
+      },
+      "sites": {
+        "passed": 7,
+        "total": 7
+      },
+      "validation": {
+        "passed": 3,
+        "total": 6
+      }
+    },
     "quality": {
       "archunit_ok": true,
-      "coverage_pct": 88.5,
+      "coverage_pct": 89.0,
       "pmd_violations": 3,
       "spotless_ok": true
     },
     "tests": {
       "passed": 644,
-      "pct": 99.1,
-      "total": 650
+      "pct": 100.0,
+      "total": 644
     },
     "tests_by_feature": {
       "bibliotheque": {
