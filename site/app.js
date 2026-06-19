@@ -194,6 +194,8 @@ const PODIUMS = [
     val: (s, a) => a ? Object.values(a.by_day).filter(v => v > 0).length : 0 },
   { emoji: "🧹", nom: "L'élagueur impitoyable", desc: "le plus de lignes supprimées (nettoyage)", unit: "lignes",
     val: s => s.lines_deleted || 0 },
+  { emoji: "🔌", nom: "Les débrancheurs", desc: "le plus de tests désactivés (@Disabled ré-ajouté) ou supprimés par leurs PR", unit: "tests débranchés",
+    val: s => (s.prs || []).reduce((a, p) => a + (p.tests_off || 0), 0) },
 ];
 const POD_MEDS = ["🥇", "🥈", "🥉"];
 
