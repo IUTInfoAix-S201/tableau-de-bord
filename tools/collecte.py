@@ -651,25 +651,31 @@ def voyant_revue(reviews):
             "changes_requested": changes, "empty_approvals": empty}
 
 
-SRC_RE = re.compile(r"(^|/)src/")     # fichiers de code : src/main + src/test
+SRC_RE = re.compile(r"(^|/)src/")     # arborescence du code : src/main + src/test
+# VRAI code (pas les donnees) : on exige une extension de code. Indispensable car
+# les donnees vivent souvent SOUS src/main/resources (observations.csv, *.wav,
+# golden *.approved.txt…) : le seul filtre `/src/` les comptait comme des lignes de
+# code. Cas t1g3 : 8136 l. de CSV echantillon importees en une PR -> faux positif
+# « gros apport dernier jour » (8257 l. / 70 %) alors que le code du jour = 121 l.
+CODE_RE = re.compile(r"\.(java|fxml|css|properties|sql)$", re.IGNORECASE)
 
 
 def _pr_src_stats(pr):
-    """(additions, deletions, touches_src) restreints aux fichiers sous src/.
+    """(additions, deletions, touches_src) restreints aux fichiers de CODE sous src/.
 
     Le compteur de lignes de contribution = LIGNES DE CODE : on ignore les donnees
-    importees (nuit de capture : .wav -> 0 ligne de toute facon, mais surtout
-    observations.csv / logs qui gonflent le total), les binaires et la doc/pom a la
-    racine. `touches_src` sert aussi a NE PAS créditer de tests une PR sans code
-    (un import de donnees ne peut pas faire monter le nb de tests verts).
-    Si la liste de fichiers est tronquee (PR > 100 fichiers, rarissime ici), on
-    sous-compte legerement plutot que de retomber sur l'agregat (qui ré-inflerait).
+    importees (nuit de capture : observations.csv, *.wav, logs, golden d'approval),
+    meme sous src/main/resources, ainsi que la doc/pom a la racine. `touches_src`
+    sert aussi a NE PAS créditer de tests une PR sans code. Si la liste de fichiers
+    est tronquee (PR > 100 fichiers, rarissime ici), on sous-compte legerement
+    plutot que de retomber sur l'agregat (qui ré-inflerait).
     """
     nodes = ((pr.get("files") or {}).get("nodes")) or []
     add = sup = 0
     touches = False
     for f in nodes:
-        if SRC_RE.search(f.get("path") or ""):
+        path = f.get("path") or ""
+        if SRC_RE.search(path) and CODE_RE.search(path):
             add += f.get("additions") or 0
             sup += f.get("deletions") or 0
             touches = True
