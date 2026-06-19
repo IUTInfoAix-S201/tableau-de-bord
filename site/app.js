@@ -69,7 +69,7 @@ function voyantTip(c) {
 
 // --- tri -------------------------------------------------------------------
 const SORTERS = {
-  tests: t => t.tests.pct == null ? -1 : t.tests.pct,
+  tests: t => { const c = confTotaux(t); return c ? c.passed : -1; },
   issues: t => t.issues.total ? t.issues.done / t.issues.total : 0,
   reviewed: t => t.review.pct_reviewed == null ? -1 : t.review.pct_reviewed,
   activity: t => -staleDays(t.last_activity),
@@ -408,11 +408,25 @@ function renderAlertes(data) {
   }
 }
 
-// Classement canonique des equipes (tests verts, puis issues, puis slug). Sert au
-// podium ET de departage au tri du tableau, pour que medailles et rang concordent
-// quand plusieurs equipes sont a egalite (ex. plusieurs a 100 % en fin de projet).
+// Conformite agregee par equipe : Σ passes / Σ total sur conformite_by_feature
+// (features + parcours + integrite). null si la CI conformite n'a pas encore tourne.
+function confTotaux(t) {
+  if (!t || !t.conformite) return null;
+  let p = 0, tot = 0;
+  for (const k in t.conformite) {
+    p += (t.conformite[k] && t.conformite[k].passed) || 0;
+    tot += (t.conformite[k] && t.conformite[k].total) || 0;
+  }
+  return { passed: p, total: tot, pct: tot ? Math.round(100 * p / tot) : null };
+}
+
+// Classement canonique des equipes : nombre de tests de CONFORMITE reussis (mesure
+// de reference = l'ecran passe-t-il NOS tests), puis tests de l'equipe, issues, slug.
+// Sert au podium ET de departage au tri du tableau (medailles et rang concordent).
 function classementCanonique(a, b) {
-  return (b.tests.pct || 0) - (a.tests.pct || 0)
+  const ca = confTotaux(a), cb = confTotaux(b);
+  return ((cb ? cb.passed : -1) - (ca ? ca.passed : -1))
+    || (b.tests.pct || 0) - (a.tests.pct || 0)
     || b.issues.done - a.issues.done
     || a.slug.localeCompare(b.slug);
 }
@@ -425,9 +439,9 @@ function renderTable(data) {
     return d || classementCanonique(a, b);   // departage = classement canonique
   });
 
-  // Podium (sur le classement canonique = tests verts), independant du tri courant.
+  // Podium (sur le classement canonique = tests de conformite), independant du tri courant.
   const podium = {};
-  [...data.teams].filter(t => t.tests.pct != null)
+  [...data.teams].filter(t => confTotaux(t))
     .sort(classementCanonique)
     .slice(0, 3)
     .forEach((t, i) => {
@@ -442,12 +456,15 @@ function renderTable(data) {
     tr.id = idEquipe(t.slug);
     const delta = t.trend && t.trend.delta_7d;
     const deltaHtml = delta ? `<span class="delta pos" title="progression récente des tests verts">+${delta}</span>` : "";
+    const conf = confTotaux(t);
+    const confTests = t.tests && t.tests.passed != null
+      ? ` <small class="sous-metrique" title="tests de l'équipe (indicatif, non classant)">éq. ${t.tests.passed}/${t.tests.total}</small>` : "";
     tr.innerHTML = `
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
       <td class="nom-equipe"><span class="chevron">▶</span>${podium[t.slug] ? `<span class="medaille" title="${esc(podium[t.slug][1])}">${podium[t.slug][0]}</span> ` : ""}${esc(t.name)}${t.repo_url ? ` <a class="lien-repo" href="${esc(t.repo_url)}" target="_blank" rel="noopener" title="Ouvrir le dépôt GitHub de l'équipe">↗ dépôt</a>` : ""}${sparkline(t.trend && t.trend.tests_series)}</td>
       <td class="num">
-        ${bar(t.tests.passed || 0, t.tests.total || data.totals.tests_total, "tests", med.median_tests_pct)}
-        <span class="barre-label">${t.tests.passed == null ? "n/d" : t.tests.passed + "/" + t.tests.total} (${pct(t.tests.pct)})${deltaHtml}</span>
+        ${bar(conf ? conf.passed : 0, conf ? conf.total : 0, "tests", null)}
+        <span class="barre-label" title="Tests de conformité réussis (mesure de référence, base du classement)">${conf ? conf.passed + "/" + conf.total + " (" + pct(conf.pct) + ")" : "n/d"}${deltaHtml}${confTests}</span>
       </td>
       <td class="num">
         ${bar(t.issues.done, t.issues.total, "issues", med.median_issues_pct)}
