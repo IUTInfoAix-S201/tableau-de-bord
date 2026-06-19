@@ -454,17 +454,13 @@ function renderTable(data) {
     const tr = document.createElement("tr");
     tr.className = "equipe";
     tr.id = idEquipe(t.slug);
-    const delta = t.trend && t.trend.delta_7d;
-    const deltaHtml = delta ? `<span class="delta pos" title="progression récente des tests verts">+${delta}</span>` : "";
     const conf = confTotaux(t);
-    const confTests = t.tests && t.tests.passed != null
-      ? ` <small class="sous-metrique" title="tests de l'équipe (indicatif, non classant)">éq. ${t.tests.passed}/${t.tests.total}</small>` : "";
     tr.innerHTML = `
       <td class="rang"><span class="rang-badge">${i + 1}</span></td>
       <td class="nom-equipe"><span class="chevron">▶</span>${podium[t.slug] ? `<span class="medaille" title="${esc(podium[t.slug][1])}">${podium[t.slug][0]}</span> ` : ""}${esc(t.name)}${t.repo_url ? ` <a class="lien-repo" href="${esc(t.repo_url)}" target="_blank" rel="noopener" title="Ouvrir le dépôt GitHub de l'équipe">↗ dépôt</a>` : ""}${sparkline(t.trend && t.trend.tests_series)}</td>
       <td class="num">
         ${bar(conf ? conf.passed : 0, conf ? conf.total : 0, "tests", null)}
-        <span class="barre-label" title="Tests de conformité réussis (mesure de référence, base du classement)">${conf ? conf.passed + "/" + conf.total + " (" + pct(conf.pct) + ")" : "n/d"}${deltaHtml}${confTests}</span>
+        <span class="barre-label" title="Tests de conformité réussis (mesure de référence, base du classement)">${conf ? conf.passed + "/" + conf.total + " (" + pct(conf.pct) + ")" : "n/d"}</span>
       </td>
       <td class="num">
         ${bar(t.issues.done, t.issues.total, "issues", med.median_issues_pct)}
