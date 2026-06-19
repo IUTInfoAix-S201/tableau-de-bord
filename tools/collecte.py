@@ -659,6 +659,10 @@ SRC_RE = re.compile(r"(^|/)src/")     # arborescence du code : src/main + src/te
 # code. Cas t1g3 : 8136 l. de CSV echantillon importees en une PR -> faux positif
 # « gros apport dernier jour » (8257 l. / 70 %) alors que le code du jour = 121 l.
 CODE_RE = re.compile(r"\.(java|fxml|css|properties|sql)$", re.IGNORECASE)
+# Code de PRODUCTION (src/main, hors tests et hors resources/donnees) : base du taux
+# de contribution PAR FEATURE. Ungameable par le decommentage @Disabled (qui touche
+# src/test, pas src/main) -> remplace la metrique « tests valides » dans le taux.
+MAIN_CODE_RE = re.compile(r"(^|/)src/main/.*\.(java|fxml|css|properties)$", re.IGNORECASE)
 
 
 def _pr_src_stats(pr):
@@ -699,6 +703,21 @@ def _pr_features(pr):
     return feats
 
 
+def _pr_feature_lines(pr):
+    """Lignes de code de PRODUCTION (src/main) ajoutees par la PR, par feature de la
+    chaine. Base du taux de contribution par feature : la part de chacun dans le code
+    de prod de chaque ecran, ungameable par le decommentage @Disabled."""
+    out = defaultdict(int)
+    for f in ((pr.get("files") or {}).get("nodes")) or []:
+        path = f.get("path") or ""
+        if not MAIN_CODE_RE.search(path):
+            continue
+        m = _FEATURE_PKG_RE.search(path)
+        if m and m.group(1) in CHAINE:
+            out[m.group(1)] += f.get("additions") or 0
+    return out
+
+
 def collecter_contributeurs(repo, slug, issues_data):
     """Fusionne commits (contributors API) + PR/revues (GraphQL) + membres team."""
     # commits par login (branche par defaut)
@@ -718,6 +737,7 @@ def collecter_contributeurs(repo, slug, issues_data):
     lignes_jour = defaultdict(int)       # date Paris -> lignes src ajoutees par PR mergees ce jour
     prs_jour = defaultdict(int)          # date Paris -> nb de PR de code mergees ce jour
     lignes_jour_auteur = defaultdict(int)  # (jour, login) -> lignes de code ce jour (max solo = signal LLM)
+    lignes_feature = defaultdict(lambda: defaultdict(int))  # feature -> {login: lignes de prod} (taux par feature)
     feats_pr = defaultdict(set)          # login -> {feature, ...} d'apres le prefixe du titre de PR
     revues_donnees = defaultdict(list)   # login -> [revue, ...]
     revues_recues = defaultdict(int)     # login (auteur PR) -> nb revues par pairs
@@ -760,6 +780,9 @@ def collecter_contributeurs(repo, slug, issues_data):
         if pr.get("merged") and is_human(auteur):
             merged_total += 1
             prs_merged[auteur] += 1
+            # Code de production livre par feature -> taux de contribution par feature.
+            for feat, nb in _pr_feature_lines(pr).items():
+                lignes_feature[feat][auteur] += nb
             # Issues fermees par cette PR (lien « Closes #N » resolu par GitHub) :
             # on credite l'AUTEUR de la PR, pas l'assigne de l'issue.
             for ref in ((pr.get("closingIssuesReferences") or {}).get("nodes") or []):
@@ -839,6 +862,28 @@ def collecter_contributeurs(repo, slug, issues_data):
                     ferme_par[a].add(n)
 
     feats_issues = issues_data.get("_features_assigne", {})
+
+    # Taux de contribution PAR FEATURE : part de chacun dans le code de PRODUCTION de
+    # chaque ecran. `feature_equivalents` = somme des parts (sur les features livrees)
+    # = « ecrans-equivalents construits ». Remplace le nb de tests dans le taux :
+    # fiable (fichiers src/main), ungameable par le decommentage @Disabled, et donne
+    # nativement la repartition par feature (`feature_contrib`, pour l'affichage).
+    feat_equiv = defaultdict(float)
+    feat_shares = defaultdict(dict)
+    feature_contrib = {}
+    for feat in CHAINE:
+        parts = lignes_feature.get(feat, {})
+        tot = sum(parts.values())
+        if not tot:
+            continue
+        owners = []
+        for login, nb in sorted(parts.items(), key=lambda kv: (-kv[1], kv[0])):
+            share = nb / tot
+            feat_equiv[login] += share
+            feat_shares[login][feat] = round(share, 3)
+            owners.append({"login": login, "lignes": nb, "part": round(share, 3)})
+        feature_contrib[feat] = {"total": tot, "owners": owners}
+
     contributeurs = []
     for login in sorted(logins):
         v = voyant_revue(revues_donnees.get(login, []))
@@ -857,7 +902,9 @@ def collecter_contributeurs(repo, slug, issues_data):
             "reviews_received": revues_recues.get(login, 0),
             "issues_assigned": issues_data["_assignes"].get(login, 0),
             "issues_closed": len(ferme_par.get(login, set())),
-            "tests_validated": 0,   # rempli apres coup (delta de tests par PR mergee)
+            "tests_validated": 0,   # indicateur affiche seulement (hors taux depuis le decommentage en masse)
+            "feature_equivalents": round(feat_equiv.get(login, 0.0), 3),
+            "feature_shares": feat_shares.get(login, {}),
             "features": [f for f in CHAINE if f in feats],
             "prs": sorted(pr_liste.get(login, []), key=lambda p: -p["number"]),
             **v,
@@ -904,7 +951,8 @@ def collecter_contributeurs(repo, slug, issues_data):
             "score_llm": round(solo_max * part),
             "suspect": solo_max >= SEUIL_LIGNES_DERNIER_JOUR and part >= SEUIL_PART_DERNIER_JOUR,
         }
-    return contributeurs, bus, review, merged_info, branches_en_cours, derniere_journee
+    return (contributeurs, bus, review, merged_info, branches_en_cours,
+            derniere_journee, feature_contrib)
 
 
 # ------------------------------------------------------------------------------
@@ -1355,6 +1403,8 @@ def synthetiser_reference(specs, teams_reels, now, plafond_tv=None):
             c.setdefault("lines_added", c["commits"] * (12 + _h(c["login"] + "la") % 40))
             c.setdefault("lines_deleted", c["commits"] * (3 + _h(c["login"] + "ld") % 12))
             c.setdefault("features", [])
+            c.setdefault("feature_equivalents", 0.0)
+            c.setdefault("feature_shares", {})
             c.setdefault("prs", [])
 
         bandes = {"must": {"done": 0, "total": 20}, "should": {"done": 0, "total": 14},
@@ -1444,7 +1494,7 @@ def main():
         issues_data = collecter_issues(repo)
         activite_par_equipe[slug] = [] if args.no_activity else collecter_activite(repo)
         ci_par_equipe[slug] = {} if args.no_activity else collecter_ci(repo)
-        contributeurs, bus, review, merged_info, open_branches, derniere_journee = \
+        contributeurs, bus, review, merged_info, open_branches, derniere_journee, feature_contrib = \
             collecter_contributeurs(repo, slug, issues_data)
         if args.no_tests:
             tests = {"passed": None, "total": None, "pct": None}
@@ -1482,6 +1532,7 @@ def main():
             "open_branches": open_branches,
             "late_commits": commits_apres_echeance(activite_par_equipe[slug], repo),
             "derniere_journee": derniere_journee,
+            "feature_contrib": feature_contrib,
             "tests": tests,
             "quality": quality,
             "review": review,

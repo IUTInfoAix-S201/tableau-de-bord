@@ -591,10 +591,11 @@ function detailPanneau(t) {
         <th class="num" title="Commits dans des branches non encore mergées (travail en cours)">Travail en cours</th>
         <th class="num" title="PR actuellement ouvertes (en cours) / PR mergées">PR en cours/merg.</th><th class="num">Revues don./rec.</th>
         <th class="num">Issues fer./assig.</th><th class="num">Revue</th>
-        <th class="num" title="Part du travail de l'équipe (lignes ajoutées, PR, tests, issues, revues, travail en cours ; somme = 100 %)">Contribution</th>
+        <th class="num" title="Part du travail de l'équipe (lignes ajoutées, PR, contribution par feature, issues, revues, travail en cours ; somme = 100 %)">Contribution</th>
       </tr></thead>
       <tbody>${contribs || '<tr><td colspan="8">Aucun contributeur détecté.</td></tr>'}</tbody>
     </table>
+    ${featureContribEquipe(t)}
     ${blocActivite((window.__data && window.__data.activity && window.__data.activity.by_team || {})[t.slug],
       "Activité de l'équipe (commits)")}
   </div>`;
@@ -723,6 +724,7 @@ function totauxEquipes(data) {
       issues_closed: som(c => c.issues_closed),
       commits: som(c => c.commits),
       tests_validated: som(c => c.tests_validated),
+      feature_equivalents: som(c => c.feature_equivalents),
       reviews_given: som(c => c.reviews_given),
       branch_commits: som(c => c.branch_commits),
       members: (t.bus_factor && t.bus_factor.members) || cs.length,
@@ -750,13 +752,15 @@ function kpiPart(label, valHtml, val, total) {
 // squash). Chaque part etant valeur/total_equipe, les taux d'une equipe
 // somment a 100 % -> la moyenne d'une equipe de N est 1/N.
 // PR mergées et lignes à poids égal (27,5 % chacune) : unité de travail livrée
-// + volume de code produit. Tests à 20 % (signal d'aboutissement, mais bridé car
-// l'activation « offre » des tests verts). Lignes plafonnées car le FXML/CSS
-// verbeux/généré sur-valorise le volume.
+// + volume de code produit. « Contribution par feature » à 20 % : somme des parts
+// de l'étudiant dans le code de PRODUCTION (src/main) de chaque écran — remplace
+// l'ancien « tests validés » (gameable par le décommentage @Disabled en masse).
+// Fiable, normalisé par feature, non manipulable. Lignes plafonnées car le FXML/CSS
+// verbeux sur-valorise le volume.
 const CONTRIB_DIMS = [
   { cle: "lines", label: "lignes ajoutées", poids: 0.275, tot: "lines_added", val: s => s.lines_added || 0 },
   { cle: "prm", label: "PR mergées", poids: 0.275, tot: "prs_merged", val: s => s.prs_merged || 0 },
-  { cle: "tests", label: "tests validés", poids: 0.20, tot: "tests_validated", val: s => s.tests_validated || 0 },
+  { cle: "feat", label: "contribution par feature", poids: 0.20, tot: "feature_equivalents", val: s => s.feature_equivalents || 0 },
   { cle: "iss", label: "issues fermées", poids: 0.10, tot: "issues_closed", val: s => s.issues_closed || 0 },
   { cle: "rev", label: "revues données", poids: 0.10, tot: "reviews_given", val: s => s.reviews_given || 0 },
   { cle: "wip", label: "travail en cours", poids: 0.05, tot: "branch_commits", val: s => s.branch_commits || 0 },
@@ -809,18 +813,52 @@ function tauxTip(parts) {
   ).join("\n");
   return "D'où vient ce taux (somme des points = le taux).\n"
     + "« % de l'équipe » = la part de l'étudiant ; « poids » = barème (PR 27,5, lignes 27,5,\n"
-    + "tests 20, issues 10, revues 10, en cours 5) rééquilibré sur les dimensions où\n"
+    + "feature 20, issues 10, revues 10, en cours 5) rééquilibré sur les dimensions où\n"
     + "l'équipe a de l'activité, donc identique pour tous les membres de l'équipe.\n"
     + lignes;
 }
 
 function featuresEtudiant(s) {
-  const fs = s.features || [];
-  if (!fs.length)
-    return `<p class="aide">Aucune feature identifiée (ni issue assignée préfixée <code>[feature]</code>, ni PR taguée).</p>`;
-  const chips = fs.map(k =>
-    `<span class="feat-chip"><span class="emoji">${FEATURE_EMOJI[k] || "•"}</span> ${esc(FEATURE_LABEL[k] || k)}</span>`).join(" ");
+  const shares = s.feature_shares || {};
+  const touched = new Set(s.features || []);
+  // Ordre pipeline ; on garde les features touchées OU avec une part de code de prod.
+  const keys = Object.keys(FEATURE_LABEL).filter(k => touched.has(k) || shares[k] != null);
+  if (!keys.length)
+    return `<p class="aide">Aucune feature identifiée (ni code de production, ni issue/ PR taguée).</p>`;
+  const chips = keys.map(k => {
+    const pct = shares[k] != null ? Math.round(shares[k] * 100) : null;
+    const part = pct != null
+      ? ` <strong class="feat-part" style="opacity:${0.5 + shares[k] / 2}">${pct} %</strong>` : "";
+    const titre = pct != null
+      ? `${pct} % du code de production de cet écran (src/main)`
+      : "feature touchée (sans code de production mesuré)";
+    return `<span class="feat-chip" title="${esc(titre)}"><span class="emoji">${FEATURE_EMOJI[k] || "•"}</span> ${esc(FEATURE_LABEL[k] || k)}${part}</span>`;
+  }).join(" ");
   return `<div class="feat-chips">${chips}</div>`;
+}
+
+// Qui possède chaque écran : barre empilée des parts de code de production (src/main).
+const FC_PALETTE = ["#4a90d9", "#7bb563", "#e8a838", "#e74c3c", "#8e44ad", "#00838f", "#c0392b", "#16a085"];
+function featureContribEquipe(t) {
+  const fc = t.feature_contrib || {};
+  const keys = Object.keys(FEATURE_LABEL).filter(k => fc[k] && fc[k].total > 0);
+  if (!keys.length) return "";
+  const rows = keys.map(k => {
+    const owners = fc[k].owners || [];
+    const segs = owners.map((o, i) => {
+      const pct = Math.round(o.part * 100);
+      return `<span class="fc-seg" style="width:${pct}%;background:${FC_PALETTE[i % FC_PALETTE.length]}"`
+        + ` title="${esc(o.login)} : ${pct} % (${o.lignes} l.)">${o.part >= 0.16 ? esc(o.login.split(/[-_]/)[0]) : ""}</span>`;
+    }).join("");
+    return `<div class="fc-row">
+      <span class="fc-feat"><span class="emoji">${FEATURE_EMOJI[k] || "•"}</span> ${esc(FEATURE_LABEL[k] || k)}</span>
+      <span class="fc-bar">${segs}</span>
+      <span class="fc-tot" title="lignes de code de production (src/main) de cet écran">${fc[k].total} l.</span>
+    </div>`;
+  }).join("");
+  return `<div class="frise-titre" style="margin-top:1rem">Contribution par feature`
+    + ` <small>part de chacun dans le code de production (src/main) de chaque écran</small></div>`
+    + `<div class="fc-grid">${rows}</div>`;
 }
 
 function prListEtudiant(s) {
@@ -881,7 +919,7 @@ function detailEtudiant(s, tot) {
       ${kpiPart("commits (branche défaut)", String(s.commits || 0), s.commits || 0, tot.commits)}
       ${kpiPart("tests validés", String(s.tests_validated || 0), s.tests_validated || 0, tot.tests_validated)}
     </div>
-    <div class="frise-titre">Features touchées <small>${(s.features || []).length}/8</small></div>
+    <div class="frise-titre">Contribution par feature <small>part du code de production (src/main) de chaque écran · ${(s.feature_equivalents || 0).toFixed(2)} écran-équiv.</small></div>
     ${featuresEtudiant(s)}
     <div class="frise-titre" style="margin-top:.9rem">Pull requests <small>${(s.prs || []).length}</small></div>
     ${prListEtudiant(s)}
