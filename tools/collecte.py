@@ -49,11 +49,12 @@ PROJET_DEBUT = "2026-06-04"
 PROJET_FIN = "2026-06-18T08:15:00+02:00"
 
 # Seuils du voyant « gros apport de derniere journee » (suspicion de finition au LLM) :
-# beaucoup de lignes de CODE (src/, deja hors donnees importees) concentrees sur la
-# derniere journee de merge de l'equipe. Tunables. La date est exposee en infobulle
-# pour que l'enseignant juge (c'est un point de vigilance, pas un verdict).
-SEUIL_LIGNES_DERNIER_JOUR = 700    # lignes src ajoutees ce jour-la
-SEUIL_PART_DERNIER_JOUR = 0.25     # part du total des lignes src de l'equipe
+# beaucoup de lignes de CODE (src/, hors donnees importees) deposees par UN SEUL auteur
+# sur la derniere journee de merge. C'est la concentration solo, pas le volume d'equipe,
+# qui distingue un dump LLM d'une finition d'IHM collaborative (FXML/controllers cables
+# en dernier, repartis sur l'equipe = legitime). Tunables ; point de vigilance, pas verdict.
+SEUIL_LIGNES_DERNIER_JOUR = 700    # lignes de code deposees par un MEME auteur ce jour-la
+SEUIL_PART_DERNIER_JOUR = 0.25     # part du total des lignes de code de l'equipe
 
 # Fuseau des etudiants : les diagrammes d'activite « par heure / par jour » sont
 # exprimes en heure locale francaise (heure d'ete geree par la base tz).
@@ -700,6 +701,7 @@ def collecter_contributeurs(repo, slug, issues_data):
     lignes_suppr = defaultdict(int)      # login -> total deletions (PR ouvertes + mergees)
     lignes_jour = defaultdict(int)       # date Paris -> lignes src ajoutees par PR mergees ce jour
     prs_jour = defaultdict(int)          # date Paris -> nb de PR de code mergees ce jour
+    lignes_jour_auteur = defaultdict(int)  # (jour, login) -> lignes de code ce jour (max solo = signal LLM)
     feats_pr = defaultdict(set)          # login -> {feature, ...} d'apres le prefixe du titre de PR
     revues_donnees = defaultdict(list)   # login -> [revue, ...]
     revues_recues = defaultdict(int)     # login (auteur PR) -> nb revues par pairs
@@ -758,6 +760,8 @@ def collecter_contributeurs(repo, slug, issues_data):
                         .astimezone(PARIS).date().isoformat())
                 lignes_jour[jour] += add
                 prs_jour[jour] += 1
+                if is_human(auteur):
+                    lignes_jour_auteur[(jour, auteur)] += add
             revs = [r for r in pr["reviews"]["nodes"]]
             par_pair = [r for r in revs
                         if is_human((r.get("author") or {}).get("login"))
@@ -859,20 +863,27 @@ def collecter_contributeurs(repo, slug, issues_data):
         "self_merges": self_merges,
     }
     # Voyant « gros apport de derniere journee » (suspicion de finition au LLM) :
-    # on regarde la DERNIERE journee de merge de l'equipe et la part des lignes src
-    # qui y a atterri. `score_llm` (lignes * part) classe les equipes pour le podium
-    # « Adorateurs de Skynet » ; `suspect` declenche le badge de vigilance.
+    # on regarde la DERNIERE journee de merge de l'equipe. La signature d'un dump LLM
+    # n'est pas le VOLUME du jour (une finition d'IHM collaborative depose beaucoup de
+    # FXML/controllers en dernier, reparti sur l'equipe = legitime) mais sa
+    # CONCENTRATION sur un seul auteur. On mesure donc le plus gros apport SOLO du jour
+    # (`solo_max`) et c'est lui, non le total, qui declenche le badge. `score_llm`
+    # (solo_max * part) classe les equipes pour le podium « Adorateurs de Skynet ».
     derniere_journee = None
     if lignes_jour:
         jour = max(lignes_jour)
         lignes = lignes_jour[jour]
         total = sum(lignes_jour.values())
         part = round(lignes / total, 3) if total else 0.0
+        solos = {a: n for (j, a), n in lignes_jour_auteur.items() if j == jour}
+        solo_auteur = max(solos, key=solos.get) if solos else None
+        solo_max = solos.get(solo_auteur, 0)
         derniere_journee = {
             "date": jour, "lignes": lignes, "part": part, "prs": prs_jour[jour],
             "total_lignes": total, "jours_actifs": len(lignes_jour),
-            "score_llm": round(lignes * part),
-            "suspect": lignes >= SEUIL_LIGNES_DERNIER_JOUR and part >= SEUIL_PART_DERNIER_JOUR,
+            "auteurs": len(solos), "solo_max": solo_max, "solo_auteur": solo_auteur,
+            "score_llm": round(solo_max * part),
+            "suspect": solo_max >= SEUIL_LIGNES_DERNIER_JOUR and part >= SEUIL_PART_DERNIER_JOUR,
         }
     return contributeurs, bus, review, merged_info, branches_en_cours, derniere_journee
 

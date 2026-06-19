@@ -231,8 +231,8 @@ function podiumSkynet(data) {
   const lignes = top.length
     ? top.map((o, i) => `<li><span class="pod-med">${POD_MEDS[i]}</span>`
         + `<span class="pod-login">${esc(o.t.name)}</span>`
-        + `<span class="pod-val">${o.dj.lignes} l. / ${Math.round(o.dj.part * 100)} %</span>`
-        + `<small class="pod-team" title="le ${esc(o.dj.date)}, sur ${o.dj.prs} PR">${esc(o.dj.date)}</small></li>`).join("")
+        + `<span class="pod-val">${o.dj.solo_max ?? o.dj.lignes} l. / ${Math.round(o.dj.part * 100)} %</span>`
+        + `<small class="pod-team" title="le ${esc(o.dj.date)}${o.dj.solo_auteur ? ", " + esc(o.dj.solo_auteur) : ""}, sur ${o.dj.prs} PR">${o.dj.solo_auteur ? esc(o.dj.solo_auteur) : esc(o.dj.date)}</small></li>`).join("")
     : `<li class="pod-vide">Personne pour l'instant</li>`;
   return `<div class="podium podium-skynet"><div class="pod-titre"><span class="pod-emoji">🤖</span> Les adorateurs de Skynet</div>`
     + `<div class="pod-desc">apport de code (src) le plus concentré sur la dernière journée — finition au LLM ?</div>`
@@ -389,8 +389,10 @@ function renderAlertes(data) {
     const dj = t.derniere_journee;
     if (dj && dj.suspect) {
       const pct = Math.round(dj.part * 100);
-      const titre = `${dj.lignes} lignes de code (src) déposées le ${dj.date} = ${pct} % du total de l'équipe, sur ${dj.prs} PR — apport très concentré sur la dernière journée, à vérifier (usage d'un LLM pour finir ?)`;
-      out.push(`<span class="alerte llm" title="${esc(titre)}">🤖 gros apport dernier jour : ${esc(t.slug)} (${dj.lignes} l. / ${pct} %)</span>`);
+      const solo = dj.solo_max ?? dj.lignes;
+      const qui = dj.solo_auteur ? ` par ${dj.solo_auteur}` : "";
+      const titre = `${solo} lignes de code déposées${qui} le ${dj.date} (${pct} % du total de l'équipe, ${dj.auteurs ?? "?"} auteur(s) actifs ce jour, ${dj.prs} PR) — apport solo très concentré sur la dernière journée, à vérifier (usage d'un LLM pour finir ?)`;
+      out.push(`<span class="alerte llm" title="${esc(titre)}">🤖 gros apport solo dernier jour : ${esc(t.slug)} (${solo} l.${dj.solo_auteur ? " — " + esc(dj.solo_auteur) : ""} / ${pct} %)</span>`);
     }
     if (t.ci_status && t.ci_status !== "success")
       out.push(`<span class="alerte">CI rouge : ${esc(t.slug)}</span>`);
