@@ -750,16 +750,16 @@ function kpiPart(label, valHtml, val, total) {
 // ignorer revues et travail en cours. Commits bruts exclus (non fiables sans
 // squash). Chaque part etant valeur/total_equipe, les taux d'une equipe
 // somment a 100 % -> la moyenne d'une equipe de N est 1/N.
-// PR mergées et lignes à poids égal (27,5 % chacune) : unité de travail livrée
-// + volume de code produit. « Contribution par feature » à 20 % : somme des parts
-// de l'étudiant dans le code de PRODUCTION (src/main) de chaque écran — remplace
-// l'ancien « tests validés » (gameable par le décommentage @Disabled en masse).
-// Fiable, normalisé par feature, non manipulable. Lignes plafonnées car le FXML/CSS
-// verbeux sur-valorise le volume.
+// PR mergées, lignes ajoutées et « contribution par feature » à poids égal (25 %
+// chacune) : travail livré + volume de code produit + part dans le code de
+// PRODUCTION (src/main) de chaque écran. Cette dernière remplace l'ancien « tests
+// validés » (gameable par le décommentage @Disabled en masse) : fiable, normalisée
+// par feature, non manipulable. Lignes plafonnées car le FXML/CSS verbeux
+// sur-valorise le volume.
 const CONTRIB_DIMS = [
-  { cle: "lines", label: "lignes ajoutées", poids: 0.275, tot: "lines_added", val: s => s.lines_added || 0 },
-  { cle: "prm", label: "PR mergées", poids: 0.275, tot: "prs_merged", val: s => s.prs_merged || 0 },
-  { cle: "feat", label: "contribution par feature", poids: 0.20, tot: "feature_equivalents", val: s => s.feature_equivalents || 0 },
+  { cle: "lines", label: "lignes ajoutées", poids: 0.25, tot: "lines_added", val: s => s.lines_added || 0 },
+  { cle: "prm", label: "PR mergées", poids: 0.25, tot: "prs_merged", val: s => s.prs_merged || 0 },
+  { cle: "feat", label: "contribution par feature", poids: 0.25, tot: "feature_equivalents", val: s => s.feature_equivalents || 0 },
   { cle: "iss", label: "issues fermées", poids: 0.10, tot: "issues_closed", val: s => s.issues_closed || 0 },
   { cle: "rev", label: "revues données", poids: 0.10, tot: "reviews_given", val: s => s.reviews_given || 0 },
   { cle: "wip", label: "travail en cours", poids: 0.05, tot: "branch_commits", val: s => s.branch_commits || 0 },
@@ -811,8 +811,8 @@ function tauxTip(parts) {
     `• ${p.label} : ${Math.round(p.part * 100)} % de l'équipe × poids ${Math.round(p.poids * 100)} % = ${Math.round(p.apport * 100)} pts`
   ).join("\n");
   return "D'où vient ce taux (somme des points = le taux).\n"
-    + "« % de l'équipe » = la part de l'étudiant ; « poids » = barème (PR 27,5, lignes 27,5,\n"
-    + "feature 20, issues 10, revues 10, en cours 5) rééquilibré sur les dimensions où\n"
+    + "« % de l'équipe » = la part de l'étudiant ; « poids » = barème (PR 25, lignes 25,\n"
+    + "feature 25, issues 10, revues 10, en cours 5) rééquilibré sur les dimensions où\n"
     + "l'équipe a de l'activité, donc identique pour tous les membres de l'équipe.\n"
     + lignes;
 }
