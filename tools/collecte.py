@@ -1184,7 +1184,8 @@ def attribuer_tests_pr(repo, merged_info, baseline, cache_team, live_total=None)
 # test deja actif chez un coequipier n'est pas recompte).
 _TEST_FILE_RE = re.compile(r"src/test/.*\.java$")
 _TEST_ANN_RE = re.compile(r"^[+-]\s*@(Test|ParameterizedTest|RepeatedTest)\b")
-_DISABLED_DEL_RE = re.compile(r"^-\s*@Disabled\b")
+_DISABLED_DEL_RE = re.compile(r"^-\s*@Disabled\b")   # @Disabled retire -> activation
+_DISABLED_ADD_RE = re.compile(r"^\+\s*@Disabled\b")  # @Disabled re-ajoute -> desactivation
 
 
 def _pr_files(repo, num):
@@ -1207,28 +1208,37 @@ def _pr_files(repo, num):
 
 
 def compte_actives_pr(repo, num):
-    """Tests qu'une PR active (`@Disabled` retire) ou ajoute (nouveau `@Test`), lus
-    dans son diff. -> int >= 0."""
-    actives = ajouts = 0
-    for f in _pr_files(repo, num):
+    """Bilan des tests d'une PR, lu dans son diff -> dict :
+    - `on`    : tests ACTIVÉS (`@Disabled` retiré) ou AJOUTÉS (nouveau `@Test`)
+    - `off`   : tests DÉSACTIVÉS (`@Disabled` ré-ajouté) ou SUPPRIMÉS (`@Test` retiré)
+                — typiquement une mauvaise résolution de conflit
+    - `files` : nombre de fichiers impactés par la PR (tous types)
+    Décompte NET par fichier : un simple reformatage qui déplace une ligne `@Test`
+    (présente en `-` et `+`) n'est ni une activation ni une désactivation."""
+    on = off = 0
+    fichiers = _pr_files(repo, num)
+    for f in fichiers:
         if not (isinstance(f, dict) and _TEST_FILE_RE.search(f.get("filename") or "")):
             continue
-        plus = moins = dis = 0
+        tplus = tmoins = ddel = dadd = 0
         for ligne in (f.get("patch") or "").splitlines():
             if _DISABLED_DEL_RE.match(ligne):
-                dis += 1
+                ddel += 1
+            elif _DISABLED_ADD_RE.match(ligne):
+                dadd += 1
             elif _TEST_ANN_RE.match(ligne):
-                plus += ligne[0] == "+"
-                moins += ligne[0] == "-"
-        actives += dis
-        ajouts += max(0, plus - moins)
-    return actives + ajouts
+                tplus += ligne[0] == "+"
+                tmoins += ligne[0] == "-"
+        tnet, dnet = tplus - tmoins, ddel - dadd
+        on += max(0, tnet) + max(0, dnet)
+        off += max(0, -tnet) + max(0, -dnet)
+    return {"on": on, "off": off, "files": sum(1 for f in fichiers if isinstance(f, dict))}
 
 
 def attribuer_tests_actives(repo, merged_info, cache_team):
-    """`tests_validated` par contributeur = somme des tests actives/ajoutes par ses
-    PR mergees. Cache par PR (immuable une fois mergee) : seul le cout des nouvelles
-    PR est paye a chaque build. -> {login: total}."""
+    """`tests_validated` par contributeur = somme NETTE (activés − désactivés) des
+    tests de ses PR mergees. Cache par PR (immuable une fois mergee) : seul le cout
+    des nouvelles PR est paye a chaque build. -> {login: total}."""
     valides = defaultdict(int)
     for m in merged_info:
         author = m.get("author")
@@ -1236,11 +1246,11 @@ def attribuer_tests_actives(repo, merged_info, cache_team):
             continue
         num = str(m["number"])
         entry = cache_team.get(num) or {}
-        if "actives" not in entry:
-            entry["actives"] = compte_actives_pr(repo, m["number"])
+        if "on" not in entry:                         # schema v2 (on/off/files)
+            entry.update(compte_actives_pr(repo, m["number"]))
             cache_team[num] = entry
         entry["author"] = author
-        valides[author] += entry.get("actives") or 0
+        valides[author] += (entry.get("on") or 0) - (entry.get("off") or 0)
     return {a: v for a, v in valides.items() if v > 0}
 
 
@@ -1568,14 +1578,16 @@ def main():
             tv = attribuer_tests_actives(t["_repo"], t["_merged_prs"], ct)
             for c in t["contributors"]:
                 c["tests_validated"] = tv.get(c["login"], 0)
-                # Annotation par PR (verif manuelle) : nb de tests actives/ajoutes.
-                # Rend visible qu'un gros total vient parfois d'UNE PR qui leve
-                # `@Disabled` en masse (finition « passe-finale ») et non d'un apport
-                # reparti -> l'enseignant juge sur piece.
+                # Annotation par PR (verif manuelle) : tests activés / désactivés et
+                # nb de fichiers impactés. Rend visible une activation @Disabled en
+                # masse (« passe-finale ») ET une désactivation (off>0 = test re-
+                # @Disabled ou supprimé, souvent un conflit mal résolu).
                 for pr in c.get("prs", []):
                     e = ct.get(str(pr.get("number")))
-                    if e and e.get("actives") is not None:
-                        pr["actives"] = e["actives"]
+                    if e and e.get("on") is not None:
+                        pr["tests_on"] = e["on"]
+                        pr["tests_off"] = e["off"]
+                        pr["files"] = e.get("files")
         sauver_cache_pr(cache)
         sauver_last_tests(last_tests)
     for t in teams:                       # nettoie les champs temporaires
