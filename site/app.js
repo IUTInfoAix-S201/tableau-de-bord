@@ -622,11 +622,12 @@ function blocActivite(src, titre) {
 }
 
 // --- classement par etudiant (toutes equipes confondues) ------------------
-// Tri par defaut : PR mergees (travail livre/relu) > issues fermees > commits.
-// Le nombre de commits seul n'est pas fiable si les PR ne sont pas squashees.
+// Tri par defaut : TAUX DE CONTRIBUTION (part du travail de l'equipe), puis
+// contribution par feature > PR mergees > issues. Le nb de tests, sorti du taux
+// (gameable par le decommentage en masse), n'est plus une colonne du classement.
 const ESTRING = new Set(["login", "team"]);
-const ETIEBREAK = ["tests_validated", "prs_merged", "issues_closed", "branch_commits", "commits"];
-let currentESort = "tests_validated";
+const ETIEBREAK = ["feature_equivalents", "prs_merged", "issues_closed", "branch_commits", "commits"];
+let currentESort = "taux";
 
 function compareStudents(a, b) {
   if (ESTRING.has(currentESort)) {
@@ -942,7 +943,7 @@ function renderStudents(data) {
   });
   corps.innerHTML = "";
   if (!students.length) {
-    corps.innerHTML = '<tr><td colspan="12">Aucun étudiant détecté.</td></tr>';
+    corps.innerHTML = '<tr><td colspan="11">Aucun étudiant détecté.</td></tr>';
     return;
   }
   students.forEach((s, i) => {
@@ -957,7 +958,6 @@ function renderStudents(data) {
       <td><a class="lien-equipe" href="#${idEquipe(s.team)}" data-slug="${esc(s.team)}" title="Voir l'équipe ${esc(s.team)} dans le classement">${esc(s.team)}</a></td>
       <td class="num">${s.taux == null ? '<span class="badge nd">n/d</span>' : Math.round(s.taux * 100) + " %"}</td>
       <td class="num">${badgeFacteur(s.facteur)}</td>
-      <td class="num"><strong>${s.tests_validated}</strong></td>
       <td class="num">${s.branch_commits ?? 0}</td>
       <td class="num">${s.prs_open}</td>
       <td class="num">${s.prs_merged}</td>
@@ -967,7 +967,7 @@ function renderStudents(data) {
     const detail = document.createElement("tr");
     detail.className = "detail";
     detail.hidden = true;
-    detail.innerHTML = `<td colspan="12">${detailEtudiant(s, totaux[s.team])}</td>`;
+    detail.innerHTML = `<td colspan="11">${detailEtudiant(s, totaux[s.team])}</td>`;
     tr.addEventListener("click", e => {
       if (e.target.closest("a")) return;   // ne pas replier en cliquant un lien de PR
       detail.hidden = !detail.hidden;
