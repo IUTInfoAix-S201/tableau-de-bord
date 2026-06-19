@@ -585,7 +585,7 @@ function detailPanneau(t) {
     <table class="contribs">
       <thead><tr>
         <th>Contributeur (login GitHub)</th>
-        <th class="num" title="Tests verts apportés par les PR mergées de l'étudiant">Tests validés</th>
+        <th class="num" title="Tests activés (retrait de @Disabled) ou ajoutés par les PR mergées de l'étudiant, lus dans le diff">Tests validés</th>
         <th class="num" title="Commits dans des branches non encore mergées (travail en cours)">Travail en cours</th>
         <th class="num" title="PR actuellement ouvertes (en cours) / PR mergées">PR en cours/merg.</th><th class="num">Revues don./rec.</th>
         <th class="num">Issues fer./assig.</th><th class="num">Revue</th>

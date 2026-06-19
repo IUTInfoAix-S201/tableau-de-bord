@@ -1086,6 +1086,81 @@ def attribuer_tests_pr(repo, merged_info, baseline, cache_team, live_total=None)
 
 
 # ------------------------------------------------------------------------------
+# Tests valides par contributeur — v2 : attribution par DIFF git (robuste)
+# ------------------------------------------------------------------------------
+# L'attribution par delta de tests verts au merge (attribuer_tests_pr) est otage du
+# timing CI : sur des merges en rafale, `cancel-in-progress` annule des runs (compte
+# `passed=None`), ce qui force un partage heuristique du trou, et le resultat depend
+# de l'ordre exact des merges (cas remonte par l'equipe t1g3 : un meme contributeur
+# passe de 72 a 160+ selon l'ordre suppose). On mesure desormais la contribution
+# directement dans le DIFF de chaque PR : nombre de tests ACTIVES (retrait de
+# `@Disabled` — le geste central de ces TP a stubs) + AJOUTES (nouveaux `@Test`).
+# Avantages : independant des runs CI annules, independant de l'ordre de merge, et
+# naturellement dedoublonne (chaque diff est calcule vs la base de la PR, donc un
+# test deja actif chez un coequipier n'est pas recompte).
+_TEST_FILE_RE = re.compile(r"src/test/.*\.java$")
+_TEST_ANN_RE = re.compile(r"^[+-]\s*@(Test|ParameterizedTest|RepeatedTest)\b")
+_DISABLED_DEL_RE = re.compile(r"^-\s*@Disabled\b")
+
+
+def _pr_files(repo, num):
+    """Fichiers d'une PR avec leur `patch`. Gere la pagination (gh --paginate
+    concatene les arrays JSON) sans dependre de --slurp (gh recent)."""
+    out = sh(["gh", "api", f"repos/{ORG}/{repo}/pulls/{num}/files", "--paginate"],
+             check=False).strip()
+    if not out:
+        return []
+    try:
+        return json.loads(out)
+    except json.JSONDecodeError:
+        files = []
+        for part in re.split(r"(?<=\])\s*(?=\[)", out):
+            try:
+                files += json.loads(part)
+            except json.JSONDecodeError:
+                pass
+        return files
+
+
+def compte_actives_pr(repo, num):
+    """Tests qu'une PR active (`@Disabled` retire) ou ajoute (nouveau `@Test`), lus
+    dans son diff. -> int >= 0."""
+    actives = ajouts = 0
+    for f in _pr_files(repo, num):
+        if not (isinstance(f, dict) and _TEST_FILE_RE.search(f.get("filename") or "")):
+            continue
+        plus = moins = dis = 0
+        for ligne in (f.get("patch") or "").splitlines():
+            if _DISABLED_DEL_RE.match(ligne):
+                dis += 1
+            elif _TEST_ANN_RE.match(ligne):
+                plus += ligne[0] == "+"
+                moins += ligne[0] == "-"
+        actives += dis
+        ajouts += max(0, plus - moins)
+    return actives + ajouts
+
+
+def attribuer_tests_actives(repo, merged_info, cache_team):
+    """`tests_validated` par contributeur = somme des tests actives/ajoutes par ses
+    PR mergees. Cache par PR (immuable une fois mergee) : seul le cout des nouvelles
+    PR est paye a chaque build. -> {login: total}."""
+    valides = defaultdict(int)
+    for m in merged_info:
+        author = m.get("author")
+        if not (author and is_human(author)):
+            continue
+        num = str(m["number"])
+        entry = cache_team.get(num) or {}
+        if "actives" not in entry:
+            entry["actives"] = compte_actives_pr(repo, m["number"])
+            cache_team[num] = entry
+        entry["author"] = author
+        valides[author] += entry.get("actives") or 0
+    return {a: v for a, v in valides.items() if v > 0}
+
+
+# ------------------------------------------------------------------------------
 # Tendances (history.jsonl)
 # ------------------------------------------------------------------------------
 def charger_historique():
@@ -1403,8 +1478,7 @@ def main():
         cache = charger_cache_pr()
         for t in teams:
             ct = cache.setdefault(t["slug"], {})
-            tv = attribuer_tests_pr(t["_repo"], t["_merged_prs"], baseline, ct,
-                                    live_total=t["tests"]["passed"])
+            tv = attribuer_tests_actives(t["_repo"], t["_merged_prs"], ct)
             for c in t["contributors"]:
                 c["tests_validated"] = tv.get(c["login"], 0)
         sauver_cache_pr(cache)

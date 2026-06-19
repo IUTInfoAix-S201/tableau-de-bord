@@ -58,7 +58,7 @@
 
     <section>
       <h2>Classement par étudiant</h2>
-      <p class="aide">Tous les contributeurs, toutes équipes confondues. Tri par défaut : <strong>tests validés</strong> (tests verts apportés par les PR mergées de chacun), puis PR mergées, puis <strong>travail en cours</strong> (commits dans des branches non mergées). Cliquez sur une colonne pour trier, ou sur une ligne pour <strong>déplier le détail de l'étudiant</strong> (PR, features touchées, part de contribution à l'équipe).</p>
+      <p class="aide">Tous les contributeurs, toutes équipes confondues. Tri par défaut : <strong>tests validés</strong> (tests activés ou ajoutés par les PR mergées de chacun, lus dans le diff), puis PR mergées, puis <strong>travail en cours</strong> (commits dans des branches non mergées). Cliquez sur une colonne pour trier, ou sur une ligne pour <strong>déplier le détail de l'étudiant</strong> (PR, features touchées, part de contribution à l'équipe).</p>
       <table id="etudiants">
         <thead>
           <tr>
@@ -67,7 +67,7 @@
             <th data-esort="team">Équipe</th>
             <th data-esort="taux" class="num" title="Part du travail de l'équipe : moyenne pondérée des contributions (lignes ajoutées, PR mergées, tests, issues, revues, travail en cours). Voir l'explication en bas du tableau.">Contribution</th>
             <th data-esort="facteur" class="num" title="Facteur d'effort appliqué à la note : 1 si vous contribuez au moins votre part idéale (1/N), proportionnel en dessous. Voir l'explication en bas du tableau.">Facteur d'effort</th>
-            <th data-esort="tests_validated" class="num" title="Tests verts apportés par les PR mergées de l'étudiant (delta de tests à chaque merge)">Tests validés</th>
+            <th data-esort="tests_validated" class="num" title="Tests activés (retrait de @Disabled) ou ajoutés (nouveaux @Test) par les PR mergées de l'étudiant — mesuré dans le diff, indépendant du timing CI et de l'ordre de merge">Tests validés</th>
             <th data-esort="branch_commits" class="num" title="Commits dans des branches non encore mergées (travail en cours, pas forcément en PR)">Travail en cours</th>
             <th data-esort="prs_open" class="num">PR en cours</th>
             <th data-esort="prs_merged" class="num">PR mergées</th>
