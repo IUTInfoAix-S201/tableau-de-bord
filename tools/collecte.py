@@ -683,6 +683,22 @@ def _pr_src_stats(pr):
     return add, sup, touches
 
 
+_FEATURE_PKG_RE = re.compile(r"/iut/([a-z_]+)/")
+
+
+def _pr_features(pr):
+    """Features de la chaine REELLEMENT touchees par les fichiers de la PR (package
+    `…/iut/<feature>/…`). Bien plus fiable que le prefixe de titre `[feature]`, que
+    les etudiants n'emploient pas (ils ecrivent `feat(multisite): …`) : sans ca, une
+    PR multi-features n'etait creditee d'aucune (ou de la seule issue liee)."""
+    feats = set()
+    for f in ((pr.get("files") or {}).get("nodes")) or []:
+        m = _FEATURE_PKG_RE.search(f.get("path") or "")
+        if m and m.group(1) in CHAINE:
+            feats.add(m.group(1))
+    return feats
+
+
 def collecter_contributeurs(repo, slug, issues_data):
     """Fusionne commits (contributors API) + PR/revues (GraphQL) + membres team."""
     # commits par login (branche par defaut)
@@ -732,6 +748,9 @@ def collecter_contributeurs(repo, slug, issues_data):
             f = prefixe_feature(pr.get("title"))
             if f in CHAINE:
                 feats_pr[auteur].add(f)
+            # Source principale : les FICHIERS touches (le prefixe de titre ne suffit
+            # pas — cf. SalahEdine-bou, 6 features touchees mais titres sans `[...]`).
+            feats_pr[auteur] |= _pr_features(pr)
         if pr["state"] == "OPEN":
             if is_human(auteur):
                 prs_open[auteur] += 1
