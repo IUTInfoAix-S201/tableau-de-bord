@@ -561,7 +561,6 @@ function detailPanneau(t) {
     return `
     <tr>
       <td class="login"><a class="lien-etudiant" href="#${idEtudiant(c.login)}" data-login="${esc(c.login)}" title="Voir ${esc(c.login)} dans le classement par étudiant">${esc(c.login)}</a></td>
-      <td class="num"><strong>${c.tests_validated ?? 0}</strong></td>
       <td class="num">${c.branch_commits ?? 0}</td>
       <td class="num">${c.prs_open}/${c.prs_merged}</td>
       <td class="num">${c.reviews_given}/${c.reviews_received}</td>
@@ -587,13 +586,12 @@ function detailPanneau(t) {
     <table class="contribs">
       <thead><tr>
         <th>Contributeur (login GitHub)</th>
-        <th class="num" title="Tests activés (retrait de @Disabled) ou ajoutés par les PR mergées de l'étudiant, lus dans le diff">Tests validés</th>
         <th class="num" title="Commits dans des branches non encore mergées (travail en cours)">Travail en cours</th>
         <th class="num" title="PR actuellement ouvertes (en cours) / PR mergées">PR en cours/merg.</th><th class="num">Revues don./rec.</th>
         <th class="num">Issues fer./assig.</th><th class="num">Revue</th>
         <th class="num" title="Part du travail de l'équipe (lignes ajoutées, PR, contribution par feature, issues, revues, travail en cours ; somme = 100 %)">Contribution</th>
       </tr></thead>
-      <tbody>${contribs || '<tr><td colspan="8">Aucun contributeur détecté.</td></tr>'}</tbody>
+      <tbody>${contribs || '<tr><td colspan="7">Aucun contributeur détecté.</td></tr>'}</tbody>
     </table>
     ${featureContribEquipe(t)}
     ${blocActivite((window.__data && window.__data.activity && window.__data.activity.by_team || {})[t.slug],
@@ -844,12 +842,22 @@ function featureContribEquipe(t) {
   const fc = t.feature_contrib || {};
   const keys = Object.keys(FEATURE_LABEL).filter(k => fc[k] && fc[k].total > 0);
   if (!keys.length) return "";
+  // Couleur STABLE par équipier (même teinte sur toutes les lignes) : on ordonne les
+  // contributeurs par total de lignes de prod décroissant et on leur fige une couleur.
+  const totalPar = {};
+  keys.forEach(k => (fc[k].owners || []).forEach(o => {
+    totalPar[o.login] = (totalPar[o.login] || 0) + o.lignes;
+  }));
+  const logins = Object.keys(totalPar).sort((a, b) => totalPar[b] - totalPar[a]);
+  const couleur = {};
+  logins.forEach((lg, i) => { couleur[lg] = FC_PALETTE[i % FC_PALETTE.length]; });
+  const court = lg => lg.split(/[-_]/)[0];
   const rows = keys.map(k => {
     const owners = fc[k].owners || [];
-    const segs = owners.map((o, i) => {
+    const segs = owners.map(o => {
       const pct = Math.round(o.part * 100);
-      return `<span class="fc-seg" style="width:${pct}%;background:${FC_PALETTE[i % FC_PALETTE.length]}"`
-        + ` title="${esc(o.login)} : ${pct} % (${o.lignes} l.)">${o.part >= 0.16 ? esc(o.login.split(/[-_]/)[0]) : ""}</span>`;
+      return `<span class="fc-seg" style="width:${pct}%;background:${couleur[o.login]}"`
+        + ` title="${esc(o.login)} : ${pct} % (${o.lignes} l.)">${o.part >= 0.16 ? esc(court(o.login)) : ""}</span>`;
     }).join("");
     return `<div class="fc-row">
       <span class="fc-feat"><span class="emoji">${FEATURE_EMOJI[k] || "•"}</span> ${esc(FEATURE_LABEL[k] || k)}</span>
@@ -857,8 +865,11 @@ function featureContribEquipe(t) {
       <span class="fc-tot" title="lignes de code de production (src/main) de cet écran">${fc[k].total} l.</span>
     </div>`;
   }).join("");
+  const legende = logins.map(lg =>
+    `<span class="fc-leg-item"><span class="fc-leg-pastille" style="background:${couleur[lg]}"></span>${esc(court(lg))}</span>`).join("");
   return `<div class="frise-titre" style="margin-top:1rem">Contribution par feature`
     + ` <small>part de chacun dans le code de production (src/main) de chaque écran</small></div>`
+    + `<div class="fc-legende">${legende}</div>`
     + `<div class="fc-grid">${rows}</div>`;
 }
 
@@ -918,7 +929,6 @@ function detailEtudiant(s, tot) {
       ${kpiPart("PR ouvertes + mergées", String(prCount), prCount, tot.prs)}
       ${kpiPart("issues fermées", String(s.issues_closed || 0), s.issues_closed || 0, tot.issues_closed)}
       ${kpiPart("commits (branche défaut)", String(s.commits || 0), s.commits || 0, tot.commits)}
-      ${kpiPart("tests validés", String(s.tests_validated || 0), s.tests_validated || 0, tot.tests_validated)}
     </div>
     <div class="frise-titre">Contribution par feature <small>part du code de production (src/main) de chaque écran · ${(s.feature_equivalents || 0).toFixed(2)} écran-équiv.</small></div>
     ${featuresEtudiant(s)}

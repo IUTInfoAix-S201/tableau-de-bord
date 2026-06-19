@@ -282,6 +282,9 @@ tbody tr.cible { animation: surligne-cible 2s ease-out; }
 .fc-seg { display: flex; align-items: center; justify-content: center; color: #fff; font-size: .66rem;
   font-weight: 700; overflow: hidden; white-space: nowrap; min-width: 0; }
 .fc-tot { flex: 0 0 3.5rem; text-align: right; color: var(--gris); font-variant-numeric: tabular-nums; }
+.fc-legende { display: flex; flex-wrap: wrap; gap: .5rem 1rem; margin-bottom: .45rem; font-size: .74rem; }
+.fc-leg-item { display: inline-flex; align-items: center; gap: .3rem; color: #444; }
+.fc-leg-pastille { width: .7rem; height: .7rem; border-radius: 2px; display: inline-block; }
 
 table.contribs.prs { margin-top: .3rem; }
 table.contribs.prs td a { color: var(--bleu-clair); text-decoration: none; }
