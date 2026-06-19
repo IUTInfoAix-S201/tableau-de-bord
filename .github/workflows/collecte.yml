@@ -1,0 +1,67 @@
+# Collecte des metriques du tableau de bord SAE 2.01 (org IUTInfoAix-S201-2026).
+# Lance tools/collecte.py (appels API GitHub via gh), ecrit site/data.json et
+# historise les instantanes (history/), puis COMMITE data.json + history.
+# NE DEPLOIE PAS : le commit de site/data.json est servi par « Déploiement (Pages) »
+# (workflow_run), qui publie le statique a chaque commit.
+name: Collecte des données
+
+on:
+  # Projet termine (juin 2026) : la collecte horaire est DESACTIVEE. On la relance
+  # uniquement a la demande (bouton « Run workflow »). Pour reactiver le cron,
+  # decommenter le bloc schedule ci-dessous.
+  # schedule:
+  #   - cron: "37 * * * *"   # toutes les heures, minute 37 (hors pic GitHub a :00)
+  workflow_dispatch: {}
+
+# Une seule collecte a la fois (le cache pr-tests.json est reecrit en entier).
+concurrency:
+  group: collecte
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # commit de site/data.json + history/
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Collecte des metriques
+        env:
+          # PAT fine-grained avec lecture sur l'org IUTInfoAix-S201-2026
+          # (Contents, Issues, Pull requests, Actions, Metadata, Members).
+          GH_TOKEN: ${{ secrets.DASHBOARD_TOKEN }}
+          # Equipes de reference optionnelles (JSON via secret) ; vide => ignore.
+          REFERENCE_TEAMS: ${{ secrets.REFERENCE_TEAMS }}
+        run: python3 tools/collecte.py
+
+      - name: Commit des donnees (data.json + historique)
+        # Ce repo est exclu du ruleset de branche de l'org : le bot peut pousser sur main.
+        # Le push (par GITHUB_TOKEN) ne declenche pas « Déploiement (Pages) » via on:push
+        # (anti-boucle GitHub) ; c'est le `workflow_run` de deploy.yml qui prend le relais.
+        run: |
+          git config user.name "dashboard-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data.json history/
+          if git diff --staged --quiet; then
+            echo "Rien de nouveau a committer."
+            exit 0
+          fi
+          git commit -m "chore: collecte (data.json + instantane + cache PR)"
+          # Push robuste face aux runs concurrents : on rebase en gardant NOTRE version
+          # fraiche des fichiers reecrits en entier (data.json, caches), puis on reessaie.
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "Pousse."
+              exit 0
+            fi
+            echo "Push rejete (main a bouge), rebase + nouvelle tentative ($i/5)..."
+            git pull --rebase --autostash -X theirs origin main || git rebase --abort || true
+          done
+          echo "::error::Echec du push apres 5 tentatives (course persistante sur main)."
+          exit 1

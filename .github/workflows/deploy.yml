@@ -1,0 +1,62 @@
+# Deploiement du tableau de bord (statique) sur GitHub Pages.
+# Publie le contenu de site/ (dont data.json, commite par « Collecte des données »,
+# et la video du bouquet recuperee depuis la release). Decouple de la collecte :
+# une retouche cliente (app.js / css / html) se deploie en quelques secondes sans
+# relancer les appels API de la collecte.
+name: Déploiement (Pages)
+
+on:
+  # Commits clients (app.js, css, html) ET nouveau data.json commite par la collecte.
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+  # Apres une collecte (son commit par GITHUB_TOKEN ne declenche pas on:push) ou la
+  # generation du bouquet final, on republie pour servir les nouvelles donnees/video.
+  workflow_run:
+    workflows: ["Collecte des données", "Bouquet final (Gource)"]
+    types: [completed]
+  workflow_dispatch: {}
+
+# Un seul deploiement Pages a la fois.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write      # deploiement Pages
+  id-token: write   # OIDC pour deploy-pages
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Recupere la video du bouquet (si publiee) pour la servir via Pages
+        # La video est stockee en asset de release (pas de gonflement git) mais Pages
+        # la sert en video/mp4 inline (lecteur <video>), contrairement a l'asset brut
+        # (octet-stream + nosniff). Ignore si la release n'existe pas encore.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download bouquet --repo "$GITHUB_REPOSITORY" \
+            --pattern bouquet-final.mp4 --dir site --clobber \
+            || echo "Pas encore de bouquet a servir."
+
+      - name: Prepare l'artefact Pages
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploie sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

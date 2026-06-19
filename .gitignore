@@ -1,7 +1,8 @@
-# data.json est genere a chaque run (deploye comme artefact Pages, pas versionne)
-site/data.json
+# data.json est COMMITE (genere par « Collecte des données », publie par
+# « Déploiement (Pages) ») : le deploiement statique doit pouvoir le servir sans
+# relancer la collecte. Cf. .github/workflows/{collecte,deploy}.yml.
 
-# video du bouquet : stockee en asset de release, recuperee dans site/ au build
+# video du bouquet : stockee en asset de release, recuperee dans site/ au deploiement
 site/bouquet-final.mp4
 
 # artefacts de travail
